@@ -1,0 +1,453 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>BibTeX Management &mdash; bibmanager 0.4.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="LaTeX Management" href="latex.html" />
+    <link rel="prev" title="Getting Started" href="getstarted.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> bibmanager
+          
+
+          
+            
+            <img src="_static/logo_bibmanager.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                version 0.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getstarted.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">BibTeX Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#init">Init</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#merge">Merge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#edit">Edit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#add">Add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#search">Search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#export">Export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#config">Config</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="latex.html">LaTeX Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ads.html">ADS Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">Complete API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">bibmanager</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>BibTeX Management</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/bibtex.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="bibtex-management">
+<span id="bibtex"></span><h1>BibTeX Management<a class="headerlink" href="#bibtex-management" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="init">
+<span id="id1"></span><h2>Init<a class="headerlink" href="#init" title="Permalink to this headline">¶</a></h2>
+<p>Initialize the bibmanager database.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm init <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>bibfile<span class="o">]</span>
+</pre></div>
+</div>
+<p>This command initializes the bibmanager database (from scratch).
+It creates a .bibmanager/ folder in the user folder (if it does not
+exists already), and it (re)sets the bibmanager configuration to
+its default values.</p>
+<p>If the user provides the ‘bibfile’ argument, this command will
+populate the database with the entries from that file; otherwise,
+it will set an empty database.</p>
+<p>Note that this will overwrite any pre-existing database.  In
+principle the user should not execute this command more than once
+in a given CPU.</p>
+<p><strong>Examples</strong></p>
+<p><em>TBD</em></p>
+<hr class="docutils" />
+</div>
+<div class="section" id="merge">
+<span id="id2"></span><h2>Merge<a class="headerlink" href="#merge" title="Permalink to this headline">¶</a></h2>
+<p>Merge a bibfile into the bibmanager database.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm merge <span class="o">[</span>-h<span class="o">]</span> bibfile <span class="o">[</span>take<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Description</strong></p>
+<p>This commands merges the content from an input bibfile with the
+bibmanager database.</p>
+<p>The optional ‘take’ arguments defines the protocol for possible-
+duplicate entries.  Either take the ‘old’ entry (database), take
+the ‘new’ entry (bibfile), or ‘ask’ the user through the prompt
+(displaying the alternatives).  bibmanager considers four fields
+to check for duplicates: doi, isbn, adsurl, and eprint.</p>
+<p>Additionally, bibmanager considers two more cases (always asking):
+(1) new entry has duplicate key but different content, and
+(2) new entry has duplicate title but different key.</p>
+<p><strong>Options</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">bibfile:</th><td class="field-body">Path to an existing bibfile.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">take:</th><td class="field-body">Decision protocol for duplicates (choose: {old, new, ask},
+default: old)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">-h, –help:</th><td class="field-body">Show this help message and exit</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Examples</strong></p>
+<p><em>TBD</em></p>
+<hr class="docutils" />
+</div>
+<div class="section" id="edit">
+<span id="id3"></span><h2>Edit<a class="headerlink" href="#edit" title="Permalink to this headline">¶</a></h2>
+<p>Edit the bibmanager database in a text editor.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm edit <span class="o">[</span>-h<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Description</strong></p>
+<p>This command let’s you manually edit the bibmanager database,
+in your pre-defined text editor.  Once finished editing, save and
+close the text editor, and press ENTER in the terminal to
+incorporate the edits (edits after continuing on the terminal won’t
+count).</p>
+<p>bibmanager selects the OS default text editor.  But the user can
+set a preferred editor, see ‘bibm config -h’ for more information.</p>
+<p><strong>Examples</strong></p>
+<p><em>TBD</em></p>
+<hr class="docutils" />
+</div>
+<div class="section" id="add">
+<span id="id4"></span><h2>Add<a class="headerlink" href="#add" title="Permalink to this headline">¶</a></h2>
+<p>Add entries into the bibmanager database.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm add <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>take<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Description</strong></p>
+<p>This command allows the user to manually add BibTeX entries into
+the bibmanager database through the terminal prompt.</p>
+<p>The optional ‘take’ arguments defines the protocol for possible-
+duplicate entries.  Either take the ‘old’ entry (database), take
+the ‘new’ entry (bibfile), or ‘ask’ the user through the prompt
+(displaying the alternatives).  bibmanager considers four fields
+to check for duplicates: doi, isbn, adsurl, and eprint.</p>
+<p>Additionally, bibmanager considers two more cases (always asking):
+(1) new entry has duplicate key but different content, and
+(2) new entry has duplicate title but different key.</p>
+<p><strong>Examples</strong></p>
+<p><em>TBD</em></p>
+<hr class="docutils" />
+</div>
+<div class="section" id="search">
+<span id="id5"></span><h2>Search<a class="headerlink" href="#search" title="Permalink to this headline">¶</a></h2>
+<p>Search entries in the bibmanager database.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm search <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-a <span class="o">[</span>AUTHOR <span class="o">[</span>AUTHOR ...<span class="o">]]]</span> <span class="o">[</span>-y YEAR<span class="o">]</span>
+                 <span class="o">[</span>-t <span class="o">[</span>TITLE <span class="o">[</span>TITLE ...<span class="o">]]]</span> <span class="o">[</span>-v<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Description</strong></p>
+<p>This command allows the user to search for entries in the bibmanager
+database by authors, years, and keywords in title.  The matching
+results are displayed on screen according to the specified verbosity.
+For search arguments that include a blank space, the user can set
+the string within quotes.</p>
+<p>The user can restrict the search to one or more authors, and can
+request a first-author match by including the ‘^’ character before
+an author name (see examples below).</p>
+<p>The user can restrict the publication year to an specific year,
+to a range of years, or to open-end range of years (see examples
+below).</p>
+<p>Finally, the user can restrict the search to multiple strings in
+the title (see examples below).  Note these are case-insensitive.</p>
+<p>There are four levels of verbosity (see examples below):
+- zero shows the title, year, first author, and bibkey;
+- one adds the ADS and arXiv urls;
+- two adds the full list of authors;
+- and three displays the full BibTeX entry.</p>
+<p><strong>Examples</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search by last name:</span>
+bibm search -a LastName
+<span class="c1"># Search by last name and initials (note blanks require one to use quotes):</span>
+bibm search -a <span class="s1">&#39;LastName, F&#39;</span>
+<span class="c1"># Search by first-author only:</span>
+bibm search -a <span class="s1">&#39;^LastName, F&#39;</span>
+<span class="c1"># Search multiple authors:</span>
+bibm search -a <span class="s1">&#39;LastName&#39;</span> <span class="s1">&#39;NachName&#39;</span>
+
+<span class="c1"># Search on specific year:</span>
+bibm search -a <span class="s1">&#39;Author, I&#39;</span> -y <span class="m">2017</span>
+<span class="c1"># Search anything past the specified year:</span>
+bibm search -a <span class="s1">&#39;Author, I&#39;</span> -y <span class="m">2017</span>-
+<span class="c1"># Search anything up to the specified year:</span>
+bibm search -a <span class="s1">&#39;Author, I&#39;</span> -y -2017
+<span class="c1"># Search anything between the specified years:</span>
+bibm search -a <span class="s1">&#39;Author, I&#39;</span> -y <span class="m">2012</span>-2017
+
+<span class="c1"># Seach by author and with keywords on title:</span>
+bibm search -a <span class="s1">&#39;Author, I&#39;</span> -t <span class="s1">&#39;HD 209458&#39;</span> <span class="s1">&#39;HD 189733&#39;</span>
+
+<span class="c1"># Display title, year, first author, and bibkey:</span>
+bibm search -a <span class="s1">&#39;Author, I&#39;</span>
+<span class="c1"># Display title, year, first author, and all keys/urls:</span>
+bibm search -a <span class="s1">&#39;Author, I&#39;</span> -v
+<span class="c1"># Display title, year, author list, and all keys/urls:</span>
+bibm search -a <span class="s1">&#39;Author, I&#39;</span> -vv
+<span class="c1"># Display full BibTeX entry:</span>
+bibm search -a <span class="s1">&#39;Author, I&#39;</span> -vvv
+</pre></div>
+</div>
+<hr class="docutils" />
+</div>
+<div class="section" id="export">
+<span id="id6"></span><h2>Export<a class="headerlink" href="#export" title="Permalink to this headline">¶</a></h2>
+<p>Export the bibmanager database into a bib file.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm <span class="nb">export</span> <span class="o">[</span>-h<span class="o">]</span> bibfile
+</pre></div>
+</div>
+<p><strong>Description</strong></p>
+<p>Export the entire bibmanager database into a bibliography file in
+.bib or .bbl format according to the file extension of the
+‘bibfile’ argument (TBD: for the moment, only export to .bib).</p>
+<p><strong>Examples</strong></p>
+<p><em>TBD</em></p>
+<hr class="docutils" />
+</div>
+<div class="section" id="config">
+<span id="id7"></span><h2>Config<a class="headerlink" href="#config" title="Permalink to this headline">¶</a></h2>
+<p>Manage the bibmanager configuration parameters.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm config <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>key<span class="o">]</span> <span class="o">[</span>value<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Description</strong></p>
+<p>This command displays or sets the value of bibmanager config parameters.
+There are four parameters/keys that can be set by the user:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">style</span></code>       sets the color-syntax style of displayed BibTeX entries.</li>
+<li><code class="docutils literal notranslate"><span class="pre">text_editor</span></code> sets the text editor for ‘bibm edit’ calls.</li>
+<li><code class="docutils literal notranslate"><span class="pre">paper</span></code>       sets the default paper format for latex compilation.</li>
+<li><code class="docutils literal notranslate"><span class="pre">ads_token</span></code>   sets the token required for ADS requests.</li>
+<li><code class="docutils literal notranslate"><span class="pre">ads_display</span></code> sets the number of entries to show at once for ADS searches.</li>
+</ul>
+<p>The number of arguments determines the action of this command (see
+examples below):</p>
+<ul class="simple">
+<li>with no arguments, display all available parameters and values.</li>
+<li>with the ‘key’ argument, display detailed info on the specified
+parameter and its current value.</li>
+<li>with both ‘key’ and ‘value’ arguments, set the value of the parameter.</li>
+</ul>
+<p><strong>Examples</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Display all config parameters and values:</span>
+bibm config
+<span class="c1"># Display value and help for the style parameter:</span>
+bibm config style
+<span class="c1"># Set the value of the BibTeX color-syntax:</span>
+bibm config style autumn
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="latex.html" class="btn btn-neutral float-right" title="LaTeX Management" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="getstarted.html" class="btn btn-neutral" title="Getting Started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018-2019, Patricio Cubillos
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'./',
+              VERSION:'0.4.0',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

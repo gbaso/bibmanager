@@ -1,0 +1,284 @@
+.. _bibtex:
+
+BibTeX Management
+=================
+
+.. _init:
+
+Init
+----
+Initialize the bibmanager database.
+
+**Usage**
+
+.. code-block:: shell
+
+  bibm init [-h] [bibfile]
+
+
+This command initializes the bibmanager database (from scratch).
+It creates a .bibmanager/ folder in the user folder (if it does not
+exists already), and it (re)sets the bibmanager configuration to
+its default values.
+
+If the user provides the 'bibfile' argument, this command will
+populate the database with the entries from that file; otherwise,
+it will set an empty database.
+
+Note that this will overwrite any pre-existing database.  In
+principle the user should not execute this command more than once
+in a given CPU.
+
+**Examples**
+
+*TBD*
+
+--------------------------------------------------------------------
+
+.. _merge:
+
+Merge
+-----
+Merge a bibfile into the bibmanager database.
+
+**Usage**
+
+.. code-block:: shell
+
+  bibm merge [-h] bibfile [take]
+
+**Description**
+
+This commands merges the content from an input bibfile with the
+bibmanager database.
+
+The optional 'take' arguments defines the protocol for possible-
+duplicate entries.  Either take the 'old' entry (database), take
+the 'new' entry (bibfile), or 'ask' the user through the prompt
+(displaying the alternatives).  bibmanager considers four fields
+to check for duplicates: doi, isbn, adsurl, and eprint.
+
+Additionally, bibmanager considers two more cases (always asking):
+(1) new entry has duplicate key but different content, and
+(2) new entry has duplicate title but different key.
+
+**Options**
+
+:bibfile:  Path to an existing bibfile.
+
+:take:
+     Decision protocol for duplicates (choose: {old, new, ask},
+     default: old)
+
+:-h, --help:
+     Show this help message and exit
+
+**Examples**
+
+*TBD*
+
+--------------------------------------------------------------------
+
+.. _edit:
+
+
+Edit
+----
+
+Edit the bibmanager database in a text editor.
+
+**Usage**
+
+.. code-block:: shell
+
+  bibm edit [-h]
+
+**Description**
+
+This command let's you manually edit the bibmanager database,
+in your pre-defined text editor.  Once finished editing, save and
+close the text editor, and press ENTER in the terminal to
+incorporate the edits (edits after continuing on the terminal won't
+count).
+
+bibmanager selects the OS default text editor.  But the user can
+set a preferred editor, see 'bibm config -h' for more information.
+
+**Examples**
+
+*TBD*
+
+--------------------------------------------------------------------
+
+.. _add:
+
+Add
+---
+Add entries into the bibmanager database.
+
+**Usage**
+
+.. code-block:: shell
+
+  bibm add [-h] [take]
+
+**Description**
+
+This command allows the user to manually add BibTeX entries into
+the bibmanager database through the terminal prompt.
+
+The optional 'take' arguments defines the protocol for possible-
+duplicate entries.  Either take the 'old' entry (database), take
+the 'new' entry (bibfile), or 'ask' the user through the prompt
+(displaying the alternatives).  bibmanager considers four fields
+to check for duplicates: doi, isbn, adsurl, and eprint.
+
+Additionally, bibmanager considers two more cases (always asking):
+(1) new entry has duplicate key but different content, and
+(2) new entry has duplicate title but different key.
+
+**Examples**
+
+*TBD*
+
+--------------------------------------------------------------------
+
+.. _search:
+
+Search
+------
+Search entries in the bibmanager database.
+
+**Usage**
+
+.. code-block:: shell
+
+  bibm search [-h] [-a [AUTHOR [AUTHOR ...]]] [-y YEAR]
+                   [-t [TITLE [TITLE ...]]] [-v]
+
+**Description**
+
+This command allows the user to search for entries in the bibmanager
+database by authors, years, and keywords in title.  The matching
+results are displayed on screen according to the specified verbosity.
+For search arguments that include a blank space, the user can set
+the string within quotes.
+
+The user can restrict the search to one or more authors, and can
+request a first-author match by including the '^' character before
+an author name (see examples below).
+
+The user can restrict the publication year to an specific year,
+to a range of years, or to open-end range of years (see examples
+below).
+
+Finally, the user can restrict the search to multiple strings in
+the title (see examples below).  Note these are case-insensitive.
+
+There are four levels of verbosity (see examples below):
+- zero shows the title, year, first author, and bibkey;
+- one adds the ADS and arXiv urls;
+- two adds the full list of authors;
+- and three displays the full BibTeX entry.
+
+**Examples**
+
+.. code-block:: shell
+
+  # Search by last name:
+  bibm search -a LastName
+  # Search by last name and initials (note blanks require one to use quotes):
+  bibm search -a 'LastName, F'
+  # Search by first-author only:
+  bibm search -a '^LastName, F'
+  # Search multiple authors:
+  bibm search -a 'LastName' 'NachName'
+
+  # Search on specific year:
+  bibm search -a 'Author, I' -y 2017
+  # Search anything past the specified year:
+  bibm search -a 'Author, I' -y 2017-
+  # Search anything up to the specified year:
+  bibm search -a 'Author, I' -y -2017
+  # Search anything between the specified years:
+  bibm search -a 'Author, I' -y 2012-2017
+
+  # Seach by author and with keywords on title:
+  bibm search -a 'Author, I' -t 'HD 209458' 'HD 189733'
+
+  # Display title, year, first author, and bibkey:
+  bibm search -a 'Author, I'
+  # Display title, year, first author, and all keys/urls:
+  bibm search -a 'Author, I' -v
+  # Display title, year, author list, and all keys/urls:
+  bibm search -a 'Author, I' -vv
+  # Display full BibTeX entry:
+  bibm search -a 'Author, I' -vvv
+
+--------------------------------------------------------------------
+
+.. _export:
+
+Export
+------
+Export the bibmanager database into a bib file.
+
+**Usage**
+
+.. code-block:: shell
+
+  bibm export [-h] bibfile
+
+**Description**
+
+Export the entire bibmanager database into a bibliography file in
+.bib or .bbl format according to the file extension of the
+'bibfile' argument (TBD: for the moment, only export to .bib).
+
+**Examples**
+
+*TBD*
+
+--------------------------------------------------------------------
+
+.. _config:
+
+Config
+------
+Manage the bibmanager configuration parameters.
+
+**Usage**
+
+.. code-block:: shell
+
+  bibm config [-h] [key] [value]
+
+**Description**
+
+This command displays or sets the value of bibmanager config parameters.
+There are four parameters/keys that can be set by the user:
+
+- ``style``       sets the color-syntax style of displayed BibTeX entries.
+- ``text_editor`` sets the text editor for 'bibm edit' calls.
+- ``paper``       sets the default paper format for latex compilation.
+- ``ads_token``   sets the token required for ADS requests.
+- ``ads_display`` sets the number of entries to show at once for ADS searches.
+
+The number of arguments determines the action of this command (see
+examples below):
+
+- with no arguments, display all available parameters and values.
+- with the 'key' argument, display detailed info on the specified
+  parameter and its current value.
+- with both 'key' and 'value' arguments, set the value of the parameter.
+
+**Examples**
+
+.. code-block:: shell
+
+  # Display all config parameters and values:
+  bibm config
+  # Display value and help for the style parameter:
+  bibm config style
+  # Set the value of the BibTeX color-syntax:
+  bibm config style autumn

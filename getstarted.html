@@ -1,0 +1,304 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Getting Started &mdash; bibmanager 0.4.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="BibTeX Management" href="bibtex.html" />
+    <link rel="prev" title="bibmanager" href="index.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> bibmanager
+          
+
+          
+            
+            <img src="_static/logo_bibmanager.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                version 0.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#system-requirements">System Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install">Install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quick-example">Quick Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bibtex.html">BibTeX Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="latex.html">LaTeX Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ads.html">ADS Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">Complete API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">bibmanager</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Getting Started</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/getstarted.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="getting-started">
+<span id="getstarted"></span><h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">bibmanager</span></code> offers command-line tools to automate the management of BibTeX entries for LaTeX projects.</p>
+<p><code class="docutils literal notranslate"><span class="pre">bibmanager</span></code> places all of the user’s bibtex entries in a centralized database, which is beneficial because it allows to <code class="docutils literal notranslate"><span class="pre">bibmanager</span></code> to automate duplicates detection, arxiv-to-peer review updates, and generate bibfiles with the entries specifically required for a LaTeX file.</p>
+<p>There are three main categories for the <code class="docutils literal notranslate"><span class="pre">bibmanager</span></code> tools:</p>
+<ul class="simple">
+<li><a class="reference internal" href="bibtex.html#bibtex"><span class="std std-ref">BibTeX Management</span></a> tools help to create, edit, and querry from a
+<code class="docutils literal notranslate"><span class="pre">bibmanager</span></code> database, containing all BibTeX entries that a user may need.</li>
+<li><a class="reference internal" href="latex.html#latex"><span class="std std-ref">LaTeX Management</span></a> tools  help to generate (automatically) a bib file
+for specific LaTeX files, and compile LaTeX files without worring for
+maintaining/updating its bib file.</li>
+<li><a class="reference internal" href="ads.html#ads"><span class="std std-ref">ADS Management</span></a> tools help to makes querries into ADS, add entries
+from ADS, and cross-check the <code class="docutils literal notranslate"><span class="pre">bibmanager</span></code> database against ADS, to
+update arXiv-to-peer reviewed entries.</li>
+</ul>
+<p>Once installed (see below), take a look at the <code class="docutils literal notranslate"><span class="pre">bibmanager</span></code> main menu, executing from the command-line:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Display bibmanager main help menu:</span>
+bibm -h
+</pre></div>
+</div>
+<p>From there, take a look at the sub-command helps or the rest of these docs for further details, or see the <a class="reference internal" href="#qexample"><span class="std std-ref">Quick Example</span></a> for an introductory worked example.</p>
+<div class="section" id="system-requirements">
+<h2>System Requirements<a class="headerlink" href="#system-requirements" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">bibmanager</span></code> is compatible with Python3.6+ and is known to work (at
+least) in both Linux and OS X, with the following software:</p>
+<ul class="simple">
+<li>python (version 3.6+)</li>
+<li>numpy (version 1.15.1+)</li>
+<li>sphinx (version 1.7.9+)</li>
+<li>sphinx_rtd_theme (version 0.4.2+)</li>
+<li>requests (version 2.19.1+)</li>
+<li>prompt_toolkit (version 2.0.5+)</li>
+<li>pygments (version 2.2.0+)</li>
+</ul>
+<div class="line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">bibmanager</span></code> may work with previous versions of these software.  However, we do not guarantee it nor provide support for that.</div>
+<div class="line"><strong>TBD: Check versions for py3.6</strong></div>
+</div>
+</div>
+<div class="section" id="install">
+<span id="id1"></span><h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h2>
+<p>To obtain the <code class="docutils literal notranslate"><span class="pre">bibmanager</span></code> code, clone this repository to your local machine with the following terminal commands:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip install bibmananger
+</pre></div>
+</div>
+<p><strong>TBD:</strong> <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span></code> is not available yet, but you can follow the steps below:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone the repository to your working directory:</span>
+git clone https://github.com/pcubillos/bibmanager/
+<span class="nb">cd</span> bibmanager
+python setup.py install
+</pre></div>
+</div>
+<p>To enable the ADS capability, follow the instructions in the ADS dev API:
+<a class="reference external" href="https://github.com/adsabs/adsabs-dev-api#access">https://github.com/adsabs/adsabs-dev-api#access</a></p>
+</div>
+<div class="section" id="quick-example">
+<span id="qexample"></span><h2>Quick Example<a class="headerlink" href="#quick-example" title="Permalink to this headline">¶</a></h2>
+<p><strong>Quick Example is TBD.</strong>  The idea is to use the files in the example folder to merge a bibfile, and compile the latex file.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add your bib file into the bibmanager database:</span>
+bibm merge myfile.bib
+
+<span class="c1"># Compile your Latex project:</span>
+bibm latex myproject.tex
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="bibtex.html" class="btn btn-neutral float-right" title="BibTeX Management" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="bibmanager" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018-2019, Patricio Cubillos
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'./',
+              VERSION:'0.4.0',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
