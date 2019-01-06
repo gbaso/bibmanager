@@ -181,14 +181,32 @@
 It creates a .bibmanager/ folder in the user folder (if it does not
 exists already), and it (re)sets the bibmanager configuration to
 its default values.</p>
-<p>If the user provides the ‘bibfile’ argument, this command will
+<p>If the user provides the <code class="docutils literal notranslate"><span class="pre">bibfile</span></code> argument, this command will
 populate the database with the entries from that file; otherwise,
 it will set an empty database.</p>
 <p>Note that this will overwrite any pre-existing database.  In
 principle the user should not execute this command more than once
 in a given CPU.</p>
+<p><strong>Options</strong></p>
+<div class="line-block">
+<div class="line"><strong>bibfile</strong></div>
+<div class="line-block">
+<div class="line">Path to an existing bibfile.</div>
+<div class="line"><br /></div>
+</div>
+<div class="line"><strong>-h, --help</strong></div>
+<div class="line-block">
+<div class="line">Show this help message and exit.</div>
+</div>
+</div>
 <p><strong>Examples</strong></p>
-<p><em>TBD</em></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initialize from scratch (reset):</span>
+bib init
+
+<span class="c1"># Initialize including entries from a bibfile:</span>
+bib init my_file.bib
+</pre></div>
+</div>
 <hr class="docutils" />
 </div>
 <div class="section" id="merge">
@@ -206,25 +224,39 @@ duplicate entries.  Either take the ‘old’ entry (database), take
 the ‘new’ entry (bibfile), or ‘ask’ the user through the prompt
 (displaying the alternatives).  bibmanager considers four fields
 to check for duplicates: doi, isbn, adsurl, and eprint.</p>
-<p>Additionally, bibmanager considers two more cases (always asking):
-(1) new entry has duplicate key but different content, and
-(2) new entry has duplicate title but different key.</p>
+<div class="line-block">
+<div class="line">Additionally, bibmanager considers two more cases (always asking):</div>
+<div class="line">(1) new entry has duplicate key but different content, and</div>
+<div class="line">(2) new entry has duplicate title but different key.</div>
+</div>
 <p><strong>Options</strong></p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">bibfile:</th><td class="field-body">Path to an existing bibfile.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">take:</th><td class="field-body">Decision protocol for duplicates (choose: {old, new, ask},
-default: old)</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">-h, –help:</th><td class="field-body">Show this help message and exit</td>
-</tr>
-</tbody>
-</table>
+<div class="line-block">
+<div class="line"><strong>bibfile</strong></div>
+<div class="line-block">
+<div class="line">Path to an existing bibfile.</div>
+<div class="line"><br /></div>
+</div>
+<div class="line"><strong>take</strong></div>
+<div class="line-block">
+<div class="line">Decision protocol for duplicates (choose: {old, new, ask}, default: old)</div>
+<div class="line"><br /></div>
+</div>
+<div class="line"><strong>-h, --help</strong></div>
+<div class="line-block">
+<div class="line">Show this help message and exit.</div>
+</div>
+</div>
 <p><strong>Examples</strong></p>
-<p><em>TBD</em></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Merge bibfile ignoring duplicates (unless they update from arXiv to peer-reviewed):</span>
+bibm merge my_file.bib
+
+<span class="c1"># Merge bibfile ovewriting entries if they are duplicates:</span>
+bibm merge my_file.bib new
+
+<span class="c1"># Merge bibfile asking the user which to take for each duplicate:</span>
+bibm merge my_file.bib ask
+</pre></div>
+</div>
 <hr class="docutils" />
 </div>
 <div class="section" id="edit">
@@ -242,8 +274,18 @@ incorporate the edits (edits after continuing on the terminal won’t
 count).</p>
 <p>bibmanager selects the OS default text editor.  But the user can
 set a preferred editor, see ‘bibm config -h’ for more information.</p>
+<p><strong>Options</strong></p>
+<div class="line-block">
+<div class="line"><strong>-h, --help</strong></div>
+<div class="line-block">
+<div class="line">Show this help message and exit.</div>
+</div>
+</div>
 <p><strong>Examples</strong></p>
-<p><em>TBD</em></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Launch text editor on the bibmanager BibTeX database:</span>
+bibm edit
+</pre></div>
+</div>
 <hr class="docutils" />
 </div>
 <div class="section" id="add">
@@ -256,24 +298,40 @@ set a preferred editor, see ‘bibm config -h’ for more information.</p>
 <p><strong>Description</strong></p>
 <p>This command allows the user to manually add BibTeX entries into
 the bibmanager database through the terminal prompt.</p>
-<p>The optional ‘take’ arguments defines the protocol for possible-
-duplicate entries.  Either take the ‘old’ entry (database), take
+<p>The optional ‘take’ argument defines the protocol for
+possible-duplicate entries.  Either take the ‘old’ entry (database), take
 the ‘new’ entry (bibfile), or ‘ask’ the user through the prompt
 (displaying the alternatives).  bibmanager considers four fields
 to check for duplicates: doi, isbn, adsurl, and eprint.</p>
-<p>Additionally, bibmanager considers two more cases (always asking):
-(1) new entry has duplicate key but different content, and
-(2) new entry has duplicate title but different key.</p>
+<div class="line-block">
+<div class="line">Additionally, bibmanager considers two more cases (always asking):</div>
+<div class="line">(1) new entry has duplicate key but different content, and</div>
+<div class="line">(2) new entry has duplicate title but different key.</div>
+</div>
+<p><strong>Options</strong></p>
+<div class="line-block">
+<div class="line"><strong>take</strong></div>
+<div class="line-block">
+<div class="line">Decision protocol for duplicates (choose: {old, new, ask}, default: new)</div>
+<div class="line"><br /></div>
+</div>
+<div class="line"><strong>-h, --help</strong></div>
+<div class="line-block">
+<div class="line">Show this help message and exit.</div>
+</div>
+</div>
 <p><strong>Examples</strong></p>
-<p><em>TBD</em></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start multi-line prompt session to enter one or more BibTeX entries:</span>
+bibm add
+</pre></div>
+</div>
 <hr class="docutils" />
 </div>
 <div class="section" id="search">
 <span id="id5"></span><h2>Search<a class="headerlink" href="#search" title="Permalink to this headline">¶</a></h2>
 <p>Search entries in the bibmanager database.</p>
 <p><strong>Usage</strong></p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm search <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-a <span class="o">[</span>AUTHOR <span class="o">[</span>AUTHOR ...<span class="o">]]]</span> <span class="o">[</span>-y YEAR<span class="o">]</span>
-                 <span class="o">[</span>-t <span class="o">[</span>TITLE <span class="o">[</span>TITLE ...<span class="o">]]]</span> <span class="o">[</span>-v<span class="o">]</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm search <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-v<span class="o">]</span> <span class="o">[</span>-a AUTHOR ...<span class="o">]</span> <span class="o">[</span>-y YEAR<span class="o">]</span> <span class="o">[</span>-t TITLE ...<span class="o">]</span>
 </pre></div>
 </div>
 <p><strong>Description</strong></p>
@@ -291,40 +349,202 @@ below).</p>
 <p>Finally, the user can restrict the search to multiple strings in
 the title (see examples below).  Note these are case-insensitive.</p>
 <p>There are four levels of verbosity (see examples below):
-- zero shows the title, year, first author, and bibkey;
+- zero shows the title, year, first author, and key;
 - one adds the ADS and arXiv urls;
 - two adds the full list of authors;
 - and three displays the full BibTeX entry.</p>
+<p><strong>Options</strong></p>
+<div class="line-block">
+<div class="line"><strong>-a, --author AUTHOR …</strong></div>
+<div class="line-block">
+<div class="line">Search by author.</div>
+<div class="line"><br /></div>
+</div>
+<div class="line"><strong>-y, --year YEAR</strong></div>
+<div class="line-block">
+<div class="line">Restrict search to a year (e.g., -y 2018) or to a year range (e.g., -y 2018-2020).</div>
+<div class="line">Otherwise this is a verly long description of the option.</div>
+<div class="line"><br /></div>
+</div>
+<div class="line"><strong>-t, --title TITLE …</strong></div>
+<div class="line-block">
+<div class="line">Search by keywords in title.</div>
+<div class="line"><br /></div>
+</div>
+<div class="line"><strong>-v, --verb</strong></div>
+<div class="line-block">
+<div class="line">Set output verbosity.</div>
+<div class="line"><br /></div>
+</div>
+<div class="line"><strong>-h, --help</strong></div>
+<div class="line-block">
+<div class="line">Show this help message and exit.</div>
+</div>
+</div>
 <p><strong>Examples</strong></p>
+<p>Name examples:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search by last name:</span>
-bibm search -a LastName
-<span class="c1"># Search by last name and initials (note blanks require one to use quotes):</span>
-bibm search -a <span class="s1">&#39;LastName, F&#39;</span>
-<span class="c1"># Search by first-author only:</span>
-bibm search -a <span class="s1">&#39;^LastName, F&#39;</span>
-<span class="c1"># Search multiple authors:</span>
-bibm search -a <span class="s1">&#39;LastName&#39;</span> <span class="s1">&#39;NachName&#39;</span>
+bibm search -a oliphant
 
-<span class="c1"># Search on specific year:</span>
-bibm search -a <span class="s1">&#39;Author, I&#39;</span> -y <span class="m">2017</span>
-<span class="c1"># Search anything past the specified year:</span>
-bibm search -a <span class="s1">&#39;Author, I&#39;</span> -y <span class="m">2017</span>-
-<span class="c1"># Search anything up to the specified year:</span>
-bibm search -a <span class="s1">&#39;Author, I&#39;</span> -y -2017
-<span class="c1"># Search anything between the specified years:</span>
-bibm search -a <span class="s1">&#39;Author, I&#39;</span> -y <span class="m">2012</span>-2017
+Title: SciPy: Open <span class="nb">source</span> scientific tools <span class="k">for</span> Python, <span class="m">2001</span>
+Authors: Jones, Eric<span class="p">;</span> et al.
+key: JonesEtal2001scipy
 
-<span class="c1"># Seach by author and with keywords on title:</span>
-bibm search -a <span class="s1">&#39;Author, I&#39;</span> -t <span class="s1">&#39;HD 209458&#39;</span> <span class="s1">&#39;HD 189733&#39;</span>
+Title: Numpy: A guide to NumPy, <span class="m">2006</span>
+Authors: Oliphant, Travis
+key: Oliphant2006numpy
+</pre></div>
+</div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search by last name and initials (note blanks require one to use quotes):</span>
+bibm search -a <span class="s1">&#39;oliphant, t&#39;</span>
 
-<span class="c1"># Display title, year, first author, and bibkey:</span>
-bibm search -a <span class="s1">&#39;Author, I&#39;</span>
-<span class="c1"># Display title, year, first author, and all keys/urls:</span>
-bibm search -a <span class="s1">&#39;Author, I&#39;</span> -v
-<span class="c1"># Display title, year, author list, and all keys/urls:</span>
-bibm search -a <span class="s1">&#39;Author, I&#39;</span> -vv
-<span class="c1"># Display full BibTeX entry:</span>
-bibm search -a <span class="s1">&#39;Author, I&#39;</span> -vvv
+Title: SciPy: Open <span class="nb">source</span> scientific tools <span class="k">for</span> Python, <span class="m">2001</span>
+Authors: Jones, Eric<span class="p">;</span> et al.
+key: JonesEtal2001scipy
+
+Title: Numpy: A guide to NumPy, <span class="m">2006</span>
+Authors: Oliphant, Travis
+key: Oliphant2006numpy
+</pre></div>
+</div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search by first-author only:</span>
+bibm search -a <span class="s1">&#39;^oliphant, t&#39;</span>
+
+Title: Numpy: A guide to NumPy, <span class="m">2006</span>
+Authors: Oliphant, Travis
+key: Oliphant2006numpy
+</pre></div>
+</div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search multiple authors:</span>
+bibm search -a <span class="s1">&#39;oliphant, t&#39;</span> <span class="s1">&#39;jones, e&#39;</span>
+
+Title: SciPy: Open <span class="nb">source</span> scientific tools <span class="k">for</span> Python, <span class="m">2001</span>
+Authors: Jones, Eric<span class="p">;</span> et al.
+key: JonesEtal2001scipy
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Note that there is no need to worry about case,
+unless it interferes with the BibTeX naming format rules.
+For example, <em>‘oliphant, t’</em> will match <em>‘Travis Oliphant’</em> (because
+there is no ambiguity in first-von-last names), but <em>‘travis oliphant’</em>
+wont match, because the lowercase <em>‘travis’</em> will be interpreted as the
+von part of the last name.</p>
+</div>
+<p>Combine search fields:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Seach by author, year, and title words/phrases:</span>
+bibm search -a <span class="s1">&#39;oliphant, t&#39;</span> -y <span class="m">2006</span> -t numpy
+
+Title: Numpy: A guide to NumPy, <span class="m">2006</span>
+Authors: Oliphant, Travis
+key: Oliphant2006numpy
+</pre></div>
+</div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search multiple words/phrases in title:</span>
+bibm search -t <span class="s1">&#39;HD 209458b&#39;</span> <span class="s1">&#39;atmospheric circulation&#39;</span>
+
+Title: Atmospheric Circulation of Hot Jupiters: Coupled Radiative-Dynamical
+   General Circulation Model Simulations of HD 189733b and HD 209458b, <span class="m">2009</span>
+Authors: <span class="o">{</span>Showman<span class="o">}</span>, Adam P.<span class="p">;</span> et al.
+key: ShowmanEtal2009apjRadGCM
+</pre></div>
+</div>
+<p>Year examples:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search on specific year:</span>
+bibm search -a <span class="s1">&#39;cubillos, p&#39;</span> -y <span class="m">2016</span>
+
+Title: Characterizing Exoplanet Atmospheres: From Light-curve Observations to
+   Radiative-transfer Modeling, <span class="m">2016</span>
+Authors: <span class="o">{</span>Cubillos<span class="o">}</span>, Patricio E.
+key: Cubillos2016phdThesis
+</pre></div>
+</div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search anything between the specified years (inclusive):</span>
+bibm search -a <span class="s1">&#39;cubillos, p&#39;</span> -y <span class="m">2014</span>-2016
+
+Title: WASP-8b: Characterization of a Cool and Eccentric Exoplanet with Spitzer,
+   <span class="m">2013</span>
+Authors: <span class="o">{</span>Cubillos<span class="o">}</span>, Patricio<span class="p">;</span> et al.
+key: CubillosEtal2013apjWASP8b
+
+Title: Characterizing Exoplanet Atmospheres: From Light-curve Observations to
+   Radiative-transfer Modeling, <span class="m">2016</span>
+Authors: <span class="o">{</span>Cubillos<span class="o">}</span>, Patricio E.
+key: Cubillos2016phdThesis
+</pre></div>
+</div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search anything up to the specified year:</span>
+bibm search -a <span class="s1">&#39;cubillos, p&#39;</span> -y -2016
+
+Title: WASP-8b: Characterization of a Cool and Eccentric Exoplanet with Spitzer,
+   <span class="m">2013</span>
+Authors: <span class="o">{</span>Cubillos<span class="o">}</span>, Patricio<span class="p">;</span> et al.
+key: CubillosEtal2013apjWASP8b
+
+Title: Characterizing Exoplanet Atmospheres: From Light-curve Observations to
+   Radiative-transfer Modeling, <span class="m">2016</span>
+Authors: <span class="o">{</span>Cubillos<span class="o">}</span>, Patricio E.
+key: Cubillos2016phdThesis
+</pre></div>
+</div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search anything since the specified year:</span>
+bibm search -a <span class="s1">&#39;cubillos, p&#39;</span> -y <span class="m">2016</span>-
+
+Title: Characterizing Exoplanet Atmospheres: From Light-curve Observations to
+   Radiative-transfer Modeling, <span class="m">2016</span>
+Authors: <span class="o">{</span>Cubillos<span class="o">}</span>, Patricio E.
+key: Cubillos2016phdThesis
+
+Title: On Correlated-noise Analyses Applied to Exoplanet Light Curves, <span class="m">2017</span>
+Authors: <span class="o">{</span>Cubillos<span class="o">}</span>, Patricio<span class="p">;</span> et al.
+key: CubillosEtal2017apjRednoise
+</pre></div>
+</div>
+<p>Verbosity examples:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Display title, year, first author, and key:</span>
+bibm search -a <span class="s1">&#39;Burbidge, E&#39;</span>
+
+Title: Synthesis of the Elements in Stars, <span class="m">1957</span>
+Authors: <span class="o">{</span>Burbidge<span class="o">}</span>, E. Margaret<span class="p">;</span> et al.
+key: BurbidgeEtal1957rvmpStellarElementSynthesis
+</pre></div>
+</div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Display title, year, first author, and all keys/urls:</span>
+bibm search -a <span class="s1">&#39;Burbidge, E&#39;</span> -v
+
+Title: Synthesis of the Elements in Stars, <span class="m">1957</span>
+Authors: <span class="o">{</span>Burbidge<span class="o">}</span>, E. Margaret<span class="p">;</span> et al.
+ADS url:   https://ui.adsabs.harvard.edu/<span class="se">\#</span>abs/1957RvMP...29..547B
+key: BurbidgeEtal1957rvmpStellarElementSynthesis
+</pre></div>
+</div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Display title, year, author list, and all keys/urls:</span>
+bibm search -a <span class="s1">&#39;Burbidge, E&#39;</span> -vv
+
+Title: Synthesis of the Elements in Stars, <span class="m">1957</span>
+Authors: <span class="o">{</span>Burbidge<span class="o">}</span>, E. Margaret<span class="p">;</span> <span class="o">{</span>Burbidge<span class="o">}</span>, G. R.<span class="p">;</span> <span class="o">{</span>Fowler<span class="o">}</span>, William A.<span class="p">;</span> and
+   <span class="o">{</span>Hoyle<span class="o">}</span>, F.
+ADS url:   https://ui.adsabs.harvard.edu/<span class="se">\#</span>abs/1957RvMP...29..547B
+key: BurbidgeEtal1957rvmpStellarElementSynthesis
+</pre></div>
+</div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Display full BibTeX entry:</span>
+bibm search -a <span class="s1">&#39;Burbidge, E&#39;</span> -vvv
+
+@ARTICLE<span class="o">{</span>BurbidgeEtal1957rvmpStellarElementSynthesis,
+       <span class="nv">author</span> <span class="o">=</span> <span class="o">{{</span>Burbidge<span class="o">}</span>, E. Margaret and <span class="o">{</span>Burbidge<span class="o">}</span>, G.~R. and <span class="o">{</span>Fowler<span class="o">}</span>, William A.
+        and <span class="o">{</span>Hoyle<span class="o">}</span>, F.<span class="o">}</span>,
+        <span class="nv">title</span> <span class="o">=</span> <span class="s2">&quot;{Synthesis of the Elements in Stars}&quot;</span>,
+      <span class="nv">journal</span> <span class="o">=</span> <span class="o">{</span>Reviews of Modern Physics<span class="o">}</span>,
+         <span class="nv">year</span> <span class="o">=</span> <span class="m">1957</span>,
+        <span class="nv">month</span> <span class="o">=</span> Jan,
+       <span class="nv">volume</span> <span class="o">=</span> <span class="o">{</span><span class="m">29</span><span class="o">}</span>,
+        <span class="nv">pages</span> <span class="o">=</span> <span class="o">{</span><span class="m">547</span>-650<span class="o">}</span>,
+          <span class="nv">doi</span> <span class="o">=</span> <span class="o">{</span><span class="m">10</span>.1103/RevModPhys.29.547<span class="o">}</span>,
+       <span class="nv">adsurl</span> <span class="o">=</span> <span class="o">{</span>https://ui.adsabs.harvard.edu/<span class="se">\#</span>abs/1957RvMP...29..547B<span class="o">}</span>,
+      <span class="nv">adsnote</span> <span class="o">=</span> <span class="o">{</span>Provided by the SAO/NASA Astrophysics Data System<span class="o">}</span>
+<span class="o">}</span>
 </pre></div>
 </div>
 <hr class="docutils" />
@@ -337,45 +557,124 @@ bibm search -a <span class="s1">&#39;Author, I&#39;</span> -vvv
 </pre></div>
 </div>
 <p><strong>Description</strong></p>
-<p>Export the entire bibmanager database into a bibliography file in
+<p>Export the entire bibmanager database into a bibliography file to a
 .bib or .bbl format according to the file extension of the
-‘bibfile’ argument (TBD: for the moment, only export to .bib).</p>
+‘bibfile’ argument.</p>
+<div class="admonition caution">
+<p class="first admonition-title">Caution</p>
+<p class="last">For the moment, only export to .bib.</p>
+</div>
+<p><strong>Options</strong></p>
+<div class="line-block">
+<div class="line"><strong>bibfile</strong></div>
+<div class="line-block">
+<div class="line">Path to an output bibfile.</div>
+<div class="line"><br /></div>
+</div>
+<div class="line"><strong>-h, --help</strong></div>
+<div class="line-block">
+<div class="line">Show this help message and exit.</div>
+</div>
+</div>
 <p><strong>Examples</strong></p>
-<p><em>TBD</em></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm <span class="nb">export</span> my_file.bib
+</pre></div>
+</div>
 <hr class="docutils" />
 </div>
 <div class="section" id="config">
 <span id="id7"></span><h2>Config<a class="headerlink" href="#config" title="Permalink to this headline">¶</a></h2>
 <p>Manage the bibmanager configuration parameters.</p>
 <p><strong>Usage</strong></p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm config <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>key<span class="o">]</span> <span class="o">[</span>value<span class="o">]</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm config <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>param<span class="o">]</span> <span class="o">[</span>value<span class="o">]</span>
 </pre></div>
 </div>
 <p><strong>Description</strong></p>
 <p>This command displays or sets the value of bibmanager config parameters.
-There are four parameters/keys that can be set by the user:</p>
-<ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">style</span></code>       sets the color-syntax style of displayed BibTeX entries.</li>
-<li><code class="docutils literal notranslate"><span class="pre">text_editor</span></code> sets the text editor for ‘bibm edit’ calls.</li>
-<li><code class="docutils literal notranslate"><span class="pre">paper</span></code>       sets the default paper format for latex compilation.</li>
-<li><code class="docutils literal notranslate"><span class="pre">ads_token</span></code>   sets the token required for ADS requests.</li>
-<li><code class="docutils literal notranslate"><span class="pre">ads_display</span></code> sets the number of entries to show at once for ADS searches.</li>
+There are five parameters that can be set by the user:</p>
+<ul>
+<li><p class="first">The <code class="docutils literal notranslate"><span class="pre">style</span></code> parameter sets the color-syntax style of displayed BibTeX
+entries.  The default style is ‘autumn’.
+See <a class="reference external" href="http://pygments.org/demo/6780986/">http://pygments.org/demo/6780986/</a> for a demo of the style options.
+The available options are:</p>
+<blockquote>
+<div><p>default, emacs, friendly, colorful, autumn, murphy, manni, monokai, perldoc,
+pastie, borland, trac, native, fruity, bw, vim, vs, tango, rrt, xcode, igor,
+paraiso-light, paraiso-dark, lovelace, algol, algol_nu, arduino,
+rainbow_dash, abap</p>
+</div></blockquote>
+</li>
+<li><p class="first">The <code class="docutils literal notranslate"><span class="pre">text_editor</span></code> sets the text editor to use when editing the
+bibmanager manually (i.e., a call to: bibm edit).  By default, bibmanager
+uses the OS-default text editor.
+Typical text editors are: emacs, vim, gedit.
+To set the OS-default editor, set text_editor to <em>‘default’</em>.
+Note that aliases defined in the .bash file are not accessible.</p>
+</li>
+<li><p class="first">The <code class="docutils literal notranslate"><span class="pre">paper</span></code> parameter sets the default paper format for latex
+compilation outputs (not for pdflatex, which is automatic).
+Typical options are ‘letter’ (e.g., for ApJ articles) or ‘A4’ (e.g., for A&amp;A).</p>
+</li>
+<li><p class="first">The <code class="docutils literal notranslate"><span class="pre">ads_token</span></code> parameter sets the ADS token required for ADS requests.
+To obtain a token, follow the steps described here: <a class="reference external" href="https://github.com/adsabs/adsabs-dev-api#access">https://github.com/adsabs/adsabs-dev-api#access</a></p>
+</li>
+<li><p class="first">The <code class="docutils literal notranslate"><span class="pre">ads_display</span></code> parameter sets the number of entries to show at a time,
+for an ADS search querry.  The default number of entries to display is 20.</p>
+</li>
 </ul>
 <p>The number of arguments determines the action of this command (see
 examples below):</p>
 <ul class="simple">
 <li>with no arguments, display all available parameters and values.</li>
-<li>with the ‘key’ argument, display detailed info on the specified
+<li>with the ‘param’ argument, display detailed info on the specified
 parameter and its current value.</li>
-<li>with both ‘key’ and ‘value’ arguments, set the value of the parameter.</li>
+<li>with both ‘param’ and ‘value’ arguments, set the value of the parameter.</li>
 </ul>
+<p><strong>Options</strong></p>
+<div class="line-block">
+<div class="line"><strong>param</strong></div>
+<div class="line-block">
+<div class="line">A bibmanager config parameter.</div>
+<div class="line"><br /></div>
+</div>
+<div class="line"><strong>value</strong></div>
+<div class="line-block">
+<div class="line">Value for a bibmanager config parameter.</div>
+<div class="line"><br /></div>
+</div>
+<div class="line"><strong>-h, --help</strong></div>
+<div class="line-block">
+<div class="line">Show this help message and exit.</div>
+</div>
+</div>
 <p><strong>Examples</strong></p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Display all config parameters and values:</span>
 bibm config
-<span class="c1"># Display value and help for the style parameter:</span>
-bibm config style
-<span class="c1"># Set the value of the BibTeX color-syntax:</span>
+
+bibmanager configuration file:
+PARAMETER    VALUE
+-----------  -----
+style        autumn
+text_editor  default
+paper        letter
+ads_token    None
+ads_display  <span class="m">20</span>
+</pre></div>
+</div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Display value and help for the ads_token parameter:</span>
+bibm config ads_token
+
+The <span class="s1">&#39;ads_token&#39;</span> parameter sets the ADS token required <span class="k">for</span> ADS requests.
+To obtain a token follow the two steps described here:
+  https://github.com/adsabs/adsabs-dev-api#access
+
+The current ADS token is <span class="s1">&#39;None&#39;</span>
+</pre></div>
+</div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set the value of the BibTeX color-syntax:</span>
 bibm config style autumn
+
+style updated to: autumn.
 </pre></div>
 </div>
 </div>
