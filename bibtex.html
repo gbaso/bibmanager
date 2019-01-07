@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>BibTeX Management &mdash; bibmanager 0.4.0 documentation</title>
+  <title>BibTeX Management &mdash; bibmanager 0.5.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                version 0.4
+                version 0.5
               </div>
             
           
@@ -85,22 +85,21 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="getstarted.html">Getting Started</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">BibTeX Management</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#init">Init</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#merge">Merge</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#edit">Edit</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#add">Add</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#search">Search</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#export">Export</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#config">Config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#init">init</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#merge">merge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#edit">edit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#add">add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#search">search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#export">export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#config">config</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="latex.html">LaTeX Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ads.html">ADS Management</a></li>
-<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQs and Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">Complete API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
@@ -171,7 +170,7 @@
   <div class="section" id="bibtex-management">
 <span id="bibtex"></span><h1>BibTeX Management<a class="headerlink" href="#bibtex-management" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="init">
-<span id="id1"></span><h2>Init<a class="headerlink" href="#init" title="Permalink to this headline">¶</a></h2>
+<span id="id1"></span><h2>init<a class="headerlink" href="#init" title="Permalink to this headline">¶</a></h2>
 <p>Initialize the bibmanager database.</p>
 <p><strong>Usage</strong></p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm init <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>bibfile<span class="o">]</span>
@@ -191,7 +190,7 @@ in a given CPU.</p>
 <div class="line-block">
 <div class="line"><strong>bibfile</strong></div>
 <div class="line-block">
-<div class="line">Path to an existing bibfile.</div>
+<div class="line">Path to an existing BibTeX file.</div>
 <div class="line"><br /></div>
 </div>
 <div class="line"><strong>-h, --help</strong></div>
@@ -203,21 +202,21 @@ in a given CPU.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initialize from scratch (reset):</span>
 bib init
 
-<span class="c1"># Initialize including entries from a bibfile:</span>
+<span class="c1"># Initialize including entries from a BibTeX file:</span>
 bib init my_file.bib
 </pre></div>
 </div>
 <hr class="docutils" />
 </div>
 <div class="section" id="merge">
-<span id="id2"></span><h2>Merge<a class="headerlink" href="#merge" title="Permalink to this headline">¶</a></h2>
-<p>Merge a bibfile into the bibmanager database.</p>
+<span id="id2"></span><h2>merge<a class="headerlink" href="#merge" title="Permalink to this headline">¶</a></h2>
+<p>Merge a BibTeX file into the bibmanager database.</p>
 <p><strong>Usage</strong></p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm merge <span class="o">[</span>-h<span class="o">]</span> bibfile <span class="o">[</span>take<span class="o">]</span>
 </pre></div>
 </div>
 <p><strong>Description</strong></p>
-<p>This commands merges the content from an input bibfile with the
+<p>This command merges the content from an input BibTeX file with the
 bibmanager database.</p>
 <p>The optional ‘take’ arguments defines the protocol for possible-
 duplicate entries.  Either take the ‘old’ entry (database), take
@@ -233,7 +232,7 @@ to check for duplicates: doi, isbn, adsurl, and eprint.</p>
 <div class="line-block">
 <div class="line"><strong>bibfile</strong></div>
 <div class="line-block">
-<div class="line">Path to an existing bibfile.</div>
+<div class="line">Path to an existing BibTeX file.</div>
 <div class="line"><br /></div>
 </div>
 <div class="line"><strong>take</strong></div>
@@ -247,20 +246,20 @@ to check for duplicates: doi, isbn, adsurl, and eprint.</p>
 </div>
 </div>
 <p><strong>Examples</strong></p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Merge bibfile ignoring duplicates (unless they update from arXiv to peer-reviewed):</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Merge BibTeX file ignoring duplicates (unless they update from arXiv to peer-reviewed):</span>
 bibm merge my_file.bib
 
-<span class="c1"># Merge bibfile ovewriting entries if they are duplicates:</span>
+<span class="c1"># Merge BibTeX file ovewriting entries if they are duplicates:</span>
 bibm merge my_file.bib new
 
-<span class="c1"># Merge bibfile asking the user which to take for each duplicate:</span>
+<span class="c1"># Merge BibTeX file asking the user which to take for each duplicate:</span>
 bibm merge my_file.bib ask
 </pre></div>
 </div>
 <hr class="docutils" />
 </div>
 <div class="section" id="edit">
-<span id="id3"></span><h2>Edit<a class="headerlink" href="#edit" title="Permalink to this headline">¶</a></h2>
+<span id="id3"></span><h2>edit<a class="headerlink" href="#edit" title="Permalink to this headline">¶</a></h2>
 <p>Edit the bibmanager database in a text editor.</p>
 <p><strong>Usage</strong></p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm edit <span class="o">[</span>-h<span class="o">]</span>
@@ -289,7 +288,7 @@ bibm edit
 <hr class="docutils" />
 </div>
 <div class="section" id="add">
-<span id="id4"></span><h2>Add<a class="headerlink" href="#add" title="Permalink to this headline">¶</a></h2>
+<span id="id4"></span><h2>add<a class="headerlink" href="#add" title="Permalink to this headline">¶</a></h2>
 <p>Add entries into the bibmanager database.</p>
 <p><strong>Usage</strong></p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm add <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>take<span class="o">]</span>
@@ -328,7 +327,7 @@ bibm add
 <hr class="docutils" />
 </div>
 <div class="section" id="search">
-<span id="id5"></span><h2>Search<a class="headerlink" href="#search" title="Permalink to this headline">¶</a></h2>
+<span id="id5"></span><h2>search<a class="headerlink" href="#search" title="Permalink to this headline">¶</a></h2>
 <p>Search entries in the bibmanager database.</p>
 <p><strong>Usage</strong></p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm search <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-v<span class="o">]</span> <span class="o">[</span>-a AUTHOR ...<span class="o">]</span> <span class="o">[</span>-y YEAR<span class="o">]</span> <span class="o">[</span>-t TITLE ...<span class="o">]</span>
@@ -425,9 +424,11 @@ key: JonesEtal2001scipy
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Note that there is no need to worry about case,
-unless it interferes with the BibTeX naming format rules.
-For example, <em>‘oliphant, t’</em> will match <em>‘Travis Oliphant’</em> (because
+<p>Note that there is no need to worry about case,
+unless it interferes with the BibTeX naming format rules (see
+<a class="reference external" href="http://mirror.easyname.at/ctan/info/bibtex/tamethebeast/ttb_en.pdf">http://mirror.easyname.at/ctan/info/bibtex/tamethebeast/ttb_en.pdf</a>,
+page 23).</p>
+<p class="last">For example, <em>‘oliphant, t’</em> will match <em>‘Travis Oliphant’</em> (because
 there is no ambiguity in first-von-last names), but <em>‘travis oliphant’</em>
 wont match, because the lowercase <em>‘travis’</em> will be interpreted as the
 von part of the last name.</p>
@@ -550,7 +551,7 @@ bibm search -a <span class="s1">&#39;Burbidge, E&#39;</span> -vvv
 <hr class="docutils" />
 </div>
 <div class="section" id="export">
-<span id="id6"></span><h2>Export<a class="headerlink" href="#export" title="Permalink to this headline">¶</a></h2>
+<span id="id6"></span><h2>export<a class="headerlink" href="#export" title="Permalink to this headline">¶</a></h2>
 <p>Export the bibmanager database into a bib file.</p>
 <p><strong>Usage</strong></p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm <span class="nb">export</span> <span class="o">[</span>-h<span class="o">]</span> bibfile
@@ -568,7 +569,7 @@ bibm search -a <span class="s1">&#39;Burbidge, E&#39;</span> -vvv
 <div class="line-block">
 <div class="line"><strong>bibfile</strong></div>
 <div class="line-block">
-<div class="line">Path to an output bibfile.</div>
+<div class="line">Path to an output BibTeX file.</div>
 <div class="line"><br /></div>
 </div>
 <div class="line"><strong>-h, --help</strong></div>
@@ -583,7 +584,7 @@ bibm search -a <span class="s1">&#39;Burbidge, E&#39;</span> -vvv
 <hr class="docutils" />
 </div>
 <div class="section" id="config">
-<span id="id7"></span><h2>Config<a class="headerlink" href="#config" title="Permalink to this headline">¶</a></h2>
+<span id="id7"></span><h2>config<a class="headerlink" href="#config" title="Permalink to this headline">¶</a></h2>
 <p>Manage the bibmanager configuration parameters.</p>
 <p><strong>Usage</strong></p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm config <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>param<span class="o">]</span> <span class="o">[</span>value<span class="o">]</span>
@@ -724,7 +725,7 @@ style updated to: autumn.
       <script type="text/javascript">
           var DOCUMENTATION_OPTIONS = {
               URL_ROOT:'./',
-              VERSION:'0.4.0',
+              VERSION:'0.5.0',
               LANGUAGE:'None',
               COLLAPSE_INDEX:false,
               FILE_SUFFIX:'.html',

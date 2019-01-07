@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>LaTeX Management &mdash; bibmanager 0.4.0 documentation</title>
+  <title>LaTeX Management &mdash; bibmanager 0.5.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                version 0.4
+                version 0.5
               </div>
             
           
@@ -85,8 +85,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="getstarted.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bibtex.html">BibTeX Management</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">LaTeX Management</a><ul>
@@ -96,7 +95,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ads.html">ADS Management</a></li>
-<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQs and Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">Complete API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
@@ -168,18 +167,136 @@
 <span id="latex"></span><h1>LaTeX Management<a class="headerlink" href="#latex-management" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="bibtex">
 <h2>bibtex<a class="headerlink" href="#bibtex" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div>Generate a bibtex file from a tex file.</div></blockquote>
+<p>Generate a bibtex file from a tex file.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm bibtex <span class="o">[</span>-h<span class="o">]</span> texfile <span class="o">[</span>bibfile<span class="o">]</span>
+</pre></div>
 </div>
+<p><strong>Description</strong></p>
+<p>This command generates a BibTeX file by searching for the citation
+keys in the input LaTeX file, and stores the output into BibTeX file,
+named after the argument in the <cite>\bibliography{bib_file}</cite> call in the
+LaTeX file.  Alternatively, the user can specify the name of the
+output BibTeX file with the <code class="docutils literal notranslate"><span class="pre">bibfile</span></code> argument.</p>
+<p>Any citation key not found in the bibmanager database, will be
+shown on the screen prompt.</p>
+<p><strong>Options</strong></p>
+<div class="line-block">
+<div class="line"><strong>texfile</strong></div>
+<div class="line-block">
+<div class="line">Path to an existing LaTeX file.</div>
+<div class="line"><br /></div>
+</div>
+<div class="line"><strong>bibfile</strong></div>
+<div class="line-block">
+<div class="line">Path to an output BibTeX file.</div>
+<div class="line"><br /></div>
+</div>
+<div class="line"><strong>-h, --help</strong></div>
+<div class="line-block">
+<div class="line">Show this help message and exit.</div>
+</div>
+</div>
+<p><strong>Examples</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate a BibTeX file with references cited in my_file.tex:</span>
+bibm bibtex my_file.tex
+
+<span class="c1"># Generate a BibTeX file with references cited in my_file.tex,</span>
+<span class="c1"># naming the output file &#39;this_file.bib&#39;:</span>
+bibm bibtex my_file.tex this_file.bib
+</pre></div>
+</div>
+</div>
+<hr class="docutils" />
 <div class="section" id="id1">
 <h2>latex<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div>Compile a latex file with the latex directive.</div></blockquote>
+<p>Compile a LaTeX file with the latex command.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm latex <span class="o">[</span>-h<span class="o">]</span> texfile <span class="o">[</span>paper<span class="o">]</span>
+</pre></div>
 </div>
+<p><strong>Description</strong></p>
+<p>This command compiles a LaTeX file using the latex command,
+executing the following calls:</p>
+<ul class="simple">
+<li>Compute a BibTex file out of the citation calls in the .tex file.</li>
+<li>Remove all outputs from previous compilations.</li>
+<li>Call latex, bibtex, latex, latex to produce a .dvi file.</li>
+<li>Call dvi2ps and ps2pdf to produce the final .pdf file.</li>
+</ul>
+<p>Prefer this command over the <code class="code docutils literal notranslate"><span class="pre">bibm</span> <span class="pre">pdflatex</span></code> command when the LaTeX file
+contains .ps or .eps figures (as opposed to .pdf, .png, or .jpeg).</p>
+<p>Note that the user does not necessarily need to be in the dir
+where the LaTeX files are.</p>
+<p><strong>Options</strong></p>
+<div class="line-block">
+<div class="line"><strong>texfile</strong></div>
+<div class="line-block">
+<div class="line">Path to an existing LaTeX file.</div>
+<div class="line"><br /></div>
+</div>
+<div class="line"><strong>paper</strong></div>
+<div class="line-block">
+<div class="line">Paper format, e.g., letter or A4 (default=letter).</div>
+<div class="line"><br /></div>
+</div>
+<div class="line"><strong>-h, --help</strong></div>
+<div class="line-block">
+<div class="line">Show this help message and exit.</div>
+</div>
+</div>
+<p><strong>Examples</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compile a LaTeX project:</span>
+bibm latex my_file.tex
+
+<span class="c1"># File extension can be ommited:</span>
+bibm latex my_file
+
+<span class="c1"># Compile, setting explicitely the output paper format:</span>
+bibm latex my_file A4
+</pre></div>
+</div>
+</div>
+<hr class="docutils" />
 <div class="section" id="pdflatex">
 <h2>pdflatex<a class="headerlink" href="#pdflatex" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div>Compile a latex file with the pdflatex directive.</div></blockquote>
+<p>Compile a LaTeX file with the pdflatex command.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm pdflatex <span class="o">[</span>-h<span class="o">]</span> texfile
+</pre></div>
+</div>
+<p><strong>Description</strong></p>
+<p>This command compiles a LaTeX file using the pdflatex command,
+executing the following calls:</p>
+<ul class="simple">
+<li>Compute a BibTeX file out of the citation calls in the LaTeX file.</li>
+<li>Remove all outputs from previous compilations.</li>
+<li>Call pdflatex, bibtex, pdflatex, pdflatex to produce a .pdf file.</li>
+</ul>
+<p>Prefer this command over the <code class="code docutils literal notranslate"><span class="pre">bibm</span> <span class="pre">latex</span></code> command when the LaTeX file
+contains .pdf, .png, or .jpeg figures (as opposed to .ps or .eps).</p>
+<p>Note that the user does not necessarily need to be in the dir
+where the LaTeX files are.</p>
+<p><strong>Options</strong></p>
+<div class="line-block">
+<div class="line"><strong>texfile</strong></div>
+<div class="line-block">
+<div class="line">Path to an existing LaTeX file.</div>
+<div class="line"><br /></div>
+</div>
+<div class="line"><strong>-h, --help</strong></div>
+<div class="line-block">
+<div class="line">Show this help message and exit.</div>
+</div>
+</div>
+<p><strong>Examples</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compile a LaTeX project:</span>
+bibm pdflatex my_file.tex
+
+<span class="c1"># File extension can be ommited:</span>
+bibm pdflatex my_file
+</pre></div>
+</div>
 </div>
 </div>
 
@@ -227,7 +344,7 @@
       <script type="text/javascript">
           var DOCUMENTATION_OPTIONS = {
               URL_ROOT:'./',
-              VERSION:'0.4.0',
+              VERSION:'0.5.0',
               LANGUAGE:'None',
               COLLAPSE_INDEX:false,
               FILE_SUFFIX:'.html',

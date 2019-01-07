@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ADS Management &mdash; bibmanager 0.4.0 documentation</title>
+  <title>ADS Management &mdash; bibmanager 0.5.0 documentation</title>
   
 
   
@@ -28,7 +28,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Frequently Asked Questions" href="faq.html" />
+    <link rel="next" title="FAQs and Resources" href="faq.html" />
     <link rel="prev" title="LaTeX Management" href="latex.html" /> 
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                version 0.4
+                version 0.5
               </div>
             
           
@@ -85,8 +85,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="getstarted.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bibtex.html">BibTeX Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="latex.html">LaTeX Management</a></li>
@@ -96,7 +95,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#ads-update">ads-update</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQs and Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">Complete API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
@@ -166,20 +165,243 @@
             
   <div class="section" id="ads-management">
 <span id="ads"></span><h1>ADS Management<a class="headerlink" href="#ads-management" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>To enable the ADS functionality, first you need to obtain an ADS token <a class="footnote-reference" href="#adstoken" id="id1">[1]</a>, and set it into the <code class="docutils literal notranslate"><span class="pre">ads_tokend</span></code> config parameter.  To do this:</p>
+<ol class="arabic simple">
+<li>Create an account and login into the new <a class="reference external" href="https://ui.adsabs.harvard.edu/?bbbRedirect=1#user/account/login">ADS system</a>.</li>
+<li>Get your token (or generate a new one) from <a class="reference external" href="https://ui.adsabs.harvard.edu/#user/settings/token">here</a>.</li>
+<li>Set the <code class="docutils literal notranslate"><span class="pre">ads_token</span></code> bibmanager parameter:</li>
+</ol>
+<div class="last highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set ads_token to &#39;my_ads_token&#39;:</span>
+bibm config ads_token my_ads_token
+</pre></div>
+</div>
+</div>
+<hr class="docutils" />
 <div class="section" id="ads-search">
 <h2>ads-search<a class="headerlink" href="#ads-search" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div>Search in ADS.</div></blockquote>
+<p>Do a querry on ADS.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm ads-search <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>querry<span class="o">]</span>
+</pre></div>
 </div>
+<p><strong>Description</strong></p>
+<p>This command enables ADS querries.  The querry syntax is identical to
+any querry in the new ADS’s one-box search engine:
+<a class="reference external" href="https://ui.adsabs.harvard.edu">https://ui.adsabs.harvard.edu</a>.
+Here there is a detailed documentations for ADS searches:
+<a class="reference external" href="https://adsabs.github.io/help/search/search-syntax">https://adsabs.github.io/help/search/search-syntax</a>
+See below for typical querry examples.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Note that a querry will display at most ‘ads_display’ entries on
+screen at once (see <code class="docutils literal notranslate"><span class="pre">bibm</span> <span class="pre">config</span> <span class="pre">ads_display</span></code>).  If a querry matches
+more entries, the user can execute the <code class="docutils literal notranslate"><span class="pre">bibm</span> <span class="pre">ads-search</span></code> command without
+arguments to display the next set of entries.</p>
+</div>
+<div class="admonition caution">
+<p class="first admonition-title">Caution</p>
+<p>When making an ADS querry, note that</p>
+<ol class="last arabic simple">
+<li>ADS requires the field values (when necessary) to use <cite>double</cite> quotes.
+For example: <cite>author:”^Fortney, J”</cite>.</li>
+<li>Python <cite>always</cite> requires the entire querry argument to be set between
+quotes. For example:
+<code class="docutils literal notranslate"><span class="pre">bibm</span> <span class="pre">ads-search</span> <span class="pre">'author:&quot;^Fortney,</span> <span class="pre">J&quot;</span> <span class="pre">year:2010-2019'</span></code>.</li>
+</ol>
+</div>
+<p><strong>Options</strong></p>
+<div class="line-block">
+<div class="line"><strong>texfile</strong></div>
+<div class="line-block">
+<div class="line">Path to an existing LaTeX file.</div>
+<div class="line"><br /></div>
+</div>
+<div class="line"><strong>-h, --help</strong></div>
+<div class="line-block">
+<div class="line">Show this help message and exit.</div>
+</div>
+</div>
+<p><strong>Examples</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">bibmanager</span></code> displays <code class="docutils literal notranslate"><span class="pre">ads_display</span></code> entries at a time (default: 20):</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search entries for given author (display first set of entries, newest to oldest):</span>
+bibm ads-search <span class="s1">&#39;author:&quot;^Fortney, J&quot;&#39;</span>
+
+Title: Laboratory Needs <span class="k">for</span> Exoplanet Climate Modeling
+Authors: Fortney, J. J.<span class="p">;</span> et al.
+adsurl: https://ui.adsabs.harvard.edu/<span class="se">\#</span>abs/2018LPICo2065.2068F
+bibcode: 2018LPICo2065.2068F
+
+Title: Modeling Exoplanetary Atmospheres: An Overview
+Authors: Fortney, Jonathan J.
+adsurl: https://ui.adsabs.harvard.edu/<span class="se">\#</span>abs/2018arXiv180408149F
+bibcode: 2018arXiv180408149F
+
+...
+
+Showing entries <span class="m">1</span>--20 out of <span class="m">73</span> matches.
+
+
+<span class="c1"># Display the next set of entries that matched this querry:</span>
+bibm ads-search
+</pre></div>
+</div>
+<p>Basic author search examples:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search by author in article:</span>
+bibm ads-search <span class="s1">&#39;author:&quot;Fortney, J&quot;&#39;</span>
+
+<span class="c1"># Search by first author:</span>
+bibm ads-search <span class="s1">&#39;author:&quot;^Fortney, J&quot;&#39;</span>
+
+<span class="c1"># Search multiple authors:</span>
+bibm ads-search <span class="s1">&#39;author:(&quot;Fortney, J&quot; AND &quot;Showman, A&quot;)&#39;</span>
+</pre></div>
+</div>
+<p>Search combining multiple fields:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Seach by author AND year:</span>
+bibm ads-search <span class="s1">&#39;author:&quot;Fortney, J&quot; year:2010&#39;</span>
+
+<span class="c1"># Seach by author AND year range:</span>
+bibm ads-search <span class="s1">&#39;author:&quot;Fortney, J&quot; year:2010-2019&#39;</span>
+
+<span class="c1"># Search by author AND words/phrases in title:</span>
+bibm ads-search <span class="s1">&#39;author:&quot;Fortney, J&quot; title:Spitzer&#39;</span>
+
+<span class="c1"># Search by author AND words/phrases in abstract:</span>
+bibm ads-search <span class="s1">&#39;author:&quot;Fortney, J&quot; abs:Spitzer&#39;</span>
+</pre></div>
+</div>
+<p>Restrict searches to articles or peer-reviewed articles:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search by author AND request only articles:</span>
+bibm ads-search <span class="s1">&#39;author:&quot;Fortney, J&quot; property:article&#39;</span>
+
+<span class="c1"># Search by author AND request only peer-reviewed articles:</span>
+bibm ads-search <span class="s1">&#39;author:&quot;Fortney, J&quot; property:refereed&#39;</span>
+</pre></div>
+</div>
+</div>
+<hr class="docutils" />
 <div class="section" id="ads-add">
 <h2>ads-add<a class="headerlink" href="#ads-add" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div>Add entry from ADS into the bibmanager database.</div></blockquote>
+<p>Add entries from ADS by bibcode into the bibmanager database.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm ads-add <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>bibcode key<span class="o">]</span>
+</pre></div>
 </div>
+<p><strong>Description</strong></p>
+<p>This command add BibTeX entries from ADS by specifying pairs of
+ADS bibcodes and BibTeX keys.</p>
+<p>Executing this command without arguments (i.e., <code class="docutils literal notranslate"><span class="pre">bibm</span> <span class="pre">ads-add</span></code>) launches
+an interactive prompt session allowing the user to enter multiple
+bibcode, key pairs.</p>
+<p>By default, added entries replace previously existent entries in the
+bibmanager database.</p>
+<p><strong>Options</strong></p>
+<div class="line-block">
+<div class="line"><strong>bibcode</strong></div>
+<div class="line-block">
+<div class="line">The ADS bibcode of an entry.</div>
+<div class="line"><br /></div>
+</div>
+<div class="line"><strong>key</strong></div>
+<div class="line-block">
+<div class="line">BibTeX key to assign to the entry.</div>
+<div class="line"><br /></div>
+</div>
+<div class="line"><strong>-h, --help</strong></div>
+<div class="line-block">
+<div class="line">Show this help message and exit.</div>
+</div>
+</div>
+<p><strong>Examples</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Let&#39;s search and add the greatest astronomy PhD thesis of all times:</span>
+bibm ads-search <span class="s1">&#39;author:&quot;^payne, cecilia&quot; doctype:phdthesis&#39;</span>
+
+Title: Stellar Atmospheres<span class="p">;</span> a Contribution to the Observational Study of
+    High Temperature in the Reversing Layers of Stars.
+Authors: Payne, Cecilia Helena
+adsurl: https://ui.adsabs.harvard.edu/<span class="se">\#</span>abs/1925PhDT.........1P
+bibcode: 1925PhDT.........1P
+
+
+<span class="c1"># Add the entry to the bibmanager database:</span>
+bibm ads-add 1925PhDT.........1P Payne1925phdStellarAtmospheres
+</pre></div>
+</div>
+</div>
+<hr class="docutils" />
 <div class="section" id="ads-update">
 <h2>ads-update<a class="headerlink" href="#ads-update" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div>Update bibmanager database cross-checking with ADS database.</div></blockquote>
+<p>Update bibmanager database cross-checking entries with ADS.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm ads-update <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>update_keys<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Description</strong></p>
+<p>This command triggers an ADS search of all entries in the <code class="docutils literal notranslate"><span class="pre">bibmanager</span></code>
+database that have an <code class="docutils literal notranslate"><span class="pre">adsurl</span></code> field.  Replacing these entries with
+the output from ADS.
+The main utility of this command is to auto-update entries that
+were added as arXiv version, with their published version.</p>
+<p>For arXiv updates, this command updates automatically the year and
+journal of the key (where possible).  This is done by searching for
+the year and the string <cite>‘arxiv’</cite> in the key, using the bibcode info.
+For example, an entry with key <cite>‘NameEtal2010arxivGJ436b’</cite> whose bibcode
+changed from <cite>‘2010arXiv1007.0324B’</cite> to <cite>‘2011ApJ…731…16B’</cite>, will have
+a new key <cite>‘NameEtal2011apjGJ436b’</cite>.
+To disable this feature, set the <code class="docutils literal notranslate"><span class="pre">update_keys</span></code> optional argument to <cite>‘no’</cite>.</p>
+<p><strong>Options</strong></p>
+<div class="line-block">
+<div class="line"><strong>update_keys</strong></div>
+<div class="line-block">
+<div class="line">Update the keys of the entries. (choose from: {no, arxiv}, default: arxiv).</div>
+<div class="line"><br /></div>
+</div>
+<div class="line"><strong>-h, --help</strong></div>
+<div class="line-block">
+<div class="line">Show this help message and exit.</div>
+</div>
+</div>
+<p><strong>Examples</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Look at this entry with old info from arXiv:</span>
+bibm search -a ^Beaulieu -v
+
+Title: Methane in the Atmosphere of the Transiting Hot Neptune GJ436B?, <span class="m">2011</span>
+Authors: <span class="o">{</span>Beaulieu<span class="o">}</span>, J. -P.<span class="p">;</span> et al.
+ADS url:   http://adsabs.harvard.edu/abs/2010arXiv1007.0324B
+arXiv url: http://arxiv.org/abs/1007.0324
+key: BeaulieuEtal2010arxivGJ436b
+
+
+<span class="c1"># Update bibmanager entries that are in ADS:</span>
+bibm ads-update
+
+Merged <span class="m">0</span> new entries.
+<span class="o">(</span>Not counting updated references<span class="o">)</span>
+There were <span class="m">1</span> entries updated from ArXiv to their peer-reviewed version.
+These ones changed their key:
+BeaulieuEtal2010arxivGJ436b -&gt; BeaulieuEtal2011apjGJ436b
+
+
+<span class="c1"># Let&#39;s take a look at this entry again:</span>
+bibm search -a ^Beaulieu -v
+
+Title: Methane in the Atmosphere of the Transiting Hot Neptune GJ436B?, <span class="m">2011</span>
+Authors: <span class="o">{</span>Beaulieu<span class="o">}</span>, J. -P.<span class="p">;</span> et al.
+ADS url:   https://ui.adsabs.harvard.edu/<span class="se">\#</span>abs/2011ApJ...731...16B
+arXiv url: http://arxiv.org/abs/1007.0324
+key: BeaulieuEtal2011apjGJ436b
+</pre></div>
+</div>
+<hr class="docutils" />
+<p><strong>References</strong></p>
+<table class="docutils footnote" frame="void" id="adstoken" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td><a class="reference external" href="https://github.com/adsabs/adsabs-dev-api#access">https://github.com/adsabs/adsabs-dev-api#access</a></td></tr>
+</tbody>
+</table>
 </div>
 </div>
 
@@ -191,7 +413,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="faq.html" class="btn btn-neutral float-right" title="Frequently Asked Questions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="faq.html" class="btn btn-neutral float-right" title="FAQs and Resources" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="latex.html" class="btn btn-neutral" title="LaTeX Management" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -227,7 +449,7 @@
       <script type="text/javascript">
           var DOCUMENTATION_OPTIONS = {
               URL_ROOT:'./',
-              VERSION:'0.4.0',
+              VERSION:'0.5.0',
               LANGUAGE:'None',
               COLLAPSE_INDEX:false,
               FILE_SUFFIX:'.html',

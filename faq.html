@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Frequently Asked Questions &mdash; bibmanager 0.4.0 documentation</title>
+  <title>FAQs and Resources &mdash; bibmanager 0.5.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                version 0.4
+                version 0.5
               </div>
             
           
@@ -85,21 +85,20 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="getstarted.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bibtex.html">BibTeX Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="latex.html">LaTeX Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ads.html">ADS Management</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Frequently Asked Questions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#case-study-1">Case Study #1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#case-study-2">Case Study #2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#auto-update-arxiv-entries">Auto-update arXiv entries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#issues">Issues</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ads-querries">ADS querries</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#resources">Resources</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">FAQs and Resources</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#frequently-asked-questions">Frequently Asked Questions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#why-should-i-use-bibmanager-i-have-already-my-working-ecosystem">Why should I use <code class="docutils literal notranslate"><span class="pre">bibmanager</span></code>? I have already my working ecosystem.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#i-compiled-my-latex-file-before-merging-its-bibfile-did-i-just-overwite-my-own-bibtex-file">I compiled my LaTeX file before merging its bibfile, did I just overwite my own BibTeX file?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#i-meged-the-bibtex-file-for-my-latex-project-but-it-says-there-are-missing-references-when-i-compile-what-s-going-on">I meged the BibTeX file for my LaTeX project, but it says there are missing references when I compile. What’s going on?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#a-unique-database-does-it-mean-i-need-to-have-better-keys-to-differentiate-my-entries">A unique database? Does it mean I need to have better keys to differentiate my entries?</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#resources">Resources</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">Complete API</a></li>
@@ -150,7 +149,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Frequently Asked Questions</li>
+      <li>FAQs and Resources</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -169,61 +168,104 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="frequently-asked-questions">
-<span id="scenarios"></span><h1>Frequently Asked Questions<a class="headerlink" href="#frequently-asked-questions" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="case-study-1">
-<h2>Case Study #1<a class="headerlink" href="#case-study-1" title="Permalink to this headline">¶</a></h2>
-<p>I merged a bib, but it kept old bibkeys.</p>
-<p>Now my compilation output says:
-bibkey not found.
-solution:
-You can do a search by name and author to get the bibkey maintained
-in the bibmanager database:
+  <div class="section" id="faqs-and-resources">
+<span id="scenarios"></span><h1>FAQs and Resources<a class="headerlink" href="#faqs-and-resources" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="frequently-asked-questions">
+<h2>Frequently Asked Questions<a class="headerlink" href="#frequently-asked-questions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="why-should-i-use-bibmanager-i-have-already-my-working-ecosystem">
+<h3>Why should I use <code class="docutils literal notranslate"><span class="pre">bibmanager</span></code>? I have already my working ecosystem.<a class="headerlink" href="#why-should-i-use-bibmanager-i-have-already-my-working-ecosystem" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">bibmanager</span></code> simply makes your life easier, keeping all of your references
+at the tip of your fingers:</p>
+<ul class="simple">
+<li>No need to wonder whether to start a new BibTeX file from scratch or reuse
+an old one (probably a massive file), nor to think which was the most current.</li>
+<li>Easily add new entries: manually, from your existing BibTeX files, or
+from ADS, without risking having duplicates.</li>
+<li>Generate BibTeX files and compile a LaTeX project with a single command.</li>
+<li>You can stay up to date with ADS with a single command.</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="i-compiled-my-latex-file-before-merging-its-bibfile-did-i-just-overwite-my-own-bibtex-file">
+<h3>I compiled my LaTeX file before merging its bibfile, did I just overwite my own BibTeX file?<a class="headerlink" href="#i-compiled-my-latex-file-before-merging-its-bibfile-did-i-just-overwite-my-own-bibtex-file" title="Permalink to this headline">¶</a></h3>
+<p>No, if <code class="docutils literal notranslate"><span class="pre">bibmanager</span></code> has to overwrite a bibfile edited by the user (say,
+<cite>‘myrefs.bib’</cite>), it saves the old file (and date) as
+<cite>‘orig_yyyy-mm-dd_myrefs.bib’</cite>.</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="i-meged-the-bibtex-file-for-my-latex-project-but-it-says-there-are-missing-references-when-i-compile-what-s-going-on">
+<h3>I meged the BibTeX file for my LaTeX project, but it says there are missing references when I compile. What’s going on?<a class="headerlink" href="#i-meged-the-bibtex-file-for-my-latex-project-but-it-says-there-are-missing-references-when-i-compile-what-s-going-on" title="Permalink to this headline">¶</a></h3>
+<p>Probably, there were duplicate entries with previous entries in the
+<code class="docutils literal notranslate"><span class="pre">bibmanager</span></code> database, but they had different keys.  Simply, do a search
+of your missing reference, to check it’s key, something like:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Surely, first author and year have not changed:</span>
 bibm search -a ^Author -y year
-Now, simply update the bibkey in the .tex file.</p>
+</pre></div>
 </div>
-<div class="section" id="case-study-2">
-<h2>Case Study #2<a class="headerlink" href="#case-study-2" title="Permalink to this headline">¶</a></h2>
-<p>I ran bibm compile on my latex file before merging its bibfile,
-did I just lost my references?</p>
-<p>No, if bibmanager has to overwrite a bibfile edited by the user, it
-saves the old file into prebm_file.bib</p>
+<p>Now, you can update the key in the LaTeX file (and as a bonus, you wont
+run into having duplicate entries in the future).</p>
 </div>
-<div class="section" id="auto-update-arxiv-entries">
-<h2>Auto-update arXiv entries<a class="headerlink" href="#auto-update-arxiv-entries" title="Permalink to this headline">¶</a></h2>
-<p>There were 3 entries updated from ArXiv to their peer-reviewed version.
-These ones changed their key:
-KreidbergEtal2017apjlWASP107bWFC3 -&gt; KreidbergEtal2018apjlWASP107bWFC3</p>
+<hr class="docutils" />
+<div class="section" id="a-unique-database-does-it-mean-i-need-to-have-better-keys-to-differentiate-my-entries">
+<h3>A unique database? Does it mean I need to have better keys to differentiate my entries?<a class="headerlink" href="#a-unique-database-does-it-mean-i-need-to-have-better-keys-to-differentiate-my-entries" title="Permalink to this headline">¶</a></h3>
+<p>Certainly, as a database grows, short BibTeX keys like <cite>‘LastnameYYYY’</cite>
+are sub-optimal, since they may conflict with other entries, and are not
+descriptive enough.
+A good practice is to adopt a longer, more descriptive format.
+I personally suggests this one:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="46%" />
+<col width="44%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Authors</th>
+<th class="head">Format</th>
+<th class="head">Example</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>LastYYYYjournalDescription</td>
+<td>Shapley1918apjDistanceGClusters</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>Last1Last2YYYYjournalDescription</td>
+<td>PerezGranger2007cseIPython</td>
+</tr>
+<tr class="row-even"><td>3</td>
+<td>LastEtalYYYYjournalDescription</td>
+<td>AstropycollabEtal2013aaAstropy</td>
+</tr>
+</tbody>
+</table>
+<p>That is:</p>
+<ul class="simple">
+<li>the first-author last name (capitalized)</li>
+<li>either nothing, the second-author last name (capitalized), or <cite>‘Etal’</cite></li>
+<li>the publication year</li>
+<li>the journal initials if any (and lower-cased)</li>
+<li>a couple words from the title that describe the article
+(capitalized or best format at user’s discretion).</li>
+</ul>
+<p>These long keys will keep you from running into issues, and will make
+the citations in your LaTeX documents nearly unambiguous at sight.</p>
 </div>
-<div class="section" id="issues">
-<h2>Issues<a class="headerlink" href="#issues" title="Permalink to this headline">¶</a></h2>
-<p>Short BibTeX keys
-One of the issues that a user might find by having a unique BibTeX database
-is that now short not-so-descriptive keys like ‘Lastname2019’ might not be
-enough to distinguish references if an author publishes more than one article
-a year.  This forces the user to use somewhat more descriptive keys.  I
-personally suggests these formats for single, two, and multiple authors:
-format                            Example
-LastYYYYjournalDescription        Shapley1918apjDistanceGlobularClusters
-Last1Last2YYYYjournalDescription  AASteamHendrickson2018zenodoAASTeX62
-LastEtalYYYYjournalDescription    AstropycollabEtal2013aaAstropy</p>
-<p>Clearly, these long keys raise the issue that the citations in your LaTeX
-document are now very unambiguous as to which article one is refeering.</p>
 </div>
-<div class="section" id="ads-querries">
-<h2>ADS querries<a class="headerlink" href="#ads-querries" title="Permalink to this headline">¶</a></h2>
-<p>note there is a limit of 5000 querries per user per day
-<a class="reference external" href="https://github.com/adsabs/adsabs-dev-api">https://github.com/adsabs/adsabs-dev-api</a></p>
+<hr class="docutils" />
 <div class="section" id="resources">
-<h3>Resources<a class="headerlink" href="#resources" title="Permalink to this headline">¶</a></h3>
-<p><a class="reference external" href="http://texdoc.net/texmf-dist/doc/bibtex/base/btxdoc.pdf">http://texdoc.net/texmf-dist/doc/bibtex/base/btxdoc.pdf</a>
-BibTeX author format:
-<a class="reference external" href="http://mirror.easyname.at/ctan/info/bibtex/tamethebeast/ttb_en.pdf">http://mirror.easyname.at/ctan/info/bibtex/tamethebeast/ttb_en.pdf</a>
-Pygment style BibTeX options:
-<a class="reference external" href="http://pygments.org/demo/6693571/">http://pygments.org/demo/6693571/</a></p>
-<p>ADS search:
+<h2>Resources<a class="headerlink" href="#resources" title="Permalink to this headline">¶</a></h2>
+<p>Docs for querries in the new ADS:
 <a class="reference external" href="http://adsabs.github.io/help/search/search-syntax">http://adsabs.github.io/help/search/search-syntax</a></p>
-</div>
+<p>The ADS API (note there is a limit of 5000 querries per user per day):
+<a class="reference external" href="https://github.com/adsabs/adsabs-dev-api">https://github.com/adsabs/adsabs-dev-api</a></p>
+<p>BibTeX author format:
+<a class="reference external" href="http://mirror.easyname.at/ctan/info/bibtex/tamethebeast/ttb_en.pdf">http://mirror.easyname.at/ctan/info/bibtex/tamethebeast/ttb_en.pdf</a></p>
+<p>More BibTeX docs:
+<a class="reference external" href="http://texdoc.net/texmf-dist/doc/bibtex/base/btxdoc.pdf">http://texdoc.net/texmf-dist/doc/bibtex/base/btxdoc.pdf</a></p>
+<p>Pygment style BibTeX options:
+<a class="reference external" href="http://pygments.org/demo/6693571/">http://pygments.org/demo/6693571/</a></p>
 </div>
 </div>
 
@@ -271,7 +313,7 @@ Pygment style BibTeX options:
       <script type="text/javascript">
           var DOCUMENTATION_OPTIONS = {
               URL_ROOT:'./',
-              VERSION:'0.4.0',
+              VERSION:'0.5.0',
               LANGUAGE:'None',
               COLLAPSE_INDEX:false,
               FILE_SUFFIX:'.html',
