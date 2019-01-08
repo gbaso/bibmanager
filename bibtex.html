@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>BibTeX Management &mdash; bibmanager 0.5.0 documentation</title>
+  <title>BibTeX Management &mdash; bibmanager 0.5.3 documentation</title>
   
 
   
@@ -88,7 +88,7 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="getstarted.html">Getting Started</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">BibTeX Management</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#init">init</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#reset">reset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#merge">merge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#edit">edit</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#add">add</a></li>
@@ -169,16 +169,16 @@
             
   <div class="section" id="bibtex-management">
 <span id="bibtex"></span><h1>BibTeX Management<a class="headerlink" href="#bibtex-management" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="init">
-<span id="id1"></span><h2>init<a class="headerlink" href="#init" title="Permalink to this headline">¶</a></h2>
-<p>Initialize the bibmanager database.</p>
+<div class="section" id="reset">
+<span id="id1"></span><h2>reset<a class="headerlink" href="#reset" title="Permalink to this headline">¶</a></h2>
+<p>Reset the bibmanager database.</p>
 <p><strong>Usage</strong></p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm init <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>bibfile<span class="o">]</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm reset <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-d <span class="p">|</span> -c<span class="o">]</span> <span class="o">[</span>bibfile<span class="o">]</span>
 </pre></div>
 </div>
-<p>This command initializes the bibmanager database (from scratch).
+<p>This command resets the bibmanager database from scratch.
 It creates a .bibmanager/ folder in the user folder (if it does not
-exists already), and it (re)sets the bibmanager configuration to
+exists already), and it resets the bibmanager configuration to
 its default values.</p>
 <p>If the user provides the <code class="docutils literal notranslate"><span class="pre">bibfile</span></code> argument, this command will
 populate the database with the entries from that file; otherwise,
@@ -193,17 +193,33 @@ in a given CPU.</p>
 <div class="line">Path to an existing BibTeX file.</div>
 <div class="line"><br /></div>
 </div>
+<div class="line"><strong>-d, –database</strong></div>
+<div class="line-block">
+<div class="line">Reset only the bibmanager database.</div>
+<div class="line"><br /></div>
+</div>
+<div class="line"><strong>-c, –config</strong></div>
+<div class="line-block">
+<div class="line">Reset only the bibmanager config parameters.</div>
+<div class="line"><br /></div>
+</div>
 <div class="line"><strong>-h, --help</strong></div>
 <div class="line-block">
 <div class="line">Show this help message and exit.</div>
 </div>
 </div>
 <p><strong>Examples</strong></p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initialize from scratch (reset):</span>
-bib init
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Reset bibmanager database from scratch:</span>
+bibm reset
 
-<span class="c1"># Initialize including entries from a BibTeX file:</span>
-bib init my_file.bib
+<span class="c1"># Reset, including entries from a BibTeX file:</span>
+bibm reset my_file.bib
+
+<span class="c1"># Reset only the database (keep config parameters):</span>
+bibm reset my_file.bib -d
+
+<span class="c1"># Reset only the config parameters (keep database):</span>
+bibm reset -c
 </pre></div>
 </div>
 <hr class="docutils" />
@@ -222,7 +238,7 @@ bibmanager database.</p>
 duplicate entries.  Either take the ‘old’ entry (database), take
 the ‘new’ entry (bibfile), or ‘ask’ the user through the prompt
 (displaying the alternatives).  bibmanager considers four fields
-to check for duplicates: doi, isbn, adsurl, and eprint.</p>
+to check for duplicates: doi, isbn, bibcode, and eprint.</p>
 <div class="line-block">
 <div class="line">Additionally, bibmanager considers two more cases (always asking):</div>
 <div class="line">(1) new entry has duplicate key but different content, and</div>
@@ -301,7 +317,7 @@ the bibmanager database through the terminal prompt.</p>
 possible-duplicate entries.  Either take the ‘old’ entry (database), take
 the ‘new’ entry (bibfile), or ‘ask’ the user through the prompt
 (displaying the alternatives).  bibmanager considers four fields
-to check for duplicates: doi, isbn, adsurl, and eprint.</p>
+to check for duplicates: doi, isbn, bibcode, and eprint.</p>
 <div class="line-block">
 <div class="line">Additionally, bibmanager considers two more cases (always asking):</div>
 <div class="line">(1) new entry has duplicate key but different content, and</div>
@@ -331,6 +347,7 @@ bibm add
 <p>Search entries in the bibmanager database.</p>
 <p><strong>Usage</strong></p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm search <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-v<span class="o">]</span> <span class="o">[</span>-a AUTHOR ...<span class="o">]</span> <span class="o">[</span>-y YEAR<span class="o">]</span> <span class="o">[</span>-t TITLE ...<span class="o">]</span>
+            <span class="o">[</span>-k KEY ...<span class="o">]</span> <span class="o">[</span>-b BIBCODE ...<span class="o">]</span>
 </pre></div>
 </div>
 <p><strong>Description</strong></p>
@@ -339,19 +356,30 @@ database by authors, years, and keywords in title.  The matching
 results are displayed on screen according to the specified verbosity.
 For search arguments that include a blank space, the user can set
 the string within quotes.</p>
-<p>The user can restrict the search to one or more authors, and can
-request a first-author match by including the ‘^’ character before
-an author name (see examples below).</p>
-<p>The user can restrict the publication year to an specific year,
-to a range of years, or to open-end range of years (see examples
-below).</p>
-<p>Finally, the user can restrict the search to multiple strings in
-the title (see examples below).  Note these are case-insensitive.</p>
-<p>There are four levels of verbosity (see examples below):
-- zero shows the title, year, first author, and key;
-- one adds the ADS and arXiv urls;
-- two adds the full list of authors;
-- and three displays the full BibTeX entry.</p>
+<p>The user can restrict the search to multiple authors, years, title words,
+keys, and bibcodes; and can request a first-author match by including the
+‘^’ character before an author name (see examples below).</p>
+<div class="line-block">
+<div class="line">There are four levels of verbosity (see examples below):</div>
+<div class="line">- zero shows the title, year, first author, and key;</div>
+<div class="line">- one adds the ADS and arXiv urls;</div>
+<div class="line">- two adds the full list of authors;</div>
+<div class="line">- and three displays the full BibTeX entry.</div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ol class="last arabic simple">
+<li>There’s no need to worry about case in author names, unless they
+conflict with the BibTeX format rules:
+<a class="reference external" href="http://mirror.easyname.at/ctan/info/bibtex/tamethebeast/ttb_en.pdf">http://mirror.easyname.at/ctan/info/bibtex/tamethebeast/ttb_en.pdf</a>, p.23.
+For example, <em>‘oliphant, t’</em> will match <em>‘Travis Oliphant’</em> (because
+there is no ambiguity in first-von-last names), but <em>‘travis oliphant’</em>
+wont match, because the lowercase <em>‘travis’</em> will be interpreted as the
+von part of the last name.</li>
+<li>Title words/phrase searches are case-insensitive.</li>
+<li>Ampersands must be escaped, encoded as UTF-8, or set the field in quotes</li>
+</ol>
+</div>
 <p><strong>Options</strong></p>
 <div class="line-block">
 <div class="line"><strong>-a, --author AUTHOR …</strong></div>
@@ -370,6 +398,16 @@ the title (see examples below).  Note these are case-insensitive.</p>
 <div class="line">Search by keywords in title.</div>
 <div class="line"><br /></div>
 </div>
+<div class="line"><strong>-k, --key KEY …</strong></div>
+<div class="line-block">
+<div class="line">Search by BibTeX key.</div>
+<div class="line"><br /></div>
+</div>
+<div class="line"><strong>-b, --bibcode BIBCODE …</strong></div>
+<div class="line-block">
+<div class="line">Search by ADS bibcode.</div>
+<div class="line"><br /></div>
+</div>
 <div class="line"><strong>-v, --verb</strong></div>
 <div class="line-block">
 <div class="line">Set output verbosity.</div>
@@ -381,6 +419,11 @@ the title (see examples below).  Note these are case-insensitive.</p>
 </div>
 </div>
 <p><strong>Examples</strong></p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">These example outputs assume that you merged the sample bibfile
+already, i.e.: <code class="docutils literal notranslate"><span class="pre">bibm</span> <span class="pre">merge</span> <span class="pre">~/.bibmanager/examples/sample.bib</span></code></p>
+</div>
 <p>Name examples:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search by last name:</span>
 bibm search -a oliphant
@@ -422,17 +465,6 @@ Authors: Jones, Eric<span class="p">;</span> et al.
 key: JonesEtal2001scipy
 </pre></div>
 </div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p>Note that there is no need to worry about case,
-unless it interferes with the BibTeX naming format rules (see
-<a class="reference external" href="http://mirror.easyname.at/ctan/info/bibtex/tamethebeast/ttb_en.pdf">http://mirror.easyname.at/ctan/info/bibtex/tamethebeast/ttb_en.pdf</a>,
-page 23).</p>
-<p class="last">For example, <em>‘oliphant, t’</em> will match <em>‘Travis Oliphant’</em> (because
-there is no ambiguity in first-von-last names), but <em>‘travis oliphant’</em>
-wont match, because the lowercase <em>‘travis’</em> will be interpreted as the
-von part of the last name.</p>
-</div>
 <p>Combine search fields:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Seach by author, year, and title words/phrases:</span>
 bibm search -a <span class="s1">&#39;oliphant, t&#39;</span> -y <span class="m">2006</span> -t numpy
@@ -462,7 +494,7 @@ key: Cubillos2016phdThesis
 </pre></div>
 </div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search anything between the specified years (inclusive):</span>
-bibm search -a <span class="s1">&#39;cubillos, p&#39;</span> -y <span class="m">2014</span>-2016
+bibm search -a <span class="s1">&#39;cubillos, p&#39;</span> -y <span class="m">2013</span>-2016
 
 Title: WASP-8b: Characterization of a Cool and Eccentric Exoplanet with Spitzer,
    <span class="m">2013</span>
@@ -502,6 +534,20 @@ Authors: <span class="o">{</span>Cubillos<span class="o">}</span>, Patricio<span
 key: CubillosEtal2017apjRednoise
 </pre></div>
 </div>
+<p>ADS bibcode examples (same applies to searches by key):</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># This wont work (ampersand conflicts with bash):</span>
+bibm search -b 2013A<span class="p">&amp;</span>A...558A..33A
+
+<span class="c1"># Quotes solve the problem:</span>
+bibm search -b <span class="s1">&#39;2013A&amp;A...558A..33A&#39;</span>
+
+<span class="c1"># Or escaping (escaping mechanism might depend on OS):</span>
+bibm search -b 2013A<span class="se">\&amp;</span>A...558A..33A
+
+<span class="c1"># Or encoding in UTF-8:</span>
+bibm search -b 2013A%26A...558A..33A
+</pre></div>
+</div>
 <p>Verbosity examples:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Display title, year, first author, and key:</span>
 bibm search -a <span class="s1">&#39;Burbidge, E&#39;</span>
@@ -516,16 +562,18 @@ bibm search -a <span class="s1">&#39;Burbidge, E&#39;</span> -v
 
 Title: Synthesis of the Elements in Stars, <span class="m">1957</span>
 Authors: <span class="o">{</span>Burbidge<span class="o">}</span>, E. Margaret<span class="p">;</span> et al.
+bibcode:   1957RvMP...29..547B
 ADS url:   https://ui.adsabs.harvard.edu/<span class="se">\#</span>abs/1957RvMP...29..547B
 key: BurbidgeEtal1957rvmpStellarElementSynthesis
 </pre></div>
 </div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Display title, year, author list, and all keys/urls:</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Display title, year, full author list, and all keys/urls:</span>
 bibm search -a <span class="s1">&#39;Burbidge, E&#39;</span> -vv
 
 Title: Synthesis of the Elements in Stars, <span class="m">1957</span>
 Authors: <span class="o">{</span>Burbidge<span class="o">}</span>, E. Margaret<span class="p">;</span> <span class="o">{</span>Burbidge<span class="o">}</span>, G. R.<span class="p">;</span> <span class="o">{</span>Fowler<span class="o">}</span>, William A.<span class="p">;</span> and
    <span class="o">{</span>Hoyle<span class="o">}</span>, F.
+bibcode:   1957RvMP...29..547B
 ADS url:   https://ui.adsabs.harvard.edu/<span class="se">\#</span>abs/1957RvMP...29..547B
 key: BurbidgeEtal1957rvmpStellarElementSynthesis
 </pre></div>
@@ -725,7 +773,7 @@ style updated to: autumn.
       <script type="text/javascript">
           var DOCUMENTATION_OPTIONS = {
               URL_ROOT:'./',
-              VERSION:'0.5.0',
+              VERSION:'0.5.3',
               LANGUAGE:'None',
               COLLAPSE_INDEX:false,
               FILE_SUFFIX:'.html',

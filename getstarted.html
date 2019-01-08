@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Getting Started &mdash; bibmanager 0.5.0 documentation</title>
+  <title>Getting Started &mdash; bibmanager 0.5.3 documentation</title>
   
 
   
@@ -191,16 +191,11 @@ least) in both Linux and OS X, with the following software:</p>
 <ul class="simple">
 <li>python (version 3.6+)</li>
 <li>numpy (version 1.15.1+)</li>
-<li>sphinx (version 1.7.9+)</li>
-<li>sphinx_rtd_theme (version 0.4.2+)</li>
 <li>requests (version 2.19.1+)</li>
 <li>prompt_toolkit (version 2.0.5+)</li>
 <li>pygments (version 2.2.0+)</li>
 </ul>
-<div class="line-block">
-<div class="line"><code class="docutils literal notranslate"><span class="pre">bibmanager</span></code> may work with previous versions of these software.  However, we do not guarantee it nor provide support for that.</div>
-<div class="line"><strong>TBD: Check versions for py3.6</strong></div>
-</div>
+<p><code class="docutils literal notranslate"><span class="pre">bibmanager</span></code> may work with previous versions of these software.  However, we do not guarantee it nor provide support for that.</p>
 </div>
 <div class="section" id="install">
 <span id="id1"></span><h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h2>
@@ -220,14 +215,18 @@ python setup.py install
 </div>
 <div class="section" id="quick-example">
 <span id="qexample"></span><h2>Quick Example<a class="headerlink" href="#quick-example" title="Permalink to this headline">¶</a></h2>
-<p><strong>Quick Example is TBD.</strong>  The idea is to use the files in the example folder to merge a bibfile, and compile the latex file.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add your bib file into the bibmanager database:</span>
-bibm merge myfile.bib
-
-<span class="c1"># Compile your Latex project:</span>
-bibm latex myproject.tex
+<p>Adding your BibTeX file into <code class="docutils literal notranslate"><span class="pre">bibmanager</span></code> is as simple as one command:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add this sample bibfile into the bibmanager database:</span>
+bibm merge ~/.bibmanager/examples/sample.bib
 </pre></div>
 </div>
+<p>Compiling a LaTeX file that uses those BibTeX entries is equally simple:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compile your LaTeX project:</span>
+bibm latex ~/.bibmanager/examples/sample.tex
+</pre></div>
+</div>
+<p>This command produced a BibTeX file according to the citations in sample.tex; then executed latex, bibtex, latex, latex; and finally  produced a pdf file out of it.  You can see the results in <cite>~/.bibmanager/examples/sample.pdf</cite>.</p>
+<p>As long as the citation keys are in the <code class="docutils literal notranslate"><span class="pre">bibmanager</span></code> database, you won’t need to worry about maintaining a bibfile anymore.  The next sections will show all of the capabilities that <code class="docutils literal notranslate"><span class="pre">bibmanager</span></code> offers.</p>
 </div>
 </div>
 
@@ -275,7 +274,7 @@ bibm latex myproject.tex
       <script type="text/javascript">
           var DOCUMENTATION_OPTIONS = {
               URL_ROOT:'./',
-              VERSION:'0.5.0',
+              VERSION:'0.5.3',
               LANGUAGE:'None',
               COLLAPSE_INDEX:false,
               FILE_SUFFIX:'.html',
