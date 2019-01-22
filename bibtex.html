@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>BibTeX Management &mdash; bibmanager 0.5.3 documentation</title>
+  <title>BibTeX Management &mdash; bibmanager 0.6.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                version 0.5
+                version 0.6
               </div>
             
           
@@ -359,6 +359,9 @@ the string within quotes.</p>
 <p>The user can restrict the search to multiple authors, years, title words,
 keys, and bibcodes; and can request a first-author match by including the
 ‘^’ character before an author name (see examples below).</p>
+<p>Note that multiple-field querries, multiple-author querries, and
+multiple-title querries act with AND logic; whereas multiple-key querries
+and multiple-bibcode querries act with OR logic (see examples below).</p>
 <div class="line-block">
 <div class="line">There are four levels of verbosity (see examples below):</div>
 <div class="line">- zero shows the title, year, first author, and key;</div>
@@ -457,7 +460,7 @@ Authors: Oliphant, Travis
 key: Oliphant2006numpy
 </pre></div>
 </div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search multiple authors:</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search multiple authors (using AND logic):</span>
 bibm search -a <span class="s1">&#39;oliphant, t&#39;</span> <span class="s1">&#39;jones, e&#39;</span>
 
 Title: SciPy: Open <span class="nb">source</span> scientific tools <span class="k">for</span> Python, <span class="m">2001</span>
@@ -466,7 +469,7 @@ key: JonesEtal2001scipy
 </pre></div>
 </div>
 <p>Combine search fields:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Seach by author, year, and title words/phrases:</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Seach by author, year, and title words/phrases (using AND logic):</span>
 bibm search -a <span class="s1">&#39;oliphant, t&#39;</span> -y <span class="m">2006</span> -t numpy
 
 Title: Numpy: A guide to NumPy, <span class="m">2006</span>
@@ -474,7 +477,7 @@ Authors: Oliphant, Travis
 key: Oliphant2006numpy
 </pre></div>
 </div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search multiple words/phrases in title:</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search multiple words/phrases in title (using AND logic):</span>
 bibm search -t <span class="s1">&#39;HD 209458b&#39;</span> <span class="s1">&#39;atmospheric circulation&#39;</span>
 
 Title: Atmospheric Circulation of Hot Jupiters: Coupled Radiative-Dynamical
@@ -546,6 +549,19 @@ bibm search -b 2013A<span class="se">\&amp;</span>A...558A..33A
 
 <span class="c1"># Or encoding in UTF-8:</span>
 bibm search -b 2013A%26A...558A..33A
+</pre></div>
+</div>
+<p>Search multiple keys (same applies to multiple-bibcodes searches):</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search multiple keys at once (using OR logic):</span>
+bibm search -k Astropycollab2013aaAstropy BurbidgeEtal1957rvmpStellarElementSynthesis
+
+Title: Astropy: A community Python package <span class="k">for</span> astronomy, <span class="m">2013</span>
+Authors: <span class="o">{</span>Astropy Collaboration<span class="o">}</span><span class="p">;</span> et al.
+key: Astropycollab2013aaAstropy
+
+Title: Synthesis of the Elements in Stars, <span class="m">1957</span>
+Authors: <span class="o">{</span>Burbidge<span class="o">}</span>, E. Margaret<span class="p">;</span> et al.
+key: BurbidgeEtal1957rvmpStellarElementSynthesis
 </pre></div>
 </div>
 <p>Verbosity examples:</p>
@@ -770,21 +786,11 @@ style updated to: autumn.
 
     
     
-      <script type="text/javascript">
-          var DOCUMENTATION_OPTIONS = {
-              URL_ROOT:'./',
-              VERSION:'0.5.3',
-              LANGUAGE:'None',
-              COLLAPSE_INDEX:false,
-              FILE_SUFFIX:'.html',
-              HAS_SOURCE:  true,
-              SOURCELINK_SUFFIX: '.txt'
-          };
-      </script>
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
         <script type="text/javascript" src="_static/jquery.js"></script>
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
     
 
   
