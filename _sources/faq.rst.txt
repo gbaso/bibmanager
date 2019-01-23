@@ -97,7 +97,7 @@ Resources
 | Testing:
 | https://docs.pytest.org/
 | http://pythontesting.net/framework/pytest/pytest-fixtures-nuts-bolts/
-| https://blog.dbrgn.ch/2016/2/18/overriding_default_arguments_in_pytest/  
+| https://blog.dbrgn.ch/2016/2/18/overriding_default_arguments_in_pytest/
 | https://www.patricksoftwareblog.com/monkeypatching-with-pytest/
 
 | Useful info from stackoverflow:
