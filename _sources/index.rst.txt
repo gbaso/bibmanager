@@ -78,7 +78,7 @@ entry for that:
 
   @misc{Cubillos2019bibmanager,
     author = {Cubillos, Patricio E.},
-    title  = {bibmanager: The Next Standard in {BibTeX} Management},
+    title  = {bibmanager: A {BibTeX} manager for {LaTeX} projects},
     month  = jan,
     year   = 2019,
     doi    = {10.5281/zenodo.2547043},
