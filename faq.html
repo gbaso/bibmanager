@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>FAQs and Resources &mdash; bibmanager 1.0.2 documentation</title>
+  <title>FAQs and Resources &mdash; bibmanager 1.1.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                version 1.0
+                version 1.1
               </div>
             
           
@@ -199,7 +199,8 @@ from ADS, without risking having duplicates.</li>
 <code class="docutils literal notranslate"><span class="pre">bibmanager</span></code> database, but they had different keys.  Simply, do a search
 of your missing reference, to check it’s key, something like:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Surely, first author and year have not changed:</span>
-bibm search -a ^Author -y year
+bibm search
+author:<span class="s2">&quot;^Author&quot;</span> year:the_year
 </pre></div>
 </div>
 <p>Now, you can update the key in the LaTeX file (and as a bonus, you wont

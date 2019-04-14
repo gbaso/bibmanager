@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>BibTeX Management &mdash; bibmanager 1.0.2 documentation</title>
+  <title>BibTeX Management &mdash; bibmanager 1.1.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                version 1.0
+                version 1.1
               </div>
             
           
@@ -346,22 +346,18 @@ bibm add
 <span id="id5"></span><h2>search<a class="headerlink" href="#search" title="Permalink to this headline">¶</a></h2>
 <p>Search entries in the bibmanager database.</p>
 <p><strong>Usage</strong></p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm search <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-v<span class="o">]</span> <span class="o">[</span>-a AUTHOR ...<span class="o">]</span> <span class="o">[</span>-y YEAR<span class="o">]</span> <span class="o">[</span>-t TITLE ...<span class="o">]</span>
-            <span class="o">[</span>-k KEY ...<span class="o">]</span> <span class="o">[</span>-b BIBCODE ...<span class="o">]</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm search <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-v<span class="o">]</span>
 </pre></div>
 </div>
 <p><strong>Description</strong></p>
-<p>This command allows the user to search for entries in the bibmanager
-database by authors, years, and keywords in title.  The matching
-results are displayed on screen according to the specified verbosity.
-For search arguments that include a blank space, the user can set
-the string within quotes.</p>
-<p>The user can restrict the search to multiple authors, years, title words,
-keys, and bibcodes; and can request a first-author match by including the
-‘^’ character before an author name (see examples below).</p>
-<p>Note that multiple-field querries, multiple-author querries, and
-multiple-title querries act with AND logic; whereas multiple-key querries
-and multiple-bibcode querries act with OR logic (see examples below).</p>
+<p>This command will trigger a prompt where the user can search
+for entries in the bibmanager database by authors, years, title keywords,
+BibTeX key, or ADS bibcode. The matching results are displayed on screen
+according to the specified verbosity.
+Search syntax is similar to ADS searches (including tab completion).</p>
+<p>Multiple author, title keyword, and year querries act with AND logic;
+whereas multiple-key querries and multiple-bibcode querries act with OR
+logic (see examples below).</p>
 <div class="line-block">
 <div class="line">There are four levels of verbosity (see examples below):</div>
 <div class="line">- zero shows the title, year, first author, and key;</div>
@@ -375,42 +371,15 @@ and multiple-bibcode querries act with OR logic (see examples below).</p>
 <li>There’s no need to worry about case in author names, unless they
 conflict with the BibTeX format rules:
 <a class="reference external" href="http://mirror.easyname.at/ctan/info/bibtex/tamethebeast/ttb_en.pdf">http://mirror.easyname.at/ctan/info/bibtex/tamethebeast/ttb_en.pdf</a>, p.23.
-For example, <em>‘oliphant, t’</em> will match <em>‘Travis Oliphant’</em> (because
-there is no ambiguity in first-von-last names), but <em>‘travis oliphant’</em>
-wont match, because the lowercase <em>‘travis’</em> will be interpreted as the
-von part of the last name.</li>
+For example, <em>author:”oliphant, t”</em> will match <em>‘Travis Oliphant’</em>
+(because there is no ambiguity in first-von-last names), but
+<em>author:”travis oliphant”</em> wont match, because the lowercase <em>‘travis’</em>
+will be interpreted as the von part of the last name.</li>
 <li>Title words/phrase searches are case-insensitive.</li>
-<li>Ampersands must be escaped, encoded as UTF-8, or set the field in quotes</li>
 </ol>
 </div>
 <p><strong>Options</strong></p>
 <div class="line-block">
-<div class="line"><strong>-a, --author AUTHOR …</strong></div>
-<div class="line-block">
-<div class="line">Search by author.</div>
-<div class="line"><br /></div>
-</div>
-<div class="line"><strong>-y, --year YEAR</strong></div>
-<div class="line-block">
-<div class="line">Restrict search to a year (e.g., -y 2018) or to a year range (e.g., -y 2018-2020).</div>
-<div class="line">Otherwise this is a verly long description of the option.</div>
-<div class="line"><br /></div>
-</div>
-<div class="line"><strong>-t, --title TITLE …</strong></div>
-<div class="line-block">
-<div class="line">Search by keywords in title.</div>
-<div class="line"><br /></div>
-</div>
-<div class="line"><strong>-k, --key KEY …</strong></div>
-<div class="line-block">
-<div class="line">Search by BibTeX key.</div>
-<div class="line"><br /></div>
-</div>
-<div class="line"><strong>-b, --bibcode BIBCODE …</strong></div>
-<div class="line-block">
-<div class="line">Search by ADS bibcode.</div>
-<div class="line"><br /></div>
-</div>
 <div class="line"><strong>-v, --verb</strong></div>
 <div class="line-block">
 <div class="line">Set output verbosity.</div>
@@ -428,8 +397,10 @@ von part of the last name.</li>
 already, i.e.: <code class="docutils literal notranslate"><span class="pre">bibm</span> <span class="pre">merge</span> <span class="pre">~/.bibmanager/examples/sample.bib</span></code></p>
 </div>
 <p>Name examples:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search by last name:</span>
-bibm search -a oliphant
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search by last name (press tab to prompt the autocompleter):</span>
+bibm search
+<span class="o">(</span>Press <span class="s1">&#39;tab&#39;</span> <span class="k">for</span> autocomplete<span class="o">)</span>
+author:<span class="s2">&quot;oliphant&quot;</span>
 
 Title: SciPy: Open <span class="nb">source</span> scientific tools <span class="k">for</span> Python, <span class="m">2001</span>
 Authors: Jones, Eric<span class="p">;</span> et al.
@@ -441,7 +412,9 @@ key: Oliphant2006numpy
 </pre></div>
 </div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search by last name and initials (note blanks require one to use quotes):</span>
-bibm search -a <span class="s1">&#39;oliphant, t&#39;</span>
+bibm search
+<span class="o">(</span>Press <span class="s1">&#39;tab&#39;</span> <span class="k">for</span> autocomplete<span class="o">)</span>
+author:<span class="s2">&quot;oliphant, t&quot;</span>
 
 Title: SciPy: Open <span class="nb">source</span> scientific tools <span class="k">for</span> Python, <span class="m">2001</span>
 Authors: Jones, Eric<span class="p">;</span> et al.
@@ -453,7 +426,8 @@ key: Oliphant2006numpy
 </pre></div>
 </div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search by first-author only:</span>
-bibm search -a <span class="s1">&#39;^oliphant, t&#39;</span>
+bibm search
+author:<span class="s2">&quot;^oliphant, t&quot;</span>
 
 Title: Numpy: A guide to NumPy, <span class="m">2006</span>
 Authors: Oliphant, Travis
@@ -461,7 +435,9 @@ key: Oliphant2006numpy
 </pre></div>
 </div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search multiple authors (using AND logic):</span>
-bibm search -a <span class="s1">&#39;oliphant, t&#39;</span> <span class="s1">&#39;jones, e&#39;</span>
+bibm search
+<span class="o">(</span>Press <span class="s1">&#39;tab&#39;</span> <span class="k">for</span> autocomplete<span class="o">)</span>
+author:<span class="s2">&quot;oliphant, t&quot;</span> author:<span class="s2">&quot;jones, e&quot;</span>
 
 Title: SciPy: Open <span class="nb">source</span> scientific tools <span class="k">for</span> Python, <span class="m">2001</span>
 Authors: Jones, Eric<span class="p">;</span> et al.
@@ -470,7 +446,9 @@ key: JonesEtal2001scipy
 </div>
 <p>Combine search fields:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Seach by author, year, and title words/phrases (using AND logic):</span>
-bibm search -a <span class="s1">&#39;oliphant, t&#39;</span> -y <span class="m">2006</span> -t numpy
+bibm search
+<span class="o">(</span>Press <span class="s1">&#39;tab&#39;</span> <span class="k">for</span> autocomplete<span class="o">)</span>
+author:<span class="s2">&quot;oliphant, t&quot;</span> year:2006 title:<span class="s2">&quot;numpy&quot;</span>
 
 Title: Numpy: A guide to NumPy, <span class="m">2006</span>
 Authors: Oliphant, Travis
@@ -478,7 +456,9 @@ key: Oliphant2006numpy
 </pre></div>
 </div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search multiple words/phrases in title (using AND logic):</span>
-bibm search -t <span class="s1">&#39;HD 209458b&#39;</span> <span class="s1">&#39;atmospheric circulation&#39;</span>
+bibm search
+<span class="o">(</span>Press <span class="s1">&#39;tab&#39;</span> <span class="k">for</span> autocomplete<span class="o">)</span>
+title:<span class="s2">&quot;HD 209458b&quot;</span> title:<span class="s2">&quot;atmospheric circulation&quot;</span>
 
 Title: Atmospheric Circulation of Hot Jupiters: Coupled Radiative-Dynamical
        General Circulation Model Simulations of HD 189733b and HD 209458b,
@@ -489,7 +469,9 @@ key: ShowmanEtal2009apjRadGCM
 </div>
 <p>Year examples:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search on specific year:</span>
-bibm search -a <span class="s1">&#39;cubillos, p&#39;</span> -y <span class="m">2016</span>
+bibm search
+<span class="o">(</span>Press <span class="s1">&#39;tab&#39;</span> <span class="k">for</span> autocomplete<span class="o">)</span>
+author:<span class="s2">&quot;cubillos, p&quot;</span> year:2016
 
 Title: Characterizing Exoplanet Atmospheres: From Light-curve Observations to
        Radiative-transfer Modeling, <span class="m">2016</span>
@@ -498,7 +480,9 @@ key: Cubillos2016phdThesis
 </pre></div>
 </div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search anything between the specified years (inclusive):</span>
-bibm search -a <span class="s1">&#39;cubillos, p&#39;</span> -y <span class="m">2013</span>-2016
+bibm search
+<span class="o">(</span>Press <span class="s1">&#39;tab&#39;</span> <span class="k">for</span> autocomplete<span class="o">)</span>
+author:<span class="s2">&quot;cubillos, p&quot;</span> year:2013-2016
 
 Title: WASP-8b: Characterization of a Cool and Eccentric Exoplanet with
      Spitzer, <span class="m">2013</span>
@@ -512,8 +496,10 @@ Authors: <span class="o">{</span>Cubillos<span class="o">}</span>, Patricio E.
 key: Cubillos2016phdThesis
 </pre></div>
 </div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search anything up to the specified year:</span>
-bibm search -a <span class="s1">&#39;cubillos, p&#39;</span> -y -2016
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search anything up to the specified year (note this syntax is not available on ADS):</span>
+bibm search
+<span class="o">(</span>Press <span class="s1">&#39;tab&#39;</span> <span class="k">for</span> autocomplete<span class="o">)</span>
+author:<span class="s2">&quot;cubillos, p&quot;</span> year:-2016
 
 Title: WASP-8b: Characterization of a Cool and Eccentric Exoplanet with
        Spitzer, <span class="m">2013</span>
@@ -527,7 +513,9 @@ key: Cubillos2016phdThesis
 </pre></div>
 </div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search anything since the specified year:</span>
-bibm search -a <span class="s1">&#39;cubillos, p&#39;</span> -y <span class="m">2016</span>-
+bibm search
+<span class="o">(</span>Press <span class="s1">&#39;tab&#39;</span> <span class="k">for</span> autocomplete<span class="o">)</span>
+author:<span class="s2">&quot;cubillos, p&quot;</span> year:2016-
 
 Title: Characterizing Exoplanet Atmospheres: From Light-curve Observations to
        Radiative-transfer Modeling, <span class="m">2016</span>
@@ -540,64 +528,72 @@ key: CubillosEtal2017apjRednoise
 </pre></div>
 </div>
 <p>ADS bibcode examples (same applies to searches by key):</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># This wont work (ampersand conflicts with bash):</span>
-bibm search -b 2013A<span class="p">&amp;</span>A...558A..33A
-
-<span class="c1"># Quotes solve the problem:</span>
-bibm search -b <span class="s1">&#39;2013A&amp;A...558A..33A&#39;</span>
-
-<span class="c1"># Or escaping (escaping mechanism might depend on OS):</span>
-bibm search -b 2013A<span class="se">\&amp;</span>A...558A..33A
-
-<span class="c1"># Or encoding in UTF-8:</span>
-bibm search -b 2013A%26A...558A..33A
-</pre></div>
-</div>
-<p>Search multiple keys (same applies to multiple-bibcodes searches):</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search multiple keys at once (using OR logic):</span>
-bibm search -k Astropycollab2013aaAstropy BurbidgeEtal1957rvmpStellarElementSynthesis
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search by bibcode:</span>
+bibm search
+<span class="o">(</span>Press <span class="s1">&#39;tab&#39;</span> <span class="k">for</span> autocomplete<span class="o">)</span>
+bibcode:2013A<span class="p">&amp;</span>A...558A..33A
 
 Title: Astropy: A community Python package <span class="k">for</span> astronomy, <span class="m">2013</span>
 Authors: <span class="o">{</span>Astropy Collaboration<span class="o">}</span><span class="p">;</span> et al.
 key: Astropycollab2013aaAstropy
 
-Title: Synthesis of the Elements in Stars, <span class="m">1957</span>
-Authors: <span class="o">{</span>Burbidge<span class="o">}</span>, E. Margaret<span class="p">;</span> et al.
-key: BurbidgeEtal1957rvmpStellarElementSynthesis
-</pre></div>
-</div>
-<p>Verbosity examples:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Display title, year, first author, and key:</span>
-bibm search -a <span class="s1">&#39;Burbidge, E&#39;</span>
+<span class="c1"># UTF-8 encoding also works just fine:</span>
+bibm search
+<span class="o">(</span>Press <span class="s1">&#39;tab&#39;</span> <span class="k">for</span> autocomplete<span class="o">)</span>
+bibcode:2013A%26A...558A..33A
 
-Title: Synthesis of the Elements in Stars, <span class="m">1957</span>
-Authors: <span class="o">{</span>Burbidge<span class="o">}</span>, E. Margaret<span class="p">;</span> et al.
-key: BurbidgeEtal1957rvmpStellarElementSynthesis
+Title: Astropy: A community Python package <span class="k">for</span> astronomy, <span class="m">2013</span>
+Authors: <span class="o">{</span>Astropy Collaboration<span class="o">}</span><span class="p">;</span> et al.
+key: Astropycollab2013aaAstropy
 </pre></div>
 </div>
+<p>Search multiple keys (same applies to multiple-bibcodes searches):</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search multiple keys at once (using OR logic):</span>
+bibm search
+<span class="o">(</span>Press <span class="s1">&#39;tab&#39;</span> <span class="k">for</span> autocomplete<span class="o">)</span>
+key:Curtis1917paspIslandUniverseTheory key:Shapley1918apjDistanceGlobularClusters
+
+Title: Novae in the Spiral Nebulae and the Island Universe Theory, <span class="m">1917</span>
+Authors: <span class="o">{</span>Curtis<span class="o">}</span>, H. D.
+key: Curtis1917paspIslandUniverseTheory
+
+Title: Studies based on the colors and magnitudes in stellar clusters. VII.
+       The distances, distribution in space, and dimensions of <span class="m">69</span> globular
+       clusters., <span class="m">1918</span>
+Authors: <span class="o">{</span>Shapley<span class="o">}</span>, H.
+key: Shapley1918apjDistanceGlobularClusters
+</pre></div>
+</div>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">-v</span></code> command to increase verbosity:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Display title, year, first author, and all keys/urls:</span>
-bibm search -a <span class="s1">&#39;Burbidge, E&#39;</span> -v
+bibm search -v
+<span class="o">(</span>Press <span class="s1">&#39;tab&#39;</span> <span class="k">for</span> autocomplete<span class="o">)</span>
+author:<span class="s2">&quot;Burbidge, E&quot;</span>
 
 Title: Synthesis of the Elements in Stars, <span class="m">1957</span>
 Authors: <span class="o">{</span>Burbidge<span class="o">}</span>, E. Margaret<span class="p">;</span> et al.
 bibcode:   1957RvMP...29..547B
-ADS url:   https://ui.adsabs.harvard.edu/<span class="se">\#</span>abs/1957RvMP...29..547B
+ADS url:   https://ui.adsabs.harvard.edu/abs/1957RvMP...29..547B
 key: BurbidgeEtal1957rvmpStellarElementSynthesis
 </pre></div>
 </div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Display title, year, full author list, and all keys/urls:</span>
-bibm search -a <span class="s1">&#39;Burbidge, E&#39;</span> -vv
+bibm search -vv
+<span class="o">(</span>Press <span class="s1">&#39;tab&#39;</span> <span class="k">for</span> autocomplete<span class="o">)</span>
+author:<span class="s2">&quot;Burbidge, E&quot;</span>
 
 Title: Synthesis of the Elements in Stars, <span class="m">1957</span>
 Authors: <span class="o">{</span>Burbidge<span class="o">}</span>, E. Margaret<span class="p">;</span> <span class="o">{</span>Burbidge<span class="o">}</span>, G. R.<span class="p">;</span> <span class="o">{</span>Fowler<span class="o">}</span>, William A.<span class="p">;</span> and
          <span class="o">{</span>Hoyle<span class="o">}</span>, F.
 bibcode:   1957RvMP...29..547B
-ADS url:   https://ui.adsabs.harvard.edu/<span class="se">\#</span>abs/1957RvMP...29..547B
+ADS url:   https://ui.adsabs.harvard.edu/abs/1957RvMP...29..547B
 key: BurbidgeEtal1957rvmpStellarElementSynthesis
 </pre></div>
 </div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Display full BibTeX entry:</span>
-bibm search -a <span class="s1">&#39;Burbidge, E&#39;</span> -vvv
+bibm search -vvv
+<span class="o">(</span>Press <span class="s1">&#39;tab&#39;</span> <span class="k">for</span> autocomplete<span class="o">)</span>
+author:<span class="s2">&quot;Burbidge, E&quot;</span>
 
 @ARTICLE<span class="o">{</span>BurbidgeEtal1957rvmpStellarElementSynthesis,
        <span class="nv">author</span> <span class="o">=</span> <span class="o">{{</span>Burbidge<span class="o">}</span>, E. Margaret and <span class="o">{</span>Burbidge<span class="o">}</span>, G.~R. and <span class="o">{</span>Fowler<span class="o">}</span>, William A.

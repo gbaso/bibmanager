@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ADS Management &mdash; bibmanager 1.0.2 documentation</title>
+  <title>ADS Management &mdash; bibmanager 1.1.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                version 1.0
+                version 1.1
               </div>
             
           
@@ -188,7 +188,7 @@ bibm config ads_token my_ads_token
 </div>
 <p><strong>Description</strong></p>
 <p>This command enables ADS querries.  The querry syntax is identical to
-any querry in the new ADS’s one-box search engine:
+a querry in the new ADS’s one-box search engine:
 <a class="reference external" href="https://ui.adsabs.harvard.edu">https://ui.adsabs.harvard.edu</a>.
 Here there is a detailed documentations for ADS searches:
 <a class="reference external" href="https://adsabs.github.io/help/search/search-syntax">https://adsabs.github.io/help/search/search-syntax</a>
@@ -197,19 +197,14 @@ See below for typical querry examples.</p>
 <p class="first admonition-title">Note</p>
 <p class="last">Note that a querry will display at most ‘ads_display’ entries on
 screen at once (see <code class="docutils literal notranslate"><span class="pre">bibm</span> <span class="pre">config</span> <span class="pre">ads_display</span></code>).  If a querry matches
-more entries, the user can execute the <code class="docutils literal notranslate"><span class="pre">bibm</span> <span class="pre">ads-search</span></code> command without
-arguments to display the next set of entries.</p>
+more entries, the user can execute <code class="docutils literal notranslate"><span class="pre">bibm</span> <span class="pre">ads-search</span> <span class="pre">-n</span></code>
+to display the next set of entries.</p>
 </div>
 <div class="admonition caution">
 <p class="first admonition-title">Caution</p>
-<p>When making an ADS querry, note that</p>
-<ol class="last arabic simple">
-<li>ADS requires the field values (when necessary) to use <cite>double</cite> quotes.
-For example: <cite>author:”^Fortney, J”</cite>.</li>
-<li>Python <cite>always</cite> requires the entire querry argument to be set between
-quotes. For example:
-<code class="docutils literal notranslate"><span class="pre">bibm</span> <span class="pre">ads-search</span> <span class="pre">'author:&quot;^Fortney,</span> <span class="pre">J&quot;</span> <span class="pre">year:2010-2019'</span></code>.</li>
-</ol>
+<p class="last">When making an ADS querry, note that
+ADS requires the field values (when necessary) to use <cite>double</cite> quotes.
+For example: <cite>author:”^Fortney, J”</cite>.</p>
 </div>
 <p><strong>Options</strong></p>
 <div class="line-block">
@@ -224,9 +219,10 @@ quotes. For example:
 </div>
 </div>
 <p><strong>Examples</strong></p>
-<p><code class="docutils literal notranslate"><span class="pre">bibmanager</span></code> displays <code class="docutils literal notranslate"><span class="pre">ads_display</span></code> entries at a time (default: 20):</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search entries for given author (display first set of entries, newest to oldest):</span>
-bibm ads-search <span class="s1">&#39;author:&quot;^Fortney, J&quot;&#39;</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search entries for given author (press tab to prompt the autocompleter):</span>
+bibm ads-search
+<span class="o">(</span>Press <span class="s1">&#39;tab&#39;</span> <span class="k">for</span> autocomplete<span class="o">)</span>
+author:<span class="s2">&quot;^Fortney, J&quot;</span>
 
 Title: Exploring A Photospheric Radius Correction to Model Secondary Eclipse
        Spectra <span class="k">for</span> Transiting Exoplanets
@@ -242,40 +238,58 @@ bibcode: 2018LPICo2065.2068F
 ...
 
 Showing entries <span class="m">1</span>--20 out of <span class="m">74</span> matches.  To show the next set, execute:
-bibm ads-search
+bibm ads-search -n
 </pre></div>
 </div>
 <p>Basic author search examples:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search by author in article:</span>
-bibm ads-search <span class="s1">&#39;author:&quot;Fortney, J&quot;&#39;</span>
+bibm ads-search
+<span class="o">(</span>Press <span class="s1">&#39;tab&#39;</span> <span class="k">for</span> autocomplete<span class="o">)</span>
+author:<span class="s2">&quot;Fortney, J&quot;</span>
 
 <span class="c1"># Search by first author:</span>
-bibm ads-search <span class="s1">&#39;author:&quot;^Fortney, J&quot;&#39;</span>
+bibm ads-search
+<span class="o">(</span>Press <span class="s1">&#39;tab&#39;</span> <span class="k">for</span> autocomplete<span class="o">)</span>
+author:<span class="s2">&quot;^Fortney, J&quot;</span>
 
 <span class="c1"># Search multiple authors:</span>
-bibm ads-search <span class="s1">&#39;author:(&quot;Fortney, J&quot; AND &quot;Showman, A&quot;)&#39;</span>
+bibm ads-search
+<span class="o">(</span>Press <span class="s1">&#39;tab&#39;</span> <span class="k">for</span> autocomplete<span class="o">)</span>
+author:<span class="o">(</span><span class="s2">&quot;Fortney, J&quot;</span> AND <span class="s2">&quot;Showman, A&quot;</span><span class="o">)</span>
 </pre></div>
 </div>
 <p>Search combining multiple fields:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Seach by author AND year:</span>
-bibm ads-search <span class="s1">&#39;author:&quot;Fortney, J&quot; year:2010&#39;</span>
+bibm ads-search
+<span class="o">(</span>Press <span class="s1">&#39;tab&#39;</span> <span class="k">for</span> autocomplete<span class="o">)</span>
+author:<span class="s2">&quot;Fortney, J&quot;</span> year:2010
 
 <span class="c1"># Seach by author AND year range:</span>
-bibm ads-search <span class="s1">&#39;author:&quot;Fortney, J&quot; year:2010-2019&#39;</span>
+bibm ads-search
+<span class="o">(</span>Press <span class="s1">&#39;tab&#39;</span> <span class="k">for</span> autocomplete<span class="o">)</span>
+author:<span class="s2">&quot;Fortney, J&quot;</span> year:2010-2019
 
 <span class="c1"># Search by author AND words/phrases in title:</span>
-bibm ads-search <span class="s1">&#39;author:&quot;Fortney, J&quot; title:Spitzer&#39;</span>
+bibm ads-search
+<span class="o">(</span>Press <span class="s1">&#39;tab&#39;</span> <span class="k">for</span> autocomplete<span class="o">)</span>
+author:<span class="s2">&quot;Fortney, J&quot;</span> title:Spitzer
 
 <span class="c1"># Search by author AND words/phrases in abstract:</span>
-bibm ads-search <span class="s1">&#39;author:&quot;Fortney, J&quot; abs:Spitzer&#39;</span>
+bibm ads-search
+<span class="o">(</span>Press <span class="s1">&#39;tab&#39;</span> <span class="k">for</span> autocomplete<span class="o">)</span>
+author:<span class="s2">&quot;Fortney, J&quot;</span> abs:<span class="s2">&quot;HD 209458b&quot;</span>
 </pre></div>
 </div>
 <p>Restrict searches to articles or peer-reviewed articles:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search by author AND request only articles:</span>
-bibm ads-search <span class="s1">&#39;author:&quot;Fortney, J&quot; property:article&#39;</span>
+bibm ads-search
+<span class="o">(</span>Press <span class="s1">&#39;tab&#39;</span> <span class="k">for</span> autocomplete<span class="o">)</span>
+author:<span class="s2">&quot;Fortney, J&quot;</span> property:article
 
 <span class="c1"># Search by author AND request only peer-reviewed articles:</span>
-bibm ads-search <span class="s1">&#39;author:&quot;Fortney, J&quot; property:refereed&#39;</span>
+bibm ads-search
+<span class="o">(</span>Press <span class="s1">&#39;tab&#39;</span> <span class="k">for</span> autocomplete<span class="o">)</span>
+author:<span class="s2">&quot;Fortney, J&quot;</span> property:refereed
 </pre></div>
 </div>
 </div>
@@ -314,7 +328,9 @@ bibmanager database.</p>
 </div>
 <p><strong>Examples</strong></p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Let&#39;s search and add the greatest astronomy PhD thesis of all times:</span>
-bibm ads-search <span class="s1">&#39;author:&quot;^payne, cecilia&quot; doctype:phdthesis&#39;</span>
+bibm ads-search
+<span class="o">(</span>Press <span class="s1">&#39;tab&#39;</span> <span class="k">for</span> autocomplete<span class="o">)</span>
+author:<span class="s2">&quot;^payne, cecilia&quot;</span> doctype:phdthesis
 
 Title: Stellar Atmospheres<span class="p">;</span> a Contribution to the Observational Study of High
        Temperature in the Reversing Layers of Stars.
@@ -368,7 +384,8 @@ To disable this feature, set the <code class="docutils literal notranslate"><spa
 already, i.e.: <code class="docutils literal notranslate"><span class="pre">bibm</span> <span class="pre">merge</span> <span class="pre">~/.bibmanager/examples/sample.bib</span></code></p>
 </div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Look at this entry with old info from arXiv:</span>
-bibm search -a ^Beaulieu -v
+bibm search -v
+author:<span class="s2">&quot;^Beaulieu&quot;</span>
 
 Title: Methane in the Atmosphere of the Transiting Hot Neptune GJ436b?, <span class="m">2010</span>
 Authors: <span class="o">{</span>Beaulieu<span class="o">}</span>, J.-P.<span class="p">;</span> et al.
@@ -389,7 +406,8 @@ BeaulieuEtal2010arxivGJ436b -&gt; BeaulieuEtal2011apjGJ436b
 
 
 <span class="c1"># Let&#39;s take a look at this entry again:</span>
-bibm search -a ^Beaulieu -v
+bibm search -v
+author:<span class="s2">&quot;^Beaulieu&quot;</span>
 
 Title: Methane in the Atmosphere of the Transiting Hot Neptune GJ436B?, <span class="m">2011</span>
 Authors: <span class="o">{</span>Beaulieu<span class="o">}</span>, J. -P.<span class="p">;</span> et al.
