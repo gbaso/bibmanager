@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>FAQs and Resources &mdash; bibmanager 1.1.0 documentation</title>
+  <title>FAQs and Resources &mdash; bibmanager 1.1.2 documentation</title>
   
 
   
@@ -95,6 +95,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#why-should-i-use-bibmanager-i-have-already-my-working-ecosystem">Why should I use <code class="docutils literal notranslate"><span class="pre">bibmanager</span></code>? I have already my working ecosystem.</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#i-compiled-my-latex-file-before-merging-its-bibfile-did-i-just-overwite-my-own-bibtex-file">I compiled my LaTeX file before merging its bibfile, did I just overwite my own BibTeX file?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#i-meged-the-bibtex-file-for-my-latex-project-but-it-says-there-are-missing-references-when-i-compile-what-s-going-on">I meged the BibTeX file for my LaTeX project, but it says there are missing references when I compile. What’s going on?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#i-installed-bibmanager-while-being-in-a-virtual-environment-but-i-don-t-want-to-start-the-virtual-env-every-time-i-want-to-use-bibm">I installed <code class="docutils literal notranslate"><span class="pre">bibmanager</span></code> while being in a virtual environment. But I don’t want to start the virtual env every time I want to use <code class="docutils literal notranslate"><span class="pre">bibm</span></code>.</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#a-unique-database-does-it-mean-i-need-to-have-better-keys-to-differentiate-my-entries">A unique database? Does it mean I need to have better keys to differentiate my entries?</a></li>
 </ul>
 </li>
@@ -205,6 +206,21 @@ author:<span class="s2">&quot;^Author&quot;</span> year:the_year
 </div>
 <p>Now, you can update the key in the LaTeX file (and as a bonus, you wont
 run into having duplicate entries in the future).</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="i-installed-bibmanager-while-being-in-a-virtual-environment-but-i-don-t-want-to-start-the-virtual-env-every-time-i-want-to-use-bibm">
+<h3>I installed <code class="docutils literal notranslate"><span class="pre">bibmanager</span></code> while being in a virtual environment. But I don’t want to start the virtual env every time I want to use <code class="docutils literal notranslate"><span class="pre">bibm</span></code>.<a class="headerlink" href="#i-installed-bibmanager-while-being-in-a-virtual-environment-but-i-don-t-want-to-start-the-virtual-env-every-time-i-want-to-use-bibm" title="Permalink to this headline">¶</a></h3>
+<p>(This is not a question!, please state your FAQ in the form of a
+question) Anyway, no worries, the <code class="docutils literal notranslate"><span class="pre">bibm</span></code> executable entry point is
+totally safe to use even if you are not in the virtual environment.
+What you can do is to add the path to the entry point into your bash:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># first, search for the entry-point executable (while in the virtual environment):</span>
+which bibm
+
+/home/username/py36/bin/bibm
+</pre></div>
+</div>
+<p>Then, add an alias with that path into your bash, e.g.: <code class="docutils literal notranslate"><span class="pre">alias</span> <span class="pre">bibm='/home/username/py36/bin/bibm'</span></code>.  Now, you can access <code class="docutils literal notranslate"><span class="pre">bibm</span></code> at any time.</p>
 </div>
 <hr class="docutils" />
 <div class="section" id="a-unique-database-does-it-mean-i-need-to-have-better-keys-to-differentiate-my-entries">
@@ -338,6 +354,7 @@ the citations in your LaTeX documents nearly unambiguous at sight.</p>
         <script type="text/javascript" src="_static/jquery.js"></script>
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
     
 
   

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>BibTeX Management &mdash; bibmanager 1.1.0 documentation</title>
+  <title>BibTeX Management &mdash; bibmanager 1.1.2 documentation</title>
   
 
   
@@ -94,6 +94,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#add">add</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#search">search</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#export">export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cleanup">cleanup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#config">config</a></li>
 </ul>
 </li>
@@ -645,8 +646,50 @@ author:<span class="s2">&quot;Burbidge, E&quot;</span>
 </div>
 <hr class="docutils" />
 </div>
+<div class="section" id="cleanup">
+<span id="id7"></span><h2>cleanup<a class="headerlink" href="#cleanup" title="Permalink to this headline">¶</a></h2>
+<p>Clean up a bibtex file of duplicates and outdated entries.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm cleanup <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-ads<span class="o">]</span> bibfile
+</pre></div>
+</div>
+<p><strong>Description</strong></p>
+<div class="line-block">
+<div class="line">Clean up a BibTeX file by removing duplicates, sorting the entries,
+and (if requested) updating the entries by cross-checking against
+the ADS database.  All of this is done independently of the
+<code class="docutils literal notranslate"><span class="pre">bibmanager</span></code> database.  The original file will be preserved by
+prepending the string ‘<em>orig_yyyy_mm_dd_</em>’ with the
+corresponding date.</div>
+<div class="line"><em>New in version 1.1.2.</em></div>
+</div>
+<p><strong>Options</strong></p>
+<div class="line-block">
+<div class="line"><strong>bibfile</strong></div>
+<div class="line-block">
+<div class="line">Path to an existing BibTeX file.</div>
+</div>
+<div class="line"><strong>-ads</strong></div>
+<div class="line-block">
+<div class="line">Update the bibfile entries cross-checking against the ADS database.</div>
+</div>
+<div class="line"><strong>-h, --help</strong></div>
+<div class="line-block">
+<div class="line">Show this help message and exit.</div>
+</div>
+</div>
+<p><strong>Examples</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Remove duplicates and sort:</span>
+bibm cleanup file.bib
+
+<span class="c1"># Remove duplicates, update ADS entries, and sort:</span>
+bibm cleanup file.bib -ads
+</pre></div>
+</div>
+<hr class="docutils" />
+</div>
 <div class="section" id="config">
-<span id="id7"></span><h2>config<a class="headerlink" href="#config" title="Permalink to this headline">¶</a></h2>
+<span id="id8"></span><h2>config<a class="headerlink" href="#config" title="Permalink to this headline">¶</a></h2>
 <p>Manage the bibmanager configuration parameters.</p>
 <p><strong>Usage</strong></p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bibm config <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>param<span class="o">]</span> <span class="o">[</span>value<span class="o">]</span>
@@ -788,6 +831,7 @@ style updated to: autumn.
         <script type="text/javascript" src="_static/jquery.js"></script>
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
     
 
   
