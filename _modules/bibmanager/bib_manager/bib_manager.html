@@ -1,0 +1,1097 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>bibmanager.bib_manager.bib_manager &mdash; bibmanager 1.1.3 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> bibmanager
+          
+
+          
+            
+            <img src="../../../_static/logo_bibmanager.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                version 1.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getstarted.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../bibtex.html">BibTeX Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../latex.html">LaTeX Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ads.html">ADS Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq.html">FAQs and Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">bibmanager</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>bibmanager.bib_manager.bib_manager</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for bibmanager.bib_manager.bib_manager</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2018-2019 Patricio Cubillos and contributors.</span>
+<span class="c1"># bibmanager is open-source software under the MIT license (see LICENSE).</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;Bib&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;display_bibs&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;remove_duplicates&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;filter_field&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;loadfile&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;save&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;load&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;export&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;merge&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;init&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;add_entries&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;edit&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;search&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">urllib</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">prompt_toolkit</span>
+<span class="kn">from</span> <span class="nn">prompt_toolkit.formatted_text</span> <span class="k">import</span> <span class="n">PygmentsTokens</span>
+<span class="kn">from</span> <span class="nn">prompt_toolkit</span> <span class="k">import</span> <span class="n">print_formatted_text</span>
+<span class="kn">import</span> <span class="nn">pygments</span>
+<span class="kn">from</span> <span class="nn">pygments.token</span> <span class="k">import</span> <span class="n">Token</span>
+<span class="kn">from</span> <span class="nn">pygments.lexers.bibtex</span> <span class="k">import</span> <span class="n">BibTeXLexer</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">config_manager</span> <span class="k">as</span> <span class="n">cm</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">utils</span> <span class="k">as</span> <span class="n">u</span>
+
+
+<span class="c1"># Some constant definitions:</span>
+<span class="n">lexer</span> <span class="o">=</span> <span class="n">prompt_toolkit</span><span class="o">.</span><span class="n">lexers</span><span class="o">.</span><span class="n">PygmentsLexer</span><span class="p">(</span><span class="n">BibTeXLexer</span><span class="p">)</span>
+
+<span class="n">months</span>  <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;jan&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;feb&quot;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;mar&quot;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;apr&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;may&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;jun&quot;</span><span class="p">:</span><span class="mi">6</span><span class="p">,</span>
+           <span class="s2">&quot;jul&quot;</span><span class="p">:</span><span class="mi">7</span><span class="p">,</span> <span class="s2">&quot;aug&quot;</span><span class="p">:</span><span class="mi">8</span><span class="p">,</span> <span class="s2">&quot;sep&quot;</span><span class="p">:</span><span class="mi">9</span><span class="p">,</span> <span class="s2">&quot;oct&quot;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;nov&quot;</span><span class="p">:</span><span class="mi">11</span><span class="p">,</span> <span class="s2">&quot;dec&quot;</span><span class="p">:</span><span class="mi">12</span><span class="p">}</span>
+
+
+<div class="viewcode-block" id="Bib"><a class="viewcode-back" href="../../../api.html#bibmanager.bib_manager.Bib">[docs]</a><span class="k">class</span> <span class="nc">Bib</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Bibliographic-entry object.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry</span><span class="p">):</span>
+      <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">      Create a Bib() object from given entry.  Minimally, entries must</span>
+<span class="sd">      contain the author, title, and year keys.</span>
+
+<span class="sd">      Parameters</span>
+<span class="sd">      ----------</span>
+<span class="sd">      entry: String</span>
+<span class="sd">         A bibliographic entry text.</span>
+
+<span class="sd">      Examples</span>
+<span class="sd">      --------</span>
+<span class="sd">      &gt;&gt;&gt; import bibmanager.bib_manager as bm</span>
+<span class="sd">      &gt;&gt;&gt; from bibmanager.utils import Author</span>
+<span class="sd">      &gt;&gt;&gt; entry = &#39;&#39;&#39;@Misc{JonesEtal2001scipy,</span>
+<span class="sd">                author = {Eric Jones and Travis Oliphant and Pearu Peterson},</span>
+<span class="sd">                title  = {{SciPy}: Open source scientific tools for {Python}},</span>
+<span class="sd">                year   = {2001},</span>
+<span class="sd">              }&#39;&#39;&#39;</span>
+<span class="sd">      &gt;&gt;&gt; bib = bm.Bib(entry)</span>
+<span class="sd">      &gt;&gt;&gt; print(bib.title)</span>
+<span class="sd">      SciPy: Open source scientific tools for Python</span>
+<span class="sd">      &gt;&gt;&gt; for author in bib.authors:</span>
+<span class="sd">      &gt;&gt;&gt;    print(author)</span>
+<span class="sd">      Author(last=&#39;Jones&#39;, first=&#39;Eric&#39;, von=&#39;&#39;, jr=&#39;&#39;)</span>
+<span class="sd">      Author(last=&#39;Oliphant&#39;, first=&#39;Travis&#39;, von=&#39;&#39;, jr=&#39;&#39;)</span>
+<span class="sd">      Author(last=&#39;Peterson&#39;, first=&#39;Pearu&#39;, von=&#39;&#39;, jr=&#39;&#39;)</span>
+<span class="sd">      &gt;&gt;&gt; print(bib.sort_author)</span>
+<span class="sd">      Sort_author(last=&#39;jones&#39;, first=&#39;e&#39;, von=&#39;&#39;, jr=&#39;&#39;, year=2001, month=13)</span>
+<span class="sd">      &quot;&quot;&quot;</span>
+      <span class="k">if</span> <span class="n">u</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+          <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Mismatched braces in entry.&quot;</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">content</span>  <span class="o">=</span> <span class="n">entry</span>
+      <span class="c1"># Defaults:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">month</span>    <span class="o">=</span> <span class="mi">13</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">adsurl</span>   <span class="o">=</span> <span class="kc">None</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">bibcode</span>  <span class="o">=</span> <span class="kc">None</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">doi</span>      <span class="o">=</span> <span class="kc">None</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">eprint</span>   <span class="o">=</span> <span class="kc">None</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">isbn</span>     <span class="o">=</span> <span class="kc">None</span>
+
+      <span class="n">fields</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span>
+
+      <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">nested</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+          <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;title&quot;</span><span class="p">:</span>
+              <span class="c1"># Title with no braces, tabs, nor linebreak and corrected blanks:</span>
+              <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;({|})&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+
+          <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;author&quot;</span><span class="p">:</span>
+              <span class="c1"># Parse authors finding all non-brace-nested &#39;and&#39; instances:</span>
+              <span class="n">authors</span><span class="p">,</span> <span class="n">nests</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">cond_split</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span><span class="s2">&quot; &quot;</span><span class="p">),</span> <span class="s2">&quot; and &quot;</span><span class="p">,</span>
+                                  <span class="n">nested</span><span class="o">=</span><span class="n">nested</span><span class="p">,</span> <span class="n">ret_nests</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+              <span class="bp">self</span><span class="o">.</span><span class="n">authors</span> <span class="o">=</span> <span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">parse_name</span><span class="p">(</span><span class="n">author</span><span class="p">,</span> <span class="n">nested</span><span class="p">)</span>
+                              <span class="k">for</span> <span class="n">author</span><span class="p">,</span><span class="n">nested</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">authors</span><span class="p">,</span><span class="n">nests</span><span class="p">)]</span>
+
+          <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;year&quot;</span><span class="p">:</span>
+              <span class="n">r</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;[0-9]</span><span class="si">{4}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+              <span class="bp">self</span><span class="o">.</span><span class="n">year</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+
+          <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;month&quot;</span><span class="p">:</span>
+              <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+              <span class="bp">self</span><span class="o">.</span><span class="n">month</span> <span class="o">=</span> <span class="n">months</span><span class="p">[</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]]</span>
+
+          <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;doi&quot;</span><span class="p">:</span>
+              <span class="bp">self</span><span class="o">.</span><span class="n">doi</span> <span class="o">=</span> <span class="n">value</span>
+
+          <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;adsurl&quot;</span><span class="p">:</span>
+              <span class="bp">self</span><span class="o">.</span><span class="n">adsurl</span> <span class="o">=</span> <span class="n">value</span>
+              <span class="c1"># Get bibcode from adsurl, un-code UTF-8, and remove backslashes:</span>
+              <span class="n">bibcode</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">value</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+              <span class="bp">self</span><span class="o">.</span><span class="n">bibcode</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">unquote</span><span class="p">(</span><span class="n">bibcode</span><span class="p">)</span>
+
+          <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;eprint&quot;</span><span class="p">:</span>
+              <span class="bp">self</span><span class="o">.</span><span class="n">eprint</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;arXiv:&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;astro-ph/&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+          <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;isbn&quot;</span><span class="p">:</span>
+              <span class="bp">self</span><span class="o">.</span><span class="n">isbn</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+      <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;authors&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">]:</span>
+          <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+              <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Bibtex entry &#39;</span><span class="si">{self.key}</span><span class="s2">&#39; is missing author, &quot;</span>
+                                <span class="s2">&quot;title, or year.&quot;</span><span class="p">)</span>
+      <span class="c1"># First-author fields used for sorting:</span>
+      <span class="c1"># Note this differs from Author[0], since fields are &#39;purified&#39;,</span>
+      <span class="c1"># and &#39;first&#39; goes only by initials().</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">sort_author</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Sort_author</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">purify</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">authors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">last</span><span class="p">),</span>
+                                       <span class="n">u</span><span class="o">.</span><span class="n">initials</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">authors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">first</span><span class="p">),</span>
+                                       <span class="n">u</span><span class="o">.</span><span class="n">purify</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">authors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">von</span><span class="p">),</span>
+                                       <span class="n">u</span><span class="o">.</span><span class="n">purify</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">authors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">jr</span><span class="p">),</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">year</span><span class="p">,</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">month</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">update_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_key</span><span class="p">):</span>
+      <span class="sd">&quot;&quot;&quot;Update key with new_key, making sure to also update content.&quot;&quot;&quot;</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="n">new_key</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">new_key</span>
+
+  <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+      <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span>
+
+  <span class="k">def</span> <span class="nf">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">author</span><span class="p">):</span>
+      <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">      Check if given author is in the author list of this bib entry.</span>
+<span class="sd">      If the &#39;author&#39; string begins with the &#39;^&#39; character, match</span>
+<span class="sd">      only against the first author.</span>
+
+<span class="sd">      Parameters</span>
+<span class="sd">      ----------</span>
+<span class="sd">      author: String</span>
+<span class="sd">         An author name in a valid BibTeX format.</span>
+
+<span class="sd">      Examples</span>
+<span class="sd">      --------</span>
+<span class="sd">      &gt;&gt;&gt; import bibmanager.bib_manager as bm</span>
+<span class="sd">      &gt;&gt;&gt; bib = bm.Bib(&#39;&#39;&#39;@ARTICLE{DoeEtal2020,</span>
+<span class="sd">                      author = {{Doe}, J. and {Perez}, J. and {Dupont}, J.},</span>
+<span class="sd">                       title = &quot;What Have the Astromomers ever Done for Us?&quot;,</span>
+<span class="sd">                     journal = {\apj},</span>
+<span class="sd">                        year = 2020,}&#39;&#39;&#39;)</span>
+<span class="sd">      &gt;&gt;&gt; # Check for first author:</span>
+<span class="sd">      &gt;&gt;&gt; &#39;Doe, J&#39; in bib</span>
+<span class="sd">      True</span>
+<span class="sd">      &gt;&gt;&gt; # Format doesn&#39;t matter, as long as it is a valid format:</span>
+<span class="sd">      &gt;&gt;&gt; &#39;John Doe&#39; in bib</span>
+<span class="sd">      True</span>
+<span class="sd">      &gt;&gt;&gt; # Neglecting first&#39;s initials still match:</span>
+<span class="sd">      &gt;&gt;&gt; &#39;Doe&#39; in bib</span>
+<span class="sd">      True</span>
+<span class="sd">      &gt;&gt;&gt; # But, non-matching initials wont match:</span>
+<span class="sd">      &gt;&gt;&gt; &#39;Doe, K.&#39; in bib</span>
+<span class="sd">      False</span>
+<span class="sd">      &gt;&gt;&gt; # Match against first author only if string begins with &#39;^&#39;:</span>
+<span class="sd">      &gt;&gt;&gt; &#39;^Doe&#39; in bib</span>
+<span class="sd">      True</span>
+<span class="sd">      &gt;&gt;&gt; &#39;^Perez&#39; in bib</span>
+<span class="sd">      False</span>
+<span class="sd">      &quot;&quot;&quot;</span>
+      <span class="c1"># Check first-author mark:</span>
+      <span class="k">if</span> <span class="n">author</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;^&#39;</span><span class="p">:</span>
+          <span class="n">author</span> <span class="o">=</span> <span class="n">author</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+          <span class="n">authors</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">authors</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+      <span class="k">else</span><span class="p">:</span>
+          <span class="n">authors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">authors</span>
+      <span class="c1"># Parse and purify input author name:</span>
+      <span class="n">author</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">parse_name</span><span class="p">(</span><span class="n">author</span><span class="p">)</span>
+      <span class="n">first</span>  <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">initials</span><span class="p">(</span><span class="n">author</span><span class="o">.</span><span class="n">first</span><span class="p">)</span>
+      <span class="n">von</span>    <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">purify</span><span class="p">(</span><span class="n">author</span><span class="o">.</span><span class="n">von</span><span class="p">)</span>
+      <span class="n">last</span>   <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">purify</span><span class="p">(</span><span class="n">author</span><span class="o">.</span><span class="n">last</span><span class="p">)</span>
+      <span class="n">jr</span>     <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">purify</span><span class="p">(</span><span class="n">author</span><span class="o">.</span><span class="n">jr</span><span class="p">)</span>
+      <span class="c1"># Remove non-matching authors by each non-empty field:</span>
+      <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">jr</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+          <span class="n">authors</span> <span class="o">=</span> <span class="p">[</span><span class="n">author</span> <span class="k">for</span> <span class="n">author</span> <span class="ow">in</span> <span class="n">authors</span> <span class="k">if</span> <span class="n">jr</span>  <span class="o">==</span> <span class="n">u</span><span class="o">.</span><span class="n">purify</span><span class="p">(</span><span class="n">author</span><span class="o">.</span><span class="n">jr</span><span class="p">)]</span>
+      <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">von</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+          <span class="n">authors</span> <span class="o">=</span> <span class="p">[</span><span class="n">author</span> <span class="k">for</span> <span class="n">author</span> <span class="ow">in</span> <span class="n">authors</span>
+                     <span class="k">if</span> <span class="n">von</span> <span class="o">==</span> <span class="n">u</span><span class="o">.</span><span class="n">purify</span><span class="p">(</span><span class="n">author</span><span class="o">.</span><span class="n">von</span><span class="p">)]</span>
+      <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">first</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+          <span class="n">authors</span> <span class="o">=</span> <span class="p">[</span><span class="n">author</span> <span class="k">for</span> <span class="n">author</span> <span class="ow">in</span> <span class="n">authors</span>
+                     <span class="k">if</span> <span class="n">first</span> <span class="o">==</span> <span class="n">u</span><span class="o">.</span><span class="n">initials</span><span class="p">(</span><span class="n">author</span><span class="o">.</span><span class="n">first</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">first</span><span class="p">)]]</span>
+      <span class="n">authors</span> <span class="o">=</span> <span class="p">[</span><span class="n">author</span> <span class="k">for</span> <span class="n">author</span> <span class="ow">in</span> <span class="n">authors</span> <span class="k">if</span> <span class="n">last</span> <span class="o">==</span> <span class="n">u</span><span class="o">.</span><span class="n">purify</span><span class="p">(</span><span class="n">author</span><span class="o">.</span><span class="n">last</span><span class="p">)]</span>
+      <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">authors</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
+
+  <span class="c1"># https://docs.python.org/3.6/library/stdtypes.html</span>
+  <span class="k">def</span> <span class="nf">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+      <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">      Evaluate sequentially according to sort_author&#39;s fields: last,</span>
+<span class="sd">      first, von, and jr, year, and month.  If any of these</span>
+<span class="sd">      fields are equal, go on to next field to compare.</span>
+<span class="sd">      &quot;&quot;&quot;</span>
+      <span class="n">s</span><span class="p">,</span> <span class="n">o</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_author</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">sort_author</span>
+      <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">last</span> <span class="o">!=</span> <span class="n">o</span><span class="o">.</span><span class="n">last</span><span class="p">:</span>
+          <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">last</span> <span class="o">&lt;</span> <span class="n">o</span><span class="o">.</span><span class="n">last</span>
+      <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">first</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">first</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+          <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">first</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">o</span><span class="o">.</span><span class="n">first</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]:</span>
+              <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">first</span> <span class="o">&lt;</span> <span class="n">o</span><span class="o">.</span><span class="n">first</span>
+      <span class="k">else</span><span class="p">:</span>
+          <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">first</span> <span class="o">!=</span> <span class="n">o</span><span class="o">.</span><span class="n">first</span><span class="p">:</span>
+              <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">first</span> <span class="o">&lt;</span> <span class="n">o</span><span class="o">.</span><span class="n">first</span>
+      <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">von</span> <span class="o">!=</span> <span class="n">o</span><span class="o">.</span><span class="n">von</span><span class="p">:</span>
+          <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">von</span> <span class="o">&lt;</span> <span class="n">o</span><span class="o">.</span><span class="n">von</span>
+      <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">jr</span> <span class="o">!=</span> <span class="n">o</span><span class="o">.</span><span class="n">jr</span><span class="p">:</span>
+          <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">jr</span> <span class="o">&lt;</span> <span class="n">o</span><span class="o">.</span><span class="n">jr</span>
+      <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">year</span> <span class="o">!=</span> <span class="n">o</span><span class="o">.</span><span class="n">year</span><span class="p">:</span>
+          <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">year</span> <span class="o">&lt;</span> <span class="n">o</span><span class="o">.</span><span class="n">year</span>
+      <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">month</span> <span class="o">&lt;</span> <span class="n">o</span><span class="o">.</span><span class="n">month</span>
+
+  <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+      <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">      Check whether self and other have same sort_author (first author)</span>
+<span class="sd">      and year/month.</span>
+<span class="sd">      Evaluate to equal by first initial if one entry has less initials</span>
+<span class="sd">      than the other.</span>
+<span class="sd">      &quot;&quot;&quot;</span>
+      <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sort_author</span><span class="o">.</span><span class="n">first</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">sort_author</span><span class="o">.</span><span class="n">first</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+          <span class="n">first</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_author</span><span class="o">.</span><span class="n">first</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">sort_author</span><span class="o">.</span><span class="n">first</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span>
+      <span class="k">else</span><span class="p">:</span>
+          <span class="n">first</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_author</span><span class="o">.</span><span class="n">first</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">sort_author</span><span class="o">.</span><span class="n">first</span>
+
+      <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sort_author</span><span class="o">.</span><span class="n">last</span>  <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">sort_author</span><span class="o">.</span><span class="n">last</span>
+          <span class="ow">and</span> <span class="n">first</span>
+          <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_author</span><span class="o">.</span><span class="n">von</span>   <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">sort_author</span><span class="o">.</span><span class="n">von</span>
+          <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_author</span><span class="o">.</span><span class="n">jr</span>    <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">sort_author</span><span class="o">.</span><span class="n">jr</span>
+          <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_author</span><span class="o">.</span><span class="n">year</span>  <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">sort_author</span><span class="o">.</span><span class="n">year</span>
+          <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_author</span><span class="o">.</span><span class="n">month</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">sort_author</span><span class="o">.</span><span class="n">month</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">__le__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+      <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__lt__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__eq__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">published</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+      <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">      Published status according to the ADS bibcode field:</span>
+<span class="sd">         Return -1 if bibcode is None.</span>
+<span class="sd">         Return  0 if bibcode is arXiv.</span>
+<span class="sd">         Return  1 if bibcode is peer-reviewed journal.</span>
+<span class="sd">      &quot;&quot;&quot;</span>
+      <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bibcode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+          <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+      <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bibcode</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;arXiv&#39;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+
+
+  <span class="k">def</span> <span class="nf">get_authors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">short</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+      <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">      wrapper for string representation for the author list.</span>
+<span class="sd">      See bib_manager.get_authors() for docstring.</span>
+<span class="sd">      &quot;&quot;&quot;</span>
+      <span class="k">return</span> <span class="n">u</span><span class="o">.</span><span class="n">get_authors</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">authors</span><span class="p">,</span> <span class="n">short</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="display_bibs"><a class="viewcode-back" href="../../../api.html#bibmanager.bib_manager.display_bibs">[docs]</a><span class="k">def</span> <span class="nf">display_bibs</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">bibs</span><span class="p">):</span>
+  <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Display a list of bib entries on screen with flying colors.</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  labels: List of Strings</span>
+<span class="sd">     Header labels to show above each Bib() entry.</span>
+<span class="sd">  bibs: List of Bib() objects</span>
+<span class="sd">     BibTeX entries to display.</span>
+
+<span class="sd">  Examples</span>
+<span class="sd">  --------</span>
+<span class="sd">  &gt;&gt;&gt; import bibmanager.bib_manager as bm</span>
+<span class="sd">  &gt;&gt;&gt; e1 = &#39;&#39;&#39;@Misc{JonesEtal2001scipy,</span>
+<span class="sd">         author = {Eric Jones and Travis Oliphant and Pearu Peterson},</span>
+<span class="sd">         title  = {{SciPy}: Open source scientific tools for {Python}},</span>
+<span class="sd">         year   = {2001},</span>
+<span class="sd">       }&#39;&#39;&#39;</span>
+<span class="sd">  &gt;&gt;&gt; e2 = &#39;&#39;&#39;@Misc{Jones2001,</span>
+<span class="sd">         author = {Eric Jones and Travis Oliphant and Pearu Peterson},</span>
+<span class="sd">         title  = {SciPy: Open source scientific tools for Python},</span>
+<span class="sd">         year   = {2001},</span>
+<span class="sd">       }&#39;&#39;&#39;</span>
+<span class="sd">  &gt;&gt;&gt; bibs = [bm.Bib(e1), bm.Bib(e2)]</span>
+<span class="sd">  &gt;&gt;&gt; bm.display_bibs([&quot;DATABASE:\n&quot;, &quot;NEW:\n&quot;], bibs)</span>
+<span class="sd">  ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span>
+<span class="sd">  DATABASE:</span>
+<span class="sd">  @Misc{JonesEtal2001scipy,</span>
+<span class="sd">         author = {Eric Jones and Travis Oliphant and Pearu Peterson},</span>
+<span class="sd">         title  = {{SciPy}: Open source scientific tools for {Python}},</span>
+<span class="sd">         year   = {2001},</span>
+<span class="sd">       }</span>
+
+<span class="sd">  NEW:</span>
+<span class="sd">  @Misc{Jones2001,</span>
+<span class="sd">         author = {Eric Jones and Travis Oliphant and Pearu Peterson},</span>
+<span class="sd">         title  = {SciPy: Open source scientific tools for Python},</span>
+<span class="sd">         year   = {2001},</span>
+<span class="sd">       }</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">style</span> <span class="o">=</span> <span class="n">prompt_toolkit</span><span class="o">.</span><span class="n">styles</span><span class="o">.</span><span class="n">style_from_pygments_cls</span><span class="p">(</span>
+              <span class="n">pygments</span><span class="o">.</span><span class="n">styles</span><span class="o">.</span><span class="n">get_style_by_name</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;style&#39;</span><span class="p">)))</span>
+  <span class="k">if</span> <span class="n">labels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">bibs</span><span class="p">]</span>
+  <span class="n">tokens</span> <span class="o">=</span> <span class="p">[(</span><span class="n">Token</span><span class="o">.</span><span class="n">Comment</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">BANNER</span><span class="p">)]</span>
+  <span class="k">for</span> <span class="n">label</span><span class="p">,</span><span class="n">bib</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">bibs</span><span class="p">):</span>
+      <span class="n">tokens</span> <span class="o">+=</span> <span class="p">[(</span><span class="n">Token</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="n">label</span><span class="p">)]</span>
+      <span class="n">tokens</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="n">pygments</span><span class="o">.</span><span class="n">lex</span><span class="p">(</span><span class="n">bib</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="n">lexer</span><span class="o">=</span><span class="n">BibTeXLexer</span><span class="p">()))</span>
+      <span class="n">tokens</span> <span class="o">+=</span> <span class="p">[(</span><span class="n">Token</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)]</span>
+  <span class="n">print_formatted_text</span><span class="p">(</span><span class="n">PygmentsTokens</span><span class="p">(</span><span class="n">tokens</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="remove_duplicates"><a class="viewcode-back" href="../../../api.html#bibmanager.bib_manager.remove_duplicates">[docs]</a><span class="k">def</span> <span class="nf">remove_duplicates</span><span class="p">(</span><span class="n">bibs</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Look for duplicates (within a same list of entries) by field and</span>
+<span class="sd">  remove them (in place).</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  bibs: List of Bib() objects</span>
+<span class="sd">     Entries to filter.</span>
+<span class="sd">  field: String</span>
+<span class="sd">     Field to use for filtering (&#39;doi&#39;, &#39;isbn&#39;, &#39;bibcode&#39;, or &#39;eprint&#39;).</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">fieldlist</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">bib</span><span class="p">,</span><span class="n">field</span><span class="p">)</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">bib</span><span class="p">,</span><span class="n">field</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+               <span class="k">for</span> <span class="n">bib</span> <span class="ow">in</span> <span class="n">bibs</span><span class="p">]</span>
+  <span class="c1"># No entries:</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fieldlist</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="k">return</span>
+
+  <span class="n">ubib</span><span class="p">,</span> <span class="n">uinv</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">fieldlist</span><span class="p">,</span> <span class="n">return_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                 <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+  <span class="n">multis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">counts</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">ubib</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+
+  <span class="c1"># No duplicates:</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">multis</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="k">return</span>
+
+  <span class="n">removes</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">multis</span><span class="p">:</span>
+      <span class="n">all_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">uinv</span> <span class="o">==</span> <span class="n">m</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+      <span class="n">entries</span> <span class="o">=</span> <span class="p">[</span><span class="n">bibs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">content</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">all_indices</span><span class="p">]</span>
+
+      <span class="c1"># Remove identical entries:</span>
+      <span class="n">uentries</span><span class="p">,</span> <span class="n">uidx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">entries</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+      <span class="n">indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">all_indices</span><span class="p">[</span><span class="n">uidx</span><span class="p">])</span>
+      <span class="n">removes</span> <span class="o">+=</span> <span class="p">[</span><span class="n">idx</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">all_indices</span> <span class="k">if</span> <span class="n">idx</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">]</span>
+      <span class="n">nbibs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">uentries</span><span class="p">)</span>
+      <span class="k">if</span> <span class="n">nbibs</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+          <span class="k">continue</span>
+
+      <span class="c1"># Pick peer-reviewed over ArXiv over non-ADS:</span>
+      <span class="n">pubs</span> <span class="o">=</span> <span class="p">[</span><span class="n">bibs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">published</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">]</span>
+      <span class="n">pubmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">pubs</span><span class="p">)</span>
+      <span class="n">removes</span> <span class="o">+=</span> <span class="p">[</span><span class="n">idx</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span><span class="n">pub</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span><span class="n">pubs</span><span class="p">)</span> <span class="k">if</span> <span class="n">pub</span> <span class="o">&lt;</span>  <span class="n">pubmax</span><span class="p">]</span>
+      <span class="n">indices</span>  <span class="o">=</span> <span class="p">[</span><span class="n">idx</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span><span class="n">pub</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span><span class="n">pubs</span><span class="p">)</span> <span class="k">if</span> <span class="n">pub</span> <span class="o">==</span> <span class="n">pubmax</span><span class="p">]</span>
+      <span class="n">nbibs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+      <span class="k">if</span> <span class="n">nbibs</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+          <span class="k">continue</span>
+
+      <span class="c1"># Querry the user:</span>
+      <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">idx</span> <span class="o">+</span> <span class="s2">&quot; ENTRY:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">ordinal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nbibs</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+      <span class="n">display_bibs</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="p">[</span><span class="n">bibs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">])</span>
+      <span class="n">s</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">req_input</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Duplicate </span><span class="si">{field}</span><span class="s2"> field, []keep first, [2]second, &quot;</span>
+           <span class="s2">&quot;[3]third, etc.: &quot;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span><span class="o">+</span><span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nbibs</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+      <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+          <span class="n">indices</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+      <span class="k">else</span><span class="p">:</span>
+          <span class="n">indices</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+      <span class="n">removes</span> <span class="o">+=</span> <span class="n">indices</span>
+
+  <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">removes</span><span class="p">)):</span>
+      <span class="n">bibs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="filter_field"><a class="viewcode-back" href="../../../api.html#bibmanager.bib_manager.filter_field">[docs]</a><span class="k">def</span> <span class="nf">filter_field</span><span class="p">(</span><span class="n">bibs</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">take</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Filter duplicate entries by field between new and bibs.</span>
+<span class="sd">  This routine modifies new removing the duplicates, and may modify</span>
+<span class="sd">  bibs (depending on take argument).</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  bibs: List of Bib() objects</span>
+<span class="sd">     Database entries.</span>
+<span class="sd">  new: List of Bib() objects</span>
+<span class="sd">     New entries to add.</span>
+<span class="sd">  field: String</span>
+<span class="sd">     Field to use for filtering.</span>
+<span class="sd">  take: String</span>
+<span class="sd">     Decision-making protocol to resolve conflicts when there are</span>
+<span class="sd">     partially duplicated entries.</span>
+<span class="sd">     &#39;old&#39;: Take the database entry over new.</span>
+<span class="sd">     &#39;new&#39;: Take the new entry over the database.</span>
+<span class="sd">     &#39;ask&#39;: Ask user to decide (interactively).</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">e</span><span class="p">,</span><span class="n">field</span><span class="p">)</span>  <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">bibs</span><span class="p">]</span>
+  <span class="n">removes</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">e</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">new</span><span class="p">):</span>
+      <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">e</span><span class="p">,</span><span class="n">field</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>  <span class="ow">or</span>  <span class="nb">getattr</span><span class="p">(</span><span class="n">e</span><span class="p">,</span><span class="n">field</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+          <span class="k">continue</span>
+      <span class="n">idx</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">e</span><span class="p">,</span><span class="n">field</span><span class="p">))</span>
+      <span class="c1"># Replace if duplicate and new has newer bibcode:</span>
+      <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">published</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">bibs</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">published</span><span class="p">()</span> <span class="ow">or</span> <span class="n">take</span><span class="o">==</span><span class="s1">&#39;new&#39;</span><span class="p">:</span>
+          <span class="n">bibs</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span>
+      <span class="c1"># Look for different-key conflict:</span>
+      <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">key</span> <span class="o">!=</span> <span class="n">bibs</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">key</span> <span class="ow">and</span> <span class="n">take</span> <span class="o">==</span> <span class="s2">&quot;ask&quot;</span><span class="p">:</span>
+          <span class="n">display_bibs</span><span class="p">([</span><span class="s2">&quot;DATABASE:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;NEW:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">],</span> <span class="p">[</span><span class="n">bibs</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">e</span><span class="p">])</span>
+          <span class="n">s</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">req_input</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Duplicate </span><span class="si">{field}</span><span class="s2"> field but different keys, []keep &quot;</span>
+                           <span class="s2">&quot;database or take [n]ew: &quot;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;n&quot;</span><span class="p">])</span>
+          <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="s2">&quot;n&quot;</span><span class="p">:</span>
+              <span class="n">bibs</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span>
+      <span class="n">removes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">removes</span><span class="p">)):</span>
+      <span class="n">new</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="loadfile"><a class="viewcode-back" href="../../../api.html#bibmanager.bib_manager.loadfile">[docs]</a><span class="k">def</span> <span class="nf">loadfile</span><span class="p">(</span><span class="n">bibfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Create a list of Bib() objects from a BibTeX file (.bib file).</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  bibfile: String</span>
+<span class="sd">     Path to an existing .bib file.</span>
+<span class="sd">  text: String</span>
+<span class="sd">     Content of a .bib file (ignored if bibfile is not None).</span>
+
+<span class="sd">  Returns</span>
+<span class="sd">  -------</span>
+<span class="sd">  bibs: List of Bib() objects</span>
+<span class="sd">     List of Bib() objects of BibTeX entries in bibfile, sorted by</span>
+<span class="sd">     Sort_author() fields.</span>
+
+<span class="sd">  Examples</span>
+<span class="sd">  --------</span>
+<span class="sd">  &gt;&gt;&gt; import bibmanager.bib_manager as bm</span>
+<span class="sd">  &gt;&gt;&gt; import os</span>
+<span class="sd">  &gt;&gt;&gt; bibfile = os.path.expanduser(&quot;~&quot;) + &quot;/.bibmanager/examples/sample.bib&quot;</span>
+<span class="sd">  &gt;&gt;&gt; bibs = bm.loadfile(bibfile)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">entries</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Store Lists of bibtex entries</span>
+  <span class="n">entry</span>   <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Store lines in the bibtex</span>
+  <span class="n">parcount</span> <span class="o">=</span> <span class="mi">0</span>
+
+  <span class="c1"># Load a bib file:</span>
+  <span class="k">if</span> <span class="n">bibfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">bibfile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+  <span class="k">elif</span> <span class="n">text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="n">f</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+  <span class="k">else</span><span class="p">:</span>
+      <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Missing input arguments for loadfile(), at least &quot;</span>
+                      <span class="s2">&quot;bibfile or text must be provided.&quot;</span><span class="p">)</span>
+
+  <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+      <span class="c1"># New entry:</span>
+      <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">parcount</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+          <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Mismatched braces in line </span><span class="si">{i}</span><span class="s2">:</span><span class="se">\n</span><span class="s2">&#39;{line.rstrip()}&#39;&quot;</span><span class="p">)</span>
+
+      <span class="n">parcount</span> <span class="o">+=</span> <span class="n">u</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+      <span class="k">if</span> <span class="n">parcount</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">entry</span> <span class="o">==</span> <span class="p">[]:</span>
+          <span class="k">continue</span>
+
+      <span class="k">if</span> <span class="n">parcount</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+          <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Mismatched braces in line </span><span class="si">{i}</span><span class="s2">:</span><span class="se">\n</span><span class="s2">&#39;{line.rstrip()}&#39;&quot;</span><span class="p">)</span>
+
+      <span class="n">entry</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">())</span>
+
+      <span class="k">if</span> <span class="n">parcount</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">entry</span> <span class="o">!=</span> <span class="p">[]:</span>
+          <span class="n">entries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">entry</span><span class="p">))</span>
+          <span class="n">entry</span> <span class="o">=</span> <span class="p">[]</span>
+
+  <span class="k">if</span> <span class="n">bibfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+  <span class="k">if</span> <span class="n">parcount</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid input, mistmatched braces at end of file.&quot;</span><span class="p">)</span>
+
+  <span class="n">bibs</span> <span class="o">=</span> <span class="p">[</span><span class="n">Bib</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">entries</span><span class="p">]</span>
+
+  <span class="n">remove_duplicates</span><span class="p">(</span><span class="n">bibs</span><span class="p">,</span> <span class="s2">&quot;doi&quot;</span><span class="p">)</span>
+  <span class="n">remove_duplicates</span><span class="p">(</span><span class="n">bibs</span><span class="p">,</span> <span class="s2">&quot;isbn&quot;</span><span class="p">)</span>
+  <span class="n">remove_duplicates</span><span class="p">(</span><span class="n">bibs</span><span class="p">,</span> <span class="s2">&quot;bibcode&quot;</span><span class="p">)</span>
+  <span class="n">remove_duplicates</span><span class="p">(</span><span class="n">bibs</span><span class="p">,</span> <span class="s2">&quot;eprint&quot;</span><span class="p">)</span>
+
+  <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">bibs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="save"><a class="viewcode-back" href="../../../api.html#bibmanager.bib_manager.save">[docs]</a><span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="n">entries</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Save list of Bib() entries into bibmanager pickle database.</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  entries: List of Bib() objects</span>
+<span class="sd">     bib files to store.</span>
+
+<span class="sd">  Examples</span>
+<span class="sd">  --------</span>
+<span class="sd">  &gt;&gt;&gt; import bibmanager.bib_manager as bm</span>
+<span class="sd">  &gt;&gt;&gt; # TBD: Load some entries</span>
+<span class="sd">  &gt;&gt;&gt; bm.save(entries)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="c1"># FINDME: Don&#39;t pickle-save the Bib() objects directly, but store them</span>
+  <span class="c1">#      as dict objects. (More standard / backward compatibility)</span>
+  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">BM_DATABASE</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handle</span><span class="p">:</span>
+      <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">entries</span><span class="p">,</span> <span class="n">handle</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="load"><a class="viewcode-back" href="../../../api.html#bibmanager.bib_manager.load">[docs]</a><span class="k">def</span> <span class="nf">load</span><span class="p">():</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Load the bibmanager database of BibTeX entries.</span>
+
+<span class="sd">  Returns</span>
+<span class="sd">  -------</span>
+<span class="sd">  List of Bib() entries.  Return an empty list if there is no database</span>
+<span class="sd">  file.</span>
+
+<span class="sd">  Examples</span>
+<span class="sd">  --------</span>
+<span class="sd">  &gt;&gt;&gt; import bibmanager.bib_manager as bm</span>
+<span class="sd">  &gt;&gt;&gt; bibs = bm.load()</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">try</span><span class="p">:</span>
+      <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">BM_DATABASE</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handle</span><span class="p">:</span>
+          <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
+  <span class="k">except</span><span class="p">:</span>
+      <span class="c1"># TBD: I think I&#39;m not defaulting to this case anymore, I should</span>
+      <span class="c1"># let it break if the input file does not exist</span>
+      <span class="k">return</span> <span class="p">[]</span></div>
+
+
+<div class="viewcode-block" id="export"><a class="viewcode-back" href="../../../api.html#bibmanager.bib_manager.export">[docs]</a><span class="k">def</span> <span class="nf">export</span><span class="p">(</span><span class="n">entries</span><span class="p">,</span> <span class="n">bibfile</span><span class="o">=</span><span class="n">u</span><span class="o">.</span><span class="n">BM_BIBFILE</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Export list of Bib() entries into a .bib file.</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  entries: List of Bib() objects</span>
+<span class="sd">     Entries to export.</span>
+<span class="sd">  bibfile: String</span>
+<span class="sd">     Output .bib file name.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="c1"># Header for identification purposes:</span>
+  <span class="n">header</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;This file was created by bibmanager</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;https://pcubillos.github.io/bibmanager/</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="p">]</span>
+  <span class="c1"># Care not to overwrite user&#39;s bib files:</span>
+  <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">bibfile</span><span class="p">):</span>
+      <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">bibfile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+          <span class="n">head</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+      <span class="k">if</span> <span class="n">head</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">!=</span> <span class="n">header</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+          <span class="n">path</span><span class="p">,</span> <span class="n">bfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">bibfile</span><span class="p">))</span>
+          <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">bibfile</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;/orig_&#39;</span><span class="p">,</span>
+                                     <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()),</span> <span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="n">bfile</span><span class="p">]))</span>
+  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">bibfile</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+      <span class="n">f</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+      <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">entries</span><span class="p">:</span>
+          <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+          <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="merge"><a class="viewcode-back" href="../../../api.html#bibmanager.bib_manager.merge">[docs]</a><span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="n">bibfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">new</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">take</span><span class="o">=</span><span class="s2">&quot;old&quot;</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Merge entries from a new bibfile into the bibmanager database</span>
+<span class="sd">  (or into an input database).</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  bibfile: String</span>
+<span class="sd">      New .bib file to merge into the bibmanager database.</span>
+<span class="sd">  new: List of Bib() objects</span>
+<span class="sd">      List of new BibTeX entries (ignored if bibfile is not None).</span>
+<span class="sd">  take: String</span>
+<span class="sd">      Decision-making protocol to resolve conflicts when there are</span>
+<span class="sd">      partially duplicated entries.</span>
+<span class="sd">      &#39;old&#39;: Take the database entry over new.</span>
+<span class="sd">      &#39;new&#39;: Take the new entry over the database.</span>
+<span class="sd">      &#39;ask&#39;: Ask user to decide (interactively).</span>
+<span class="sd">  base: List of Bib() objects</span>
+<span class="sd">      If None, merge new entries into the bibmanager database.</span>
+<span class="sd">      If not None, merge new intries into base.</span>
+
+<span class="sd">  Returns</span>
+<span class="sd">  -------</span>
+<span class="sd">  bibs: List of Bib() objects</span>
+<span class="sd">      Merged list of BibTeX entries.</span>
+
+<span class="sd">  Examples</span>
+<span class="sd">  --------</span>
+<span class="sd">  &gt;&gt;&gt; import bibmanager.bib_manager as bm</span>
+<span class="sd">  &gt;&gt;&gt; import os</span>
+<span class="sd">  &gt;&gt;&gt; # TBD: Need to add sample2.bib into package.</span>
+<span class="sd">  &gt;&gt;&gt; newbib = os.path.expanduser(&quot;~&quot;) + &quot;/.bibmanager/examples/sample2.bib&quot;</span>
+<span class="sd">  &gt;&gt;&gt; # Merge newbib into database:</span>
+<span class="sd">  &gt;&gt;&gt; bm.merge(newbib, take=&#39;old&#39;)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">if</span> <span class="n">base</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="n">bibs</span> <span class="o">=</span> <span class="n">load</span><span class="p">()</span>
+  <span class="k">else</span><span class="p">:</span>
+      <span class="n">bibs</span> <span class="o">=</span> <span class="n">base</span>
+
+  <span class="k">if</span> <span class="n">bibfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="n">new</span> <span class="o">=</span> <span class="n">loadfile</span><span class="p">(</span><span class="n">bibfile</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">new</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="k">return</span>
+
+  <span class="c1"># Filter duplicates by field:</span>
+  <span class="n">filter_field</span><span class="p">(</span><span class="n">bibs</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="s2">&quot;doi&quot;</span><span class="p">,</span>     <span class="n">take</span><span class="p">)</span>
+  <span class="n">filter_field</span><span class="p">(</span><span class="n">bibs</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="s2">&quot;isbn&quot;</span><span class="p">,</span>    <span class="n">take</span><span class="p">)</span>
+  <span class="n">filter_field</span><span class="p">(</span><span class="n">bibs</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="s2">&quot;bibcode&quot;</span><span class="p">,</span> <span class="n">take</span><span class="p">)</span>
+  <span class="n">filter_field</span><span class="p">(</span><span class="n">bibs</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="s2">&quot;eprint&quot;</span><span class="p">,</span>  <span class="n">take</span><span class="p">)</span>
+
+  <span class="c1"># Filter duplicate key:</span>
+  <span class="n">keep</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">new</span><span class="p">),</span> <span class="nb">bool</span><span class="p">)</span>
+  <span class="n">bm_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">key</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">bibs</span><span class="p">]</span>
+  <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">e</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">new</span><span class="p">):</span>
+      <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">bm_keys</span><span class="p">:</span>
+          <span class="n">keep</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+          <span class="k">continue</span>
+      <span class="n">idx</span> <span class="o">=</span> <span class="n">bm_keys</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+      <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">content</span> <span class="o">==</span> <span class="n">bibs</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">content</span><span class="p">:</span>
+          <span class="k">continue</span> <span class="c1"># Duplicate, do not take</span>
+      <span class="k">else</span><span class="p">:</span>
+          <span class="n">display_bibs</span><span class="p">([</span><span class="s2">&quot;DATABASE:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;NEW:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">],</span> <span class="p">[</span><span class="n">bibs</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">e</span><span class="p">])</span>
+          <span class="n">s</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Duplicate key but content differ, []ignore new, &quot;</span>
+                    <span class="s2">&quot;take [n]ew, or</span><span class="se">\n</span><span class="s2">rename key of new entry: &quot;</span><span class="p">)</span>
+          <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="s2">&quot;n&quot;</span><span class="p">:</span>
+              <span class="n">bibs</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span>
+          <span class="k">elif</span> <span class="n">s</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+              <span class="n">new</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">s</span>
+              <span class="n">new</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+              <span class="n">keep</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+  <span class="n">new</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span><span class="p">,</span><span class="n">keeper</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">new</span><span class="p">,</span><span class="n">keep</span><span class="p">)</span> <span class="k">if</span> <span class="n">keeper</span><span class="p">]</span>
+
+  <span class="c1"># Different key, same title:</span>
+  <span class="n">keep</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">new</span><span class="p">),</span> <span class="nb">bool</span><span class="p">)</span>
+  <span class="n">bm_titles</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">title</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">bibs</span><span class="p">]</span>
+  <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">e</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">new</span><span class="p">):</span>
+      <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">title</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">bm_titles</span><span class="p">:</span>
+          <span class="n">keep</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+          <span class="k">continue</span>
+      <span class="n">idx</span> <span class="o">=</span> <span class="n">bm_titles</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
+      <span class="n">display_bibs</span><span class="p">([</span><span class="s2">&quot;DATABASE:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;NEW:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">],</span> <span class="p">[</span><span class="n">bibs</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">e</span><span class="p">])</span>
+      <span class="n">s</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">req_input</span><span class="p">(</span><span class="s2">&quot;Possible duplicate, same title but keys differ, &quot;</span>
+                      <span class="s2">&quot;[]ignore new, [r]eplace database with new, &quot;</span>
+                      <span class="s2">&quot;or [a]dd new: &quot;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">])</span>
+      <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="s2">&quot;r&quot;</span><span class="p">:</span>
+          <span class="n">bibs</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span>
+      <span class="k">elif</span> <span class="n">s</span> <span class="o">==</span> <span class="s2">&quot;a&quot;</span><span class="p">:</span>
+          <span class="n">keep</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+  <span class="n">new</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span><span class="p">,</span><span class="n">keeper</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">new</span><span class="p">,</span><span class="n">keep</span><span class="p">)</span> <span class="k">if</span> <span class="n">keeper</span><span class="p">]</span>
+
+  <span class="c1"># Add all new entries and sort:</span>
+  <span class="n">bibs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">bibs</span> <span class="o">+</span> <span class="n">new</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Merged {len(new)} new entries.&quot;</span><span class="p">)</span>
+
+  <span class="k">if</span> <span class="n">base</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="n">save</span><span class="p">(</span><span class="n">bibs</span><span class="p">)</span>
+      <span class="n">export</span><span class="p">(</span><span class="n">bibs</span><span class="p">)</span>
+
+  <span class="k">return</span> <span class="n">bibs</span></div>
+
+
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../../api.html#bibmanager.bib_manager.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="n">bibfile</span><span class="o">=</span><span class="n">u</span><span class="o">.</span><span class="n">BM_BIBFILE</span><span class="p">,</span> <span class="n">reset_db</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">reset_config</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Initialize bibmanager, reset database entries and config parameters.</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  bibfile: String</span>
+<span class="sd">     A bibfile to include as the new bibmanager database.</span>
+<span class="sd">     If None, reset the bibmanager database with a clean slate.</span>
+<span class="sd">  reset_db: Bool</span>
+<span class="sd">     If True, reset the bibmanager database.</span>
+<span class="sd">  reset_config: Bool</span>
+<span class="sd">     If True, reset the config file.</span>
+
+<span class="sd">  Examples</span>
+<span class="sd">  --------</span>
+<span class="sd">  &gt;&gt;&gt; import bibmanager.bib_manager as bm</span>
+<span class="sd">  &gt;&gt;&gt; import os</span>
+<span class="sd">  &gt;&gt;&gt; bibfile = os.path.expanduser(&quot;~&quot;) + &quot;/.bibmanager/examples/sample.bib&quot;</span>
+<span class="sd">  &gt;&gt;&gt; bm.init(bibfile)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="c1"># First install ever:</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">HOME</span><span class="p">):</span>
+      <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">HOME</span><span class="p">)</span>
+
+  <span class="c1"># Copy examples folder:</span>
+  <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">HOME</span><span class="o">+</span><span class="s1">&#39;examples/&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+  <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">ROOT</span><span class="o">+</span><span class="s1">&#39;examples/&#39;</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">HOME</span><span class="o">+</span><span class="s1">&#39;examples/&#39;</span><span class="p">)</span>
+
+  <span class="c1"># Make sure config exists before working with the database:</span>
+  <span class="k">if</span> <span class="n">reset_config</span><span class="p">:</span>
+      <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">ROOT</span><span class="o">+</span><span class="s1">&#39;config&#39;</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">HOME</span><span class="o">+</span><span class="s1">&#39;config&#39;</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+      <span class="n">cm</span><span class="o">.</span><span class="n">update_keys</span><span class="p">()</span>
+
+  <span class="k">if</span> <span class="n">reset_db</span><span class="p">:</span>
+      <span class="k">if</span> <span class="n">bibfile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+          <span class="k">with</span> <span class="n">u</span><span class="o">.</span><span class="n">ignored</span><span class="p">(</span><span class="ne">OSError</span><span class="p">):</span>
+              <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">BM_DATABASE</span><span class="p">)</span>
+              <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">BM_BIBFILE</span><span class="p">)</span>
+      <span class="k">else</span><span class="p">:</span>
+          <span class="n">bibs</span> <span class="o">=</span> <span class="n">loadfile</span><span class="p">(</span><span class="n">bibfile</span><span class="p">)</span>
+          <span class="n">save</span><span class="p">(</span><span class="n">bibs</span><span class="p">)</span>
+          <span class="n">export</span><span class="p">(</span><span class="n">bibs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="add_entries"><a class="viewcode-back" href="../../../api.html#bibmanager.bib_manager.add_entries">[docs]</a><span class="k">def</span> <span class="nf">add_entries</span><span class="p">(</span><span class="n">take</span><span class="o">=</span><span class="s1">&#39;ask&#39;</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Manually add BibTeX entries through the prompt.</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  take: String</span>
+<span class="sd">     Decision-making protocol to resolve conflicts when there are</span>
+<span class="sd">     partially duplicated entries.</span>
+<span class="sd">     &#39;old&#39;: Take the database entry over new.</span>
+<span class="sd">     &#39;new&#39;: Take the new entry over the database.</span>
+<span class="sd">     &#39;ask&#39;: Ask user to decide (interactively).</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">style</span> <span class="o">=</span> <span class="n">prompt_toolkit</span><span class="o">.</span><span class="n">styles</span><span class="o">.</span><span class="n">style_from_pygments_cls</span><span class="p">(</span>
+              <span class="n">pygments</span><span class="o">.</span><span class="n">styles</span><span class="o">.</span><span class="n">get_style_by_name</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;style&#39;</span><span class="p">)))</span>
+  <span class="n">newbibs</span> <span class="o">=</span> <span class="n">prompt_toolkit</span><span class="o">.</span><span class="n">prompt</span><span class="p">(</span>
+      <span class="s2">&quot;Enter a BibTeX entry (press META+ENTER or ESCAPE ENTER when done):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+      <span class="n">multiline</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">lexer</span><span class="o">=</span><span class="n">lexer</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">)</span>
+  <span class="n">new</span> <span class="o">=</span> <span class="n">loadfile</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">newbibs</span><span class="p">)</span>
+
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No new entries to add.&quot;</span><span class="p">)</span>
+      <span class="k">return</span>
+
+  <span class="n">merge</span><span class="p">(</span><span class="n">new</span><span class="o">=</span><span class="n">new</span><span class="p">,</span> <span class="n">take</span><span class="o">=</span><span class="n">take</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="edit"><a class="viewcode-back" href="../../../api.html#bibmanager.bib_manager.edit">[docs]</a><span class="k">def</span> <span class="nf">edit</span><span class="p">():</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Manually edit the bibfile database in text editor.</span>
+
+<span class="sd">  Resources</span>
+<span class="sd">  ---------</span>
+<span class="sd">  https://stackoverflow.com/questions/17317219/</span>
+<span class="sd">  https://docs.python.org/3.6/library/subprocess.html</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">export</span><span class="p">(</span><span class="n">load</span><span class="p">(),</span> <span class="n">u</span><span class="o">.</span><span class="n">BM_TMP_BIB</span><span class="p">)</span>
+  <span class="c1"># Open database.bib into temporary file with default text editor</span>
+  <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
+      <span class="n">os</span><span class="o">.</span><span class="n">startfile</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">BM_TMP_BIB</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+      <span class="n">opener</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;text_editor&#39;</span><span class="p">)</span>
+      <span class="k">if</span> <span class="n">opener</span> <span class="o">==</span> <span class="s1">&#39;default&#39;</span><span class="p">:</span>
+          <span class="n">opener</span> <span class="o">=</span> <span class="s2">&quot;open&quot;</span> <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;darwin&quot;</span> <span class="k">else</span> <span class="s2">&quot;xdg-open&quot;</span>
+      <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="n">opener</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">BM_TMP_BIB</span><span class="p">])</span>
+  <span class="c1"># Launch input() call to wait for user to save edits:</span>
+  <span class="n">dummy</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Press ENTER to continue after you edit, save, and close &quot;</span>
+                <span class="s2">&quot;the bib file.&quot;</span><span class="p">)</span>
+  <span class="c1"># Check edits:</span>
+  <span class="k">try</span><span class="p">:</span>
+      <span class="n">new</span> <span class="o">=</span> <span class="n">loadfile</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">BM_TMP_BIB</span><span class="p">)</span>
+  <span class="k">finally</span><span class="p">:</span>
+      <span class="c1"># Always delete the tmp file:</span>
+      <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">BM_TMP_BIB</span><span class="p">)</span>
+  <span class="c1"># Update database if everything went fine:</span>
+  <span class="n">save</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+  <span class="n">export</span><span class="p">(</span><span class="n">new</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="search"><a class="viewcode-back" href="../../../api.html#bibmanager.bib_manager.search">[docs]</a><span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="n">authors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bibcode</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Search in bibmanager database by authors, year, or title keywords.</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  authors: String or List of strings</span>
+<span class="sd">     An author name (or list of names) with BibTeX format (see parse_name()</span>
+<span class="sd">     docstring).  To restrict search to a first author, prepend the</span>
+<span class="sd">     &#39;^&#39; character to a name.</span>
+<span class="sd">  year: Integer or two-element integer tuple</span>
+<span class="sd">     If integer, match against year; if tuple, minimum and maximum</span>
+<span class="sd">     matching years (including).</span>
+<span class="sd">  title: String or iterable (list, tuple, or ndarray of strings)</span>
+<span class="sd">     Match entries that contain all input strings in the title (ignore case).</span>
+<span class="sd">  key: String or list of strings</span>
+<span class="sd">     Match any entry whose key is in the input key.</span>
+<span class="sd">  bibcode: String or list of strings</span>
+<span class="sd">     Match any entry whose bibcode is in the input bibcode.</span>
+
+<span class="sd">  Returns</span>
+<span class="sd">  -------</span>
+<span class="sd">  matches: List of Bib() objects</span>
+<span class="sd">     Entries that match all input criteria.</span>
+
+<span class="sd">  Examples</span>
+<span class="sd">  --------</span>
+<span class="sd">  &gt;&gt;&gt; import bibmanager.bib_manager as bm</span>
+<span class="sd">  &gt;&gt;&gt; # Search by last name:</span>
+<span class="sd">  &gt;&gt;&gt; matches = bm.search(authors=&quot;Cubillos&quot;)</span>
+<span class="sd">  &gt;&gt;&gt; # Search by last name and initial:</span>
+<span class="sd">  &gt;&gt;&gt; matches = bm.search(authors=&quot;Cubillos, P&quot;)</span>
+<span class="sd">  &gt;&gt;&gt; # Search by author in given year:</span>
+<span class="sd">  &gt;&gt;&gt; matches = bm.search(authors=&quot;Cubillos, P&quot;, year=2017)</span>
+<span class="sd">  &gt;&gt;&gt; # Search by first author and co-author (using AND logic):</span>
+<span class="sd">  &gt;&gt;&gt; matches = bm.search(authors=[&quot;^Cubillos&quot;, &quot;Blecic&quot;])</span>
+<span class="sd">  &gt;&gt;&gt; # Search by keyword in title:</span>
+<span class="sd">  &gt;&gt;&gt; matches = bm.search(title=&quot;Spitzer&quot;)</span>
+<span class="sd">  &gt;&gt;&gt; # Search by keywords in title (using AND logic):</span>
+<span class="sd">  &gt;&gt;&gt; matches = bm.search(title=[&quot;HD 189&quot;, &quot;HD 209&quot;])</span>
+<span class="sd">  &gt;&gt;&gt; # Search by key (note that unlike the other fields, key and</span>
+<span class="sd">  &gt;&gt;&gt; # bibcode use OR logic, so you can get many items at once):</span>
+<span class="sd">  &gt;&gt;&gt; matches = bm.search(key=&quot;Astropycollab2013aaAstropy&quot;)</span>
+<span class="sd">  &gt;&gt;&gt; # Search by bibcode (note no need to worry about UTF-8 encoding):</span>
+<span class="sd">  &gt;&gt;&gt; matches = bm.search(bibcode=[&quot;2013A%26A...558A..33A&quot;,</span>
+<span class="sd">  &gt;&gt;&gt;                              &quot;1957RvMP...29..547B&quot;,</span>
+<span class="sd">  &gt;&gt;&gt;                              &quot;2017AJ....153....3C&quot;])</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">matches</span> <span class="o">=</span> <span class="n">load</span><span class="p">()</span>
+  <span class="k">if</span> <span class="n">year</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="k">try</span><span class="p">:</span> <span class="c1"># Assume year = [from_year, to_year]</span>
+          <span class="n">matches</span> <span class="o">=</span> <span class="p">[</span><span class="n">bib</span> <span class="k">for</span> <span class="n">bib</span> <span class="ow">in</span> <span class="n">matches</span> <span class="k">if</span> <span class="n">bib</span><span class="o">.</span><span class="n">year</span> <span class="o">&gt;=</span> <span class="n">year</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+          <span class="n">matches</span> <span class="o">=</span> <span class="p">[</span><span class="n">bib</span> <span class="k">for</span> <span class="n">bib</span> <span class="ow">in</span> <span class="n">matches</span> <span class="k">if</span> <span class="n">bib</span><span class="o">.</span><span class="n">year</span> <span class="o">&lt;=</span> <span class="n">year</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+      <span class="k">except</span><span class="p">:</span>
+          <span class="n">matches</span> <span class="o">=</span> <span class="p">[</span><span class="n">bib</span> <span class="k">for</span> <span class="n">bib</span> <span class="ow">in</span> <span class="n">matches</span> <span class="k">if</span> <span class="n">bib</span><span class="o">.</span><span class="n">year</span> <span class="o">==</span> <span class="n">year</span><span class="p">]</span>
+
+  <span class="k">if</span> <span class="n">authors</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">authors</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+          <span class="n">authors</span> <span class="o">=</span> <span class="p">[</span><span class="n">authors</span><span class="p">]</span>
+      <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">authors</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+          <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid input format for &#39;authors&#39;.&quot;</span><span class="p">)</span>
+      <span class="k">for</span> <span class="n">author</span> <span class="ow">in</span> <span class="n">authors</span><span class="p">:</span>
+          <span class="n">matches</span> <span class="o">=</span> <span class="p">[</span><span class="n">bib</span> <span class="k">for</span> <span class="n">bib</span> <span class="ow">in</span> <span class="n">matches</span> <span class="k">if</span> <span class="n">author</span> <span class="ow">in</span> <span class="n">bib</span><span class="p">]</span>
+
+  <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+          <span class="n">title</span> <span class="o">=</span> <span class="p">[</span><span class="n">title</span><span class="p">]</span>
+      <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+          <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid input format for &#39;title&#39;.&quot;</span><span class="p">)</span>
+      <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">title</span><span class="p">:</span>
+          <span class="n">matches</span> <span class="o">=</span> <span class="p">[</span><span class="n">bib</span> <span class="k">for</span> <span class="n">bib</span> <span class="ow">in</span> <span class="n">matches</span>
+                     <span class="k">if</span> <span class="n">word</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">bib</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+
+  <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+          <span class="n">key</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span><span class="p">]</span>
+      <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+          <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid input format for &#39;key&#39;.&quot;</span><span class="p">)</span>
+      <span class="n">matches</span> <span class="o">=</span> <span class="p">[</span><span class="n">bib</span> <span class="k">for</span> <span class="n">bib</span> <span class="ow">in</span> <span class="n">matches</span> <span class="k">if</span> <span class="n">bib</span><span class="o">.</span><span class="n">key</span> <span class="ow">in</span> <span class="n">key</span><span class="p">]</span>
+
+  <span class="k">if</span> <span class="n">bibcode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bibcode</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+          <span class="n">bibcode</span> <span class="o">=</span> <span class="p">[</span><span class="n">bibcode</span><span class="p">]</span>
+      <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bibcode</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+          <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid input format for &#39;bibcode&#39;.&quot;</span><span class="p">)</span>
+      <span class="c1"># Take care of encoding:</span>
+      <span class="n">bibcode</span> <span class="o">=</span> <span class="p">[</span><span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">unquote</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">bibcode</span><span class="p">]</span>
+      <span class="n">matches</span> <span class="o">=</span> <span class="p">[</span><span class="n">bib</span> <span class="k">for</span> <span class="n">bib</span> <span class="ow">in</span> <span class="n">matches</span> <span class="k">if</span> <span class="n">bib</span><span class="o">.</span><span class="n">bibcode</span> <span class="ow">in</span> <span class="n">bibcode</span><span class="p">]</span>
+
+  <span class="k">return</span> <span class="n">matches</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018-2019, Patricio Cubillos
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../../../',
+              VERSION:'1.1.3',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

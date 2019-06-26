@@ -1,0 +1,563 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>bibmanager.latex_manager.latex_manager &mdash; bibmanager 1.1.3 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> bibmanager
+          
+
+          
+            
+            <img src="../../../_static/logo_bibmanager.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                version 1.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getstarted.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../bibtex.html">BibTeX Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../latex.html">LaTeX Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ads.html">ADS Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq.html">FAQs and Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">bibmanager</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>bibmanager.latex_manager.latex_manager</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for bibmanager.latex_manager.latex_manager</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2018-2019 Patricio Cubillos and contributors.</span>
+<span class="c1"># bibmanager is open-source software under the MIT license (see LICENSE).</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;no_comments&#39;</span><span class="p">,</span> <span class="s1">&#39;citations&#39;</span><span class="p">,</span> <span class="s1">&#39;build_bib&#39;</span><span class="p">,</span> <span class="s1">&#39;clear_latex&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;compile_latex&#39;</span><span class="p">,</span> <span class="s1">&#39;compile_pdflatex&#39;</span><span class="p">]</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">bib_manager</span>    <span class="k">as</span> <span class="n">bm</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">config_manager</span> <span class="k">as</span> <span class="n">cm</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">utils</span> <span class="k">as</span> <span class="n">u</span>
+
+
+<div class="viewcode-block" id="no_comments"><a class="viewcode-back" href="../../../api.html#bibmanager.latex_manager.no_comments">[docs]</a><span class="k">def</span> <span class="nf">no_comments</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Remove comments from tex file, partially inspired by this:</span>
+<span class="sd">    https://stackoverflow.com/questions/2319019</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    text: String</span>
+<span class="sd">       Content from a latex file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    no_comments_text: String</span>
+<span class="sd">       Input text with removed comments (as defined by latex format).</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import bibmanager.latex_manager as lm</span>
+<span class="sd">    &gt;&gt;&gt; text = r&#39;&#39;&#39;</span>
+<span class="sd">    Hello, this is dog.</span>
+<span class="sd">    % This is a comment line.</span>
+<span class="sd">    This line ends with a comment. % A comment</span>
+<span class="sd">    However, this is a percentage \%, not a comment.</span>
+<span class="sd">    OK, byee.&#39;&#39;&#39;</span>
+<span class="sd">    &gt;&gt;&gt; print(lm.no_comments(text))</span>
+<span class="sd">    Hello, this is dog.</span>
+<span class="sd">    This line ends with a comment.</span>
+<span class="sd">    However, this is a percentage \%, not a comment.</span>
+<span class="sd">    OK, byee.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\A%.*|[^</span><span class="se">\\</span><span class="s2">]%.*&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="citations"><a class="viewcode-back" href="../../../api.html#bibmanager.latex_manager.citations">[docs]</a><span class="k">def</span> <span class="nf">citations</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generator to find citations in a tex text.  Partially inspired</span>
+<span class="sd">    by this: https://stackoverflow.com/questions/29976397</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Act recursively in case there are references inside the square</span>
+<span class="sd">    brackets of the cite call.  Only failing case I can think so far</span>
+<span class="sd">    is if there are nested square brackets.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    text: String</span>
+<span class="sd">       String where to search for the latex citations.</span>
+
+<span class="sd">    Yields</span>
+<span class="sd">    ------</span>
+<span class="sd">    citation: String</span>
+<span class="sd">       The citation key.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import bibmanager.latex_manager as lm</span>
+<span class="sd">    &gt;&gt;&gt; import os</span>
+<span class="sd">    &gt;&gt;&gt; # Syntax matches any of these calls:</span>
+<span class="sd">    &gt;&gt;&gt; tex = r&#39;&#39;&#39;</span>
+<span class="sd">    \citep{AuthorA}.</span>
+<span class="sd">    \citep[pre]{AuthorB}.</span>
+<span class="sd">    \citep[pre][post]{AuthorC}.</span>
+<span class="sd">    \citep [pre] [post] {AuthorD}.</span>
+<span class="sd">    \citep[{\pre},][post]{AuthorE, AuthorF}.</span>
+<span class="sd">    \citep[pre][post]{AuthorG} and \citep[pre][post]{AuthorH}.</span>
+<span class="sd">    \citep{</span>
+<span class="sd">     AuthorI}.</span>
+<span class="sd">    \citep</span>
+<span class="sd">    [][]{AuthorJ}.</span>
+<span class="sd">    \citep[pre</span>
+<span class="sd">     ][post] {AuthorK, AuthorL}</span>
+<span class="sd">    \citep[see also \citealp{AuthorM}][]{AuthorN}&#39;&#39;&#39;</span>
+<span class="sd">    &gt;&gt;&gt; for citation in lm.citations(tex):</span>
+<span class="sd">    &gt;&gt;&gt;     print(citation, end=&quot; &quot;)</span>
+<span class="sd">    AuthorA AuthorB AuthorC AuthorD AuthorE AuthorF AuthorG AuthorH AuthorI AuthorJ AuthorK AuthorL AuthorM AuthorN</span>
+
+<span class="sd">    &gt;&gt;&gt; # Match all of these cite calls:</span>
+<span class="sd">    &gt;&gt;&gt; tex = r&#39;&#39;&#39;</span>
+<span class="sd">    \cite{AuthorA}, \nocite{AuthorB}, \defcitealias{AuthorC}.</span>
+<span class="sd">    \citet{AuthorD}, \citet*{AuthorE}, \Citet{AuthorF}, \Citet*{AuthorG}.</span>
+<span class="sd">    \citep{AuthorH}, \citep*{AuthorI}, \Citep{AuthorJ}, \Citep*{AuthorK}.</span>
+<span class="sd">    \citealt{AuthorL},     \citealt*{AuthorM},</span>
+<span class="sd">    \Citealt{AuthorN},     \Citealt*{AuthorO}.</span>
+<span class="sd">    \citealp{AuthorP},     \citealp*{AuthorQ},</span>
+<span class="sd">    \Citealp{AuthorR},     \Citealp*{AuthorS}.</span>
+<span class="sd">    \citeauthor{AuthorT},  \citeauthor*{AuthorU}.</span>
+<span class="sd">    \Citeauthor{AuthorV},  \Citeauthor*{AuthorW}.</span>
+<span class="sd">    \citeyear{AuthorX},    \citeyear*{AuthorY}.</span>
+<span class="sd">    \citeyearpar{AuthorZ}, \citeyearpar*{AuthorAA}.&#39;&#39;&#39;</span>
+<span class="sd">    &gt;&gt;&gt; for citation in lm.citations(tex):</span>
+<span class="sd">    &gt;&gt;&gt;     print(citation, end=&quot; &quot;)</span>
+<span class="sd">    AuthorA AuthorB AuthorC AuthorD AuthorE AuthorF AuthorG AuthorH AuthorI AuthorJ AuthorK AuthorL AuthorM AuthorN AuthorO AuthorP AuthorQ AuthorR AuthorS AuthorT AuthorU AuthorV AuthorW AuthorX AuthorY AuthorZ AuthorAA</span>
+
+<span class="sd">    &gt;&gt;&gt; texfile = os.path.expanduser(&#39;~&#39;)+&quot;/.bibmanager/examples/sample.tex&quot;</span>
+<span class="sd">    &gt;&gt;&gt; with open(texfile) as f:</span>
+<span class="sd">    &gt;&gt;&gt;     tex = f.read()</span>
+<span class="sd">    &gt;&gt;&gt; tex = lm.no_comments(tex)</span>
+<span class="sd">    &gt;&gt;&gt; cites = [citation for citation in lm.citations(tex)]</span>
+<span class="sd">    &gt;&gt;&gt; for key in np.unique(cites):</span>
+<span class="sd">    &gt;&gt;&gt;     print(key)</span>
+<span class="sd">    AASteamHendrickson2018aastex62</span>
+<span class="sd">    Astropycollab2013aaAstropy</span>
+<span class="sd">    Hunter2007ieeeMatplotlib</span>
+<span class="sd">    JonesEtal2001scipy</span>
+<span class="sd">    MeurerEtal2017pjcsSYMPY</span>
+<span class="sd">    PerezGranger2007cseIPython</span>
+<span class="sd">    vanderWaltEtal2011numpy</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># This RE pattern matches:</span>
+    <span class="c1"># - Latex commands: \defcitealias, \nocite, \cite</span>
+    <span class="c1"># - Natbib commands: \cite + p, t, alp, alt, author, year, yearpar</span>
+    <span class="c1">#                    (as well as their capitalized and starred versions).</span>
+    <span class="c1"># - Zero or one square brackets (with everything in between).</span>
+    <span class="c1"># - Zero or one square brackets (with everything in between).</span>
+    <span class="c1"># - The content of the curly braces.</span>
+    <span class="c1"># With zero or more blanks in between each expression.</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">(?:defcitealias|nocite|cite|&quot;</span>
+                   <span class="sa">r</span><span class="s2">&quot;(?:[Cc]ite(?:p|alp|t|alt|author|year|yearpar)\*?))&quot;</span>
+                   <span class="sa">r</span><span class="s2">&quot;[\s]*(\[[^\]]*\])?&quot;</span>
+                   <span class="sa">r</span><span class="s2">&quot;[\s]*(\[[^\]]*\])?&quot;</span>
+                   <span class="sa">r</span><span class="s2">&quot;[\s]*{([^}]+)&quot;</span><span class="p">)</span>
+    <span class="c1"># Parse matches, do recursive call on the brakets content, yield keys:</span>
+    <span class="k">for</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">cites</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+        <span class="c1"># Remove blanks, strip outer commas:</span>
+        <span class="n">cites</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cites</span><span class="o">.</span><span class="n">split</span><span class="p">())</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">cite</span> <span class="ow">in</span> <span class="n">citations</span><span class="p">(</span><span class="n">left</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="n">cite</span>
+        <span class="k">for</span> <span class="n">cite</span> <span class="ow">in</span> <span class="n">cites</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="n">cite</span>
+        <span class="k">for</span> <span class="n">cite</span> <span class="ow">in</span> <span class="n">citations</span><span class="p">(</span><span class="n">right</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="n">cite</span></div>
+
+
+<div class="viewcode-block" id="build_bib"><a class="viewcode-back" href="../../../api.html#bibmanager.latex_manager.build_bib">[docs]</a><span class="k">def</span> <span class="nf">build_bib</span><span class="p">(</span><span class="n">texfile</span><span class="p">,</span> <span class="n">bibfile</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a .bib file from a given tex file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    texfile: String</span>
+<span class="sd">       Name of an input tex file.</span>
+<span class="sd">    bibfile: String</span>
+<span class="sd">       Name of an output bib file.  If None, get bibfile name from</span>
+<span class="sd">       bibliography call inside the tex file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    missing: List of strings</span>
+<span class="sd">       List of the bibkeys not found in the bibmanager database.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Extract path:</span>
+    <span class="n">path</span><span class="p">,</span> <span class="n">texfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">texfile</span><span class="p">))</span>
+    <span class="c1"># Remove extension:</span>
+    <span class="n">texfile</span><span class="p">,</span> <span class="n">extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">texfile</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">extension</span> <span class="o">!=</span> <span class="s2">&quot;.tex&quot;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Input file does not have a .tex extension.&quot;</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{path}</span><span class="s2">/</span><span class="si">{texfile}</span><span class="s2">.tex&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">tex</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">tex</span> <span class="o">=</span> <span class="n">no_comments</span><span class="p">(</span><span class="n">tex</span><span class="p">)</span>
+
+    <span class="c1"># Extract bibfile name from texfile:</span>
+    <span class="k">if</span> <span class="n">bibfile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">biblio</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">bibliography{([^}]+)&quot;</span><span class="p">,</span> <span class="n">tex</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">biblio</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No &#39;bibiliography&#39; call found in tex file.&quot;</span><span class="p">)</span>
+        <span class="n">bibfile</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{path}</span><span class="s2">/{biblio[0].strip()}.bib&quot;</span>
+
+    <span class="c1"># Extract citation keys from texfile:</span>
+    <span class="n">cites</span> <span class="o">=</span> <span class="p">[</span><span class="n">citation</span> <span class="k">for</span> <span class="n">citation</span> <span class="ow">in</span> <span class="n">citations</span><span class="p">(</span><span class="n">tex</span><span class="p">)]</span>
+    <span class="n">tex_keys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">cites</span><span class="p">)</span>
+
+    <span class="c1"># Collect BibTeX references from keys in database:</span>
+    <span class="n">bibs</span> <span class="o">=</span> <span class="n">bm</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+    <span class="n">db_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">bib</span><span class="o">.</span><span class="n">key</span> <span class="k">for</span> <span class="n">bib</span> <span class="ow">in</span> <span class="n">bibs</span><span class="p">]</span>
+
+    <span class="n">found</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">tex_keys</span><span class="p">,</span> <span class="n">db_keys</span><span class="p">,</span> <span class="n">assume_unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">missing</span> <span class="o">=</span> <span class="n">tex_keys</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">found</span><span class="p">))]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">found</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;References not found:</span><span class="se">\n</span><span class="si">{:s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing</span><span class="p">)))</span>
+
+    <span class="n">bibs</span> <span class="o">=</span> <span class="p">[</span><span class="n">bibs</span><span class="p">[</span><span class="n">db_keys</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">tex_keys</span><span class="p">[</span><span class="n">found</span><span class="p">]]</span>
+    <span class="n">bm</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">bibs</span><span class="p">,</span> <span class="n">bibfile</span><span class="o">=</span><span class="n">bibfile</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">missing</span></div>
+
+
+<div class="viewcode-block" id="clear_latex"><a class="viewcode-back" href="../../../api.html#bibmanager.latex_manager.clear_latex">[docs]</a><span class="k">def</span> <span class="nf">clear_latex</span><span class="p">(</span><span class="n">texfile</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Remove by-products of previous latex compilations.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    texfile: String</span>
+<span class="sd">       Path to an existing .tex file.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    For an input argument texfile=&#39;filename.tex&#39;, this function deletes</span>
+<span class="sd">    the files that begin with &#39;filename&#39; followed by:</span>
+<span class="sd">      .bbl, .blg, .out, .dvi,</span>
+<span class="sd">      .log, .aux, .lof, .lot,</span>
+<span class="sd">      .toc, .ps,  .pdf, Notes.bib</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">clears</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;.bbl&#39;</span><span class="p">,</span> <span class="s1">&#39;.blg&#39;</span><span class="p">,</span> <span class="s1">&#39;.out&#39;</span><span class="p">,</span> <span class="s1">&#39;.dvi&#39;</span><span class="p">,</span> <span class="s1">&#39;.log&#39;</span><span class="p">,</span> <span class="s1">&#39;.aux&#39;</span><span class="p">,</span> <span class="s1">&#39;.lof&#39;</span><span class="p">,</span> <span class="s1">&#39;.lot&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;.toc&#39;</span><span class="p">,</span> <span class="s1">&#39;.ps&#39;</span><span class="p">,</span>  <span class="s1">&#39;.pdf&#39;</span><span class="p">,</span> <span class="s1">&#39;Notes.bib&#39;</span><span class="p">]</span>
+
+    <span class="c1"># Remove extension:</span>
+    <span class="n">texfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">texfile</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Delete without complaining:</span>
+    <span class="k">for</span> <span class="n">clear</span> <span class="ow">in</span> <span class="n">clears</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">u</span><span class="o">.</span><span class="n">ignored</span><span class="p">(</span><span class="ne">OSError</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{texfile}{clear}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="compile_latex"><a class="viewcode-back" href="../../../api.html#bibmanager.latex_manager.compile_latex">[docs]</a><span class="k">def</span> <span class="nf">compile_latex</span><span class="p">(</span><span class="n">texfile</span><span class="p">,</span> <span class="n">paper</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compile a .tex file into a .pdf file using latex calls.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    texfile: String</span>
+<span class="sd">       Path to an existing .tex file.</span>
+<span class="sd">    paper: String</span>
+<span class="sd">       Paper size for output.  For example, ApJ articles use letter</span>
+<span class="sd">       format, whereas A&amp;A articles use A4 format.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This function executes the following calls:</span>
+<span class="sd">    - compute a bibfile out of the citation calls in the .tex file.</span>
+<span class="sd">    - removes all outputs from previous compilations (see clear_latex())</span>
+<span class="sd">    - calls latex, bibtex, latex, latex to produce a .dvi file</span>
+<span class="sd">    - calls dvips to produce a .ps file, redirecting the output to</span>
+<span class="sd">      ps2pdf to produce the final .pdf file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Extract path:</span>
+    <span class="n">path</span><span class="p">,</span> <span class="n">texfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">texfile</span><span class="p">))</span>
+    <span class="c1"># Remove extension:</span>
+    <span class="n">texfile</span><span class="p">,</span> <span class="n">extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">texfile</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">extension</span> <span class="o">!=</span> <span class="s2">&quot;.tex&quot;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Input file does not have a .tex extension.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Default paper format:</span>
+    <span class="k">if</span> <span class="n">paper</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">paper</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;paper&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Proceed in place:</span>
+    <span class="k">with</span> <span class="n">u</span><span class="o">.</span><span class="n">cd</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="c1"># Re-generate bib file if necessary.</span>
+        <span class="n">missing</span> <span class="o">=</span> <span class="n">build_bib</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{texfile}</span><span class="s1">.tex&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Clean up:</span>
+        <span class="n">clear_latex</span><span class="p">(</span><span class="n">texfile</span><span class="p">)</span>
+
+        <span class="c1"># Compile into dvi:</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="s1">&#39;latex&#39;</span><span class="p">,</span>  <span class="n">texfile</span><span class="p">],</span> <span class="n">shell</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="s1">&#39;bibtex&#39;</span><span class="p">,</span> <span class="n">texfile</span><span class="p">],</span> <span class="n">shell</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="s1">&#39;latex&#39;</span><span class="p">,</span>  <span class="n">texfile</span><span class="p">],</span> <span class="n">shell</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="s1">&#39;latex&#39;</span><span class="p">,</span>  <span class="n">texfile</span><span class="p">],</span> <span class="n">shell</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># dvi to pdf:</span>
+        <span class="c1"># I could actually split the dvips and ps2pdf calls to make the code</span>
+        <span class="c1"># easier to follow, but piping the outputs actually make it faster:</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span>
+            <span class="n">f</span><span class="s1">&#39;dvips -R0 -P pdf -t </span><span class="si">{paper}</span><span class="s1"> -f </span><span class="si">{texfile}</span><span class="s1"> | &#39;</span>
+             <span class="s1">&#39;ps2pdf -dCompatibilityLevel=1.3 -dEmbedAllFonts=true &#39;</span>
+            <span class="n">f</span><span class="s1">&#39;-dMaxSubsetPct=100 -dSubsetFonts=true - - &gt; </span><span class="si">{texfile}</span><span class="s1">.pdf&#39;</span><span class="p">,</span>
+             <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># Some notes:</span>
+        <span class="c1"># (1) &#39;-P pdf&#39; makes the file to look good on screen, says STScI:</span>
+        <span class="c1">#     http://www.stsci.edu/hst/proposing/info/how-to-make-pdf</span>
+        <span class="c1"># (2) See &#39;man ps2pdf&#39; to understand the dashes.</span>
+        <span class="c1"># (3) See https://www.adobe.com/content/dam/acom/en/devnet/acrobat/pdfs/PDFCreationSettings_v9.pdf for ps2pdf options.</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{texfile}</span><span class="s2">.tex has some references not found:&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">missing</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- &quot;</span> <span class="o">+</span> <span class="n">key</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="compile_pdflatex"><a class="viewcode-back" href="../../../api.html#bibmanager.latex_manager.compile_pdflatex">[docs]</a><span class="k">def</span> <span class="nf">compile_pdflatex</span><span class="p">(</span><span class="n">texfile</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compile a .tex file into a .pdf file using pdflatex calls.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    texfile: String</span>
+<span class="sd">       Path to an existing .tex file.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This function executes the following calls:</span>
+<span class="sd">    - compute a bibfile out of the citation calls in the .tex file.</span>
+<span class="sd">    - removes all outputs from previous compilations (see clear_latex())</span>
+<span class="sd">    - calls pdflatex, bibtex, pdflatex, pdflatex to produce a .pdf file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Extract path:</span>
+    <span class="n">path</span><span class="p">,</span> <span class="n">texfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">texfile</span><span class="p">))</span>
+    <span class="c1"># Remove extension:</span>
+    <span class="n">texfile</span><span class="p">,</span> <span class="n">extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">texfile</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">extension</span> <span class="o">!=</span> <span class="s2">&quot;.tex&quot;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Input file does not have a .tex extension.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Proceed in place:</span>
+    <span class="k">with</span> <span class="n">u</span><span class="o">.</span><span class="n">cd</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="c1"># Re-generate bib file if necessary.</span>
+        <span class="n">missing</span> <span class="o">=</span> <span class="n">build_bib</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{texfile}</span><span class="s1">.tex&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Clean up:</span>
+        <span class="n">clear_latex</span><span class="p">(</span><span class="n">texfile</span><span class="p">)</span>
+
+        <span class="c1"># Compile into pdf:</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="s1">&#39;pdflatex&#39;</span><span class="p">,</span> <span class="n">texfile</span><span class="p">],</span> <span class="n">shell</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="s1">&#39;bibtex&#39;</span><span class="p">,</span>   <span class="n">texfile</span><span class="p">],</span> <span class="n">shell</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="s1">&#39;pdflatex&#39;</span><span class="p">,</span> <span class="n">texfile</span><span class="p">],</span> <span class="n">shell</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="s1">&#39;pdflatex&#39;</span><span class="p">,</span> <span class="n">texfile</span><span class="p">],</span> <span class="n">shell</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{texfile}</span><span class="s2">.tex has some references not found:&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">missing</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- &quot;</span> <span class="o">+</span> <span class="n">key</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018-2019, Patricio Cubillos
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../../../',
+              VERSION:'1.1.3',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

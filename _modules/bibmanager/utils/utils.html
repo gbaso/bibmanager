@@ -1,0 +1,1072 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>bibmanager.utils.utils &mdash; bibmanager 1.1.3 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> bibmanager
+          
+
+          
+            
+            <img src="../../../_static/logo_bibmanager.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                version 1.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getstarted.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../bibtex.html">BibTeX Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../latex.html">LaTeX Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ads.html">ADS Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq.html">FAQs and Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">bibmanager</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>bibmanager.utils.utils</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for bibmanager.utils.utils</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2018-2019 Patricio Cubillos and contributors.</span>
+<span class="c1"># bibmanager is open-source software under the MIT license (see LICENSE).</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="c1"># Constants:</span>
+  <span class="s1">&#39;HOME&#39;</span><span class="p">,</span> <span class="s1">&#39;ROOT&#39;</span><span class="p">,</span> <span class="s1">&#39;BM_DATABASE&#39;</span><span class="p">,</span> <span class="s1">&#39;BM_BIBFILE&#39;</span><span class="p">,</span> <span class="s1">&#39;BM_TMP_BIB&#39;</span><span class="p">,</span> <span class="s1">&#39;BM_CACHE&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;BM_HISTORY_SEARCH&#39;</span><span class="p">,</span> <span class="s1">&#39;BM_HISTORY_ADS&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;BOLD&#39;</span><span class="p">,</span> <span class="s1">&#39;END&#39;</span><span class="p">,</span> <span class="s1">&#39;BANNER&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;search_completer&#39;</span><span class="p">,</span> <span class="s1">&#39;ads_completer&#39;</span><span class="p">,</span>
+  <span class="c1"># Named tuples</span>
+  <span class="s1">&#39;Author&#39;</span><span class="p">,</span> <span class="s1">&#39;Sort_author&#39;</span><span class="p">,</span>
+  <span class="c1"># Context managers:</span>
+  <span class="s1">&#39;ignored&#39;</span><span class="p">,</span> <span class="s1">&#39;cd&#39;</span><span class="p">,</span>
+  <span class="c1"># Functions:</span>
+  <span class="s1">&#39;ordinal&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;nest&#39;</span><span class="p">,</span> <span class="s1">&#39;cond_split&#39;</span><span class="p">,</span> <span class="s1">&#39;cond_next&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;parse_name&#39;</span><span class="p">,</span> <span class="s1">&#39;repr_author&#39;</span><span class="p">,</span> <span class="s1">&#39;purify&#39;</span><span class="p">,</span> <span class="s1">&#39;initials&#39;</span><span class="p">,</span> <span class="s1">&#39;get_authors&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;next_char&#39;</span><span class="p">,</span> <span class="s1">&#39;last_char&#39;</span><span class="p">,</span> <span class="s1">&#39;get_fields&#39;</span><span class="p">,</span> <span class="s1">&#39;req_input&#39;</span><span class="p">,</span>
+  <span class="c1"># Classes:</span>
+  <span class="s1">&#39;AutoSuggestCompleter&#39;</span><span class="p">,</span>
+  <span class="p">]</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="k">import</span> <span class="n">contextmanager</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
+
+<span class="kn">from</span> <span class="nn">prompt_toolkit.auto_suggest</span> <span class="k">import</span> <span class="n">AutoSuggest</span><span class="p">,</span> <span class="n">Suggestion</span>
+<span class="kn">from</span> <span class="nn">prompt_toolkit.completion</span> <span class="k">import</span> <span class="n">WordCompleter</span>
+
+<span class="c1"># Directories/files:</span>
+<span class="n">HOME</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">&quot;~&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/.bibmanager/&quot;</span>
+<span class="n">ROOT</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/..&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span>
+
+<span class="n">BM_DATABASE</span> <span class="o">=</span> <span class="n">HOME</span> <span class="o">+</span> <span class="s2">&quot;bm_database.pickle&quot;</span>
+<span class="n">BM_BIBFILE</span>  <span class="o">=</span> <span class="n">HOME</span> <span class="o">+</span> <span class="s2">&quot;bm_bibliography.bib&quot;</span>
+<span class="n">BM_TMP_BIB</span>  <span class="o">=</span> <span class="n">HOME</span> <span class="o">+</span> <span class="s2">&quot;tmp_bibliography.bib&quot;</span>
+<span class="n">BM_CACHE</span>    <span class="o">=</span> <span class="n">HOME</span> <span class="o">+</span> <span class="s2">&quot;cached_ads_querry.pickle&quot;</span>
+
+<span class="n">BM_HISTORY_SEARCH</span> <span class="o">=</span> <span class="n">HOME</span> <span class="o">+</span> <span class="s2">&quot;history_search&quot;</span>
+<span class="n">BM_HISTORY_ADS</span>    <span class="o">=</span> <span class="n">HOME</span> <span class="o">+</span> <span class="s2">&quot;history_ads_search&quot;</span>
+
+<span class="c1"># Unicode to start/end bold-face syntax:</span>
+<span class="n">BOLD</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[1m&#39;</span>
+<span class="n">END</span>  <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[0m&#39;</span>
+
+<span class="c1"># A delimiter:</span>
+<span class="n">BANNER</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span><span class="o">*</span><span class="mi">70</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+<span class="c1"># Named tuples:</span>
+<span class="n">Author</span>      <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;Author&quot;</span><span class="p">,</span>      <span class="s2">&quot;last first von jr&quot;</span><span class="p">)</span>
+<span class="n">Sort_author</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;Sort_author&quot;</span><span class="p">,</span> <span class="s2">&quot;last first von jr year month&quot;</span><span class="p">)</span>
+
+<span class="c1"># Search completers:</span>
+<span class="n">search_completer</span> <span class="o">=</span> <span class="n">WordCompleter</span><span class="p">([</span><span class="s1">&#39;author:&quot;^&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;author:&quot;&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;year:&#39;</span><span class="p">,</span>
+                                  <span class="s1">&#39;title:&quot;&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;key:&#39;</span><span class="p">,</span> <span class="s1">&#39;bibcode:&#39;</span><span class="p">])</span>
+
+<span class="c1"># For more info, see  https://adsabs.github.io/help/search/search-syntax</span>
+<span class="n">ads_completer</span> <span class="o">=</span> <span class="n">WordCompleter</span><span class="p">(</span>
+    <span class="c1"># First seven show on &#39;tab&#39; hit:</span>
+    <span class="p">[</span><span class="s1">&#39;author:&quot;^&quot;&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;author:&quot;&quot;&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;year:&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;title:&quot;&quot;&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;abstract:&quot;&quot;&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;property:refereed&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;property:article&#39;</span><span class="p">,</span>
+     <span class="c1"># Sort the rest alphabetically:</span>
+     <span class="s1">&#39;abs:&quot;&quot;&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;ack:&quot;&quot;&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;aff:&quot;&quot;&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;arXiv:&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;arxiv_class:&quot;&quot;&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;bibcode:&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;bibgroup:&quot;&quot;&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;bibstem:&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;body:&quot;&quot;&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;citations()&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;copyright:&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;data:&quot;&quot;&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;database:astronomy&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;database:physics&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;doctype:abstract&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;doctype:article&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;doctype:book&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;doctype:bookreview&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;doctype:catalog&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;doctype:circular&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;doctype:eprint&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;doctype:erratum&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;doctype:inproceedings&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;doctype:inbook&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;doctype:mastersthesis&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;doctype:misc&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;doctype:newsletter&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;doctype:obituary&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;doctype:phdthesis&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;doctype:pressrelease&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;doctype:proceedings&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;doctype:proposal&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;doctype:software&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;doctype:talk&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;doctype:techreport&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;doi:&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;full:&quot;&quot;&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;grant:&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;identifier:&quot;&quot;&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;issue:&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;keyword:&quot;&quot;&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;lang:&quot;&quot;&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;object:&quot;&quot;&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;orcid:&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;page:&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;property:ads_openaccess&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;property:eprint&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;property:eprint_openaccess&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;property:inproceedings&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;property:non_article&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;property:notrefereed&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;property:ocrabstract&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;property:openaccess&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;property:pub_openaccess&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;property:software&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;references()&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;reviews()&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;similar()&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;topn()&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;trending()&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;useful()&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;vizier:&quot;&quot;&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;volume:&#39;</span><span class="p">,</span>
+    <span class="p">])</span>
+
+<span class="c1"># Context managers:</span>
+<div class="viewcode-block" id="ignored"><a class="viewcode-back" href="../../../api.html#bibmanager.utils.ignored">[docs]</a><span class="nd">@contextmanager</span>
+<span class="k">def</span> <span class="nf">ignored</span><span class="p">(</span><span class="o">*</span><span class="n">exceptions</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Context manager to ignore exceptions. Taken from here:</span>
+<span class="sd">  https://www.youtube.com/watch?v=anrOzOapJ2E</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">try</span><span class="p">:</span>
+      <span class="k">yield</span>
+  <span class="k">except</span> <span class="n">exceptions</span><span class="p">:</span>
+      <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="cd"><a class="viewcode-back" href="../../../api.html#bibmanager.utils.cd">[docs]</a><span class="nd">@contextmanager</span>
+<span class="k">def</span> <span class="nf">cd</span><span class="p">(</span><span class="n">newdir</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Context manager for changing the current working directory.</span>
+<span class="sd">  Taken from here: https://stackoverflow.com/questions/431684/</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">olddir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+  <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">newdir</span><span class="p">))</span>
+  <span class="k">try</span><span class="p">:</span>
+      <span class="k">yield</span>
+  <span class="k">finally</span><span class="p">:</span>
+      <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">olddir</span><span class="p">)</span></div>
+
+
+<span class="c1"># Functions:</span>
+<div class="viewcode-block" id="ordinal"><a class="viewcode-back" href="../../../api.html#bibmanager.utils.ordinal">[docs]</a><span class="k">def</span> <span class="nf">ordinal</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Get ordinal string representation for input number(s).</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  number: Integer or 1D integer ndarray</span>
+<span class="sd">     An integer or array of integers.</span>
+
+<span class="sd">  Returns</span>
+<span class="sd">  -------</span>
+<span class="sd">  ord: String or List of strings</span>
+<span class="sd">     Ordinal representation of input number(s).  Return a string if</span>
+<span class="sd">     input is int; else, return a list of strings.</span>
+
+<span class="sd">  Examples</span>
+<span class="sd">  --------</span>
+<span class="sd">  &gt;&gt;&gt; from bibmanager.utils import ordinal</span>
+<span class="sd">  &gt;&gt;&gt; print(ordinal(1))</span>
+<span class="sd">  1st</span>
+<span class="sd">  &gt;&gt;&gt; print(ordinal(2))</span>
+<span class="sd">  2nd</span>
+<span class="sd">  &gt;&gt;&gt; print(ordinal(11))</span>
+<span class="sd">  11th</span>
+<span class="sd">  &gt;&gt;&gt; print(ordinal(111))</span>
+<span class="sd">  111th</span>
+<span class="sd">  &gt;&gt;&gt; print(ordinal(121))</span>
+<span class="sd">  121st</span>
+<span class="sd">  &gt;&gt;&gt; print(ordinal(np.arange(1,6)))</span>
+<span class="sd">  [&#39;1st&#39;, &#39;2nd&#39;, &#39;3rd&#39;, &#39;4th&#39;, &#39;5th&#39;]</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">ending</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;th&quot;</span><span class="p">,</span> <span class="s2">&quot;st&quot;</span><span class="p">,</span> <span class="s2">&quot;nd&quot;</span><span class="p">,</span> <span class="s2">&quot;rd&quot;</span><span class="p">]</span>
+  <span class="n">unit</span> <span class="o">=</span> <span class="n">number</span> <span class="o">%</span> <span class="mi">10</span>
+  <span class="n">teen</span> <span class="o">=</span> <span class="p">(</span><span class="n">number</span><span class="o">//</span><span class="mi">10</span><span class="p">)</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">!=</span> <span class="mi">1</span>
+  <span class="n">idx</span> <span class="o">=</span> <span class="n">unit</span> <span class="o">*</span> <span class="p">(</span><span class="n">unit</span><span class="o">&lt;</span><span class="mi">4</span><span class="p">)</span> <span class="o">*</span> <span class="n">teen</span>
+  <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">number</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>
+      <span class="k">return</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{number}{ending[idx]}</span><span class="s2">&quot;</span>
+  <span class="k">return</span> <span class="p">[</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{n}{ending[i]}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">number</span><span class="p">,</span><span class="n">idx</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="count"><a class="viewcode-back" href="../../../api.html#bibmanager.utils.count">[docs]</a><span class="k">def</span> <span class="nf">count</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Count net number of braces in text (add 1 for each opening brace,</span>
+<span class="sd">  subtract one for each closing brace).</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  text: String</span>
+<span class="sd">     A string.</span>
+
+<span class="sd">  Returns</span>
+<span class="sd">  -------</span>
+<span class="sd">  counts: Integer</span>
+<span class="sd">     Net number of braces.</span>
+
+<span class="sd">  Examples</span>
+<span class="sd">  --------</span>
+<span class="sd">  &gt;&gt;&gt; from bibmanager.utils import count</span>
+<span class="sd">  &gt;&gt;&gt; count(&#39;{Hello} world&#39;)</span>
+<span class="sd">  0</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">return</span> <span class="n">text</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;{&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="n">text</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;}&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="nest"><a class="viewcode-back" href="../../../api.html#bibmanager.utils.nest">[docs]</a><span class="k">def</span> <span class="nf">nest</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+  <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Get braces nesting level for each character in text.</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  text: String</span>
+<span class="sd">     String to inspect.</span>
+
+<span class="sd">  Returns</span>
+<span class="sd">  -------</span>
+<span class="sd">  counts: 1D integer list</span>
+<span class="sd">     Braces nesting level for each character.</span>
+
+<span class="sd">  Examples</span>
+<span class="sd">  --------</span>
+<span class="sd">  &gt;&gt;&gt; from bibmanager.utils import nest</span>
+<span class="sd">  &gt;&gt;&gt; s = &quot;{{P\\&#39;erez}, F. and {Granger}, B.~E.},&quot;</span>
+<span class="sd">  &gt;&gt;&gt; n = nest(s)</span>
+<span class="sd">  &gt;&gt;&gt; print(f&quot;{s}\n{&#39;&#39;.join([str(v) for v in n])}&quot;)</span>
+<span class="sd">  {{P\&#39;erez}, F. and {Granger}, B.~E.},</span>
+<span class="sd">  0122222222111111111122222222111111110</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="nb">int</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">text</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+      <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="s2">&quot;{&quot;</span><span class="p">:</span>
+          <span class="n">counts</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">counts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+      <span class="k">elif</span> <span class="n">s</span> <span class="o">==</span> <span class="s2">&quot;}&quot;</span><span class="p">:</span>
+          <span class="n">counts</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">counts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+      <span class="k">else</span><span class="p">:</span>
+          <span class="n">counts</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">counts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+  <span class="k">return</span> <span class="n">counts</span></div>
+
+
+<div class="viewcode-block" id="cond_split"><a class="viewcode-back" href="../../../api.html#bibmanager.utils.cond_split">[docs]</a><span class="k">def</span> <span class="nf">cond_split</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">nested</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nlev</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">ret_nests</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+  <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Conditional find and split strings in a text delimited by all</span>
+<span class="sd">  occurrences of pattern where the brace-nested level is nlev.</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  text: String</span>
+<span class="sd">     String where to search for pattern.</span>
+<span class="sd">  pattern: String</span>
+<span class="sd">     A regex pattern to search.</span>
+<span class="sd">  nested: 1D integer iterable</span>
+<span class="sd">     Braces nesting level of characters in text.</span>
+<span class="sd">  nlev: Integer</span>
+<span class="sd">     Required nested level to accept pattern match.</span>
+<span class="sd">  ret_nests: Bool</span>
+<span class="sd">     If True, return a list with the arrays of nested level for each</span>
+<span class="sd">     of the returned substrings.</span>
+
+<span class="sd">  Returns</span>
+<span class="sd">  -------</span>
+<span class="sd">  substrings: List of strings</span>
+<span class="sd">     List of strings delimited by the accepted pattern matches.</span>
+<span class="sd">  nests: List of integer ndarrays [optional]</span>
+<span class="sd">     nested level for substrings.</span>
+
+<span class="sd">  Examples</span>
+<span class="sd">  --------</span>
+<span class="sd">  &gt;&gt;&gt; from bibmanager.utils import cond_split</span>
+<span class="sd">  &gt;&gt;&gt; # Split an author list string delimited by &#39; and &#39; pattern:</span>
+<span class="sd">  &gt;&gt;&gt; cond_split(&quot;{P\\&#39;erez}, F. and {Granger}, B.~E.&quot;, &quot; and &quot;)</span>
+<span class="sd">  [&quot;{P\\&#39;erez}, F.&quot;, &#39;{Granger}, B.~E.&#39;]</span>
+<span class="sd">  &gt;&gt;&gt; # Protected instances (within braces) won&#39;t count:</span>
+<span class="sd">  &gt;&gt;&gt; cond_split(&quot;{AAS and Astropy Teams} and {Hendrickson}, A.&quot;, &quot; and &quot;)</span>
+<span class="sd">  [&#39;{AAS and Astropy Teams}&#39;, &#39;{Hendrickson}, A.&#39;]</span>
+<span class="sd">  &gt;&gt;&gt; # Matches at the beginning or end do not count for split:</span>
+<span class="sd">  &gt;&gt;&gt; cond_split(&quot;,Jones, Oliphant, Peterson,&quot;, &quot;,&quot;)</span>
+<span class="sd">  [&#39;Jones&#39;, &#39; Oliphant&#39;, &#39; Peterson&#39;]</span>
+<span class="sd">  &gt;&gt;&gt; # But two consecutive matches do return an empty string:</span>
+<span class="sd">  &gt;&gt;&gt; cond_split(&quot;Jones,, Peterson&quot;, &quot;,&quot;)</span>
+<span class="sd">  [&#39;Jones&#39;, &#39;&#39;, &#39; Peterson&#39;]</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">if</span> <span class="n">nested</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="n">nested</span> <span class="o">=</span> <span class="n">nest</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+  <span class="k">if</span> <span class="n">nlev</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">nested</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="n">nlev</span> <span class="o">=</span> <span class="n">nested</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+  <span class="c1"># First and last indices of each pattern match:</span>
+  <span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">m</span><span class="o">.</span><span class="n">end</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">nested</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="mi">0</span><span class="p">)]</span> <span class="o">==</span> <span class="n">nlev</span><span class="p">]</span>
+
+  <span class="n">flat_bounds</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="n">bounds</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sublist</span><span class="p">]</span>
+
+  <span class="c1"># No matches:</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">flat_bounds</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="k">if</span> <span class="n">ret_nests</span><span class="p">:</span>
+          <span class="k">return</span> <span class="p">[</span><span class="n">text</span><span class="p">],</span> <span class="p">[</span><span class="n">nested</span><span class="p">]</span>
+      <span class="k">return</span> <span class="p">[</span><span class="n">text</span><span class="p">]</span>
+
+  <span class="c1"># Beginning and end of substrings at the ends of the input:</span>
+  <span class="n">flat_bounds</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+  <span class="n">flat_bounds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
+
+  <span class="c1"># Matches, parse substrings:</span>
+  <span class="n">pairs</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">([</span><span class="nb">iter</span><span class="p">(</span><span class="n">flat_bounds</span><span class="p">)]</span><span class="o">*</span><span class="mi">2</span><span class="p">))</span>
+  <span class="n">substrings</span> <span class="o">=</span> <span class="p">[</span><span class="n">text</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span> <span class="k">for</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">)</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">]</span>
+  <span class="k">if</span> <span class="n">ret_nests</span><span class="p">:</span>
+      <span class="n">pairs</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">([</span><span class="nb">iter</span><span class="p">(</span><span class="n">flat_bounds</span><span class="p">)]</span><span class="o">*</span><span class="mi">2</span><span class="p">))</span>
+      <span class="n">nests</span> <span class="o">=</span> <span class="p">[</span><span class="n">nested</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span> <span class="k">for</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">)</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">]</span>
+      <span class="k">return</span> <span class="n">substrings</span><span class="p">,</span> <span class="n">nests</span>
+  <span class="k">return</span> <span class="n">substrings</span></div>
+
+
+<div class="viewcode-block" id="cond_next"><a class="viewcode-back" href="../../../api.html#bibmanager.utils.cond_next">[docs]</a><span class="k">def</span> <span class="nf">cond_next</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">nested</span><span class="p">,</span> <span class="n">nlev</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Find next instance of pattern in text where nested is nlev.</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  text: String</span>
+<span class="sd">     Text where to search for regex.</span>
+<span class="sd">  pattern: String</span>
+<span class="sd">     Regular expression to search for.</span>
+<span class="sd">  nested: 1D integer iterable</span>
+<span class="sd">     Braces-nesting level of characters in text.</span>
+<span class="sd">  nlev: Integer</span>
+<span class="sd">     Requested nested level.</span>
+
+<span class="sd">  Returns</span>
+<span class="sd">  -------</span>
+<span class="sd">     Index integer of pattern in text.  If not found, return the</span>
+<span class="sd">     index of the last character in text.</span>
+
+<span class="sd">  Examples</span>
+<span class="sd">  --------</span>
+<span class="sd">  &gt;&gt;&gt; from bibmanager.utils import nest, cond_next</span>
+<span class="sd">  &gt;&gt;&gt; text = &#39;&quot;{{HITEMP}, the high-temperature molecular database}&quot;,&#39;</span>
+<span class="sd">  &gt;&gt;&gt; nested = nest(text)</span>
+<span class="sd">  &gt;&gt;&gt; # Ignore comma within braces:</span>
+<span class="sd">  &gt;&gt;&gt; cond_next(text, &quot;,&quot;, nested, nlev=0)</span>
+<span class="sd">  53</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="k">return</span> <span class="mi">0</span>
+
+  <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+      <span class="k">if</span> <span class="n">nested</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="mi">0</span><span class="p">)]</span> <span class="o">==</span> <span class="n">nlev</span><span class="p">:</span>
+          <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+  <span class="c1"># If not found, return last index in text:</span>
+  <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span></div>
+
+
+<span class="c1">#@functools.lru_cache(maxsize=1024, typed=False)</span>
+<div class="viewcode-block" id="parse_name"><a class="viewcode-back" href="../../../api.html#bibmanager.utils.parse_name">[docs]</a><span class="k">def</span> <span class="nf">parse_name</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">nested</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+  <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Parse first, last, von, and jr parts from a name, following these rules:</span>
+<span class="sd">  http://mirror.easyname.at/ctan/info/bibtex/tamethebeast/ttb_en.pdf</span>
+<span class="sd">  Page 23.</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  name: String</span>
+<span class="sd">     A name following the BibTeX format.</span>
+<span class="sd">  nested: 1D integer ndarray</span>
+<span class="sd">     Nested level of characters in name.</span>
+
+<span class="sd">  Returns</span>
+<span class="sd">  -------</span>
+<span class="sd">  author: Author namedtuple</span>
+<span class="sd">     Four element tuple with the parsed name.</span>
+
+<span class="sd">  Examples</span>
+<span class="sd">  --------</span>
+<span class="sd">  &gt;&gt;&gt; from bibmanager.utils import parse_name</span>
+<span class="sd">  &gt;&gt;&gt; names = [&#39;{Hendrickson}, A.&#39;,</span>
+<span class="sd">  &gt;&gt;&gt;          &#39;Eric Jones&#39;,</span>
+<span class="sd">  &gt;&gt;&gt;          &#39;{AAS Journals Team}&#39;,</span>
+<span class="sd">  &gt;&gt;&gt;          &quot;St{\\&#39;{e}}fan van der Walt&quot;]</span>
+<span class="sd">  &gt;&gt;&gt; for name in names:</span>
+<span class="sd">  &gt;&gt;&gt;     print(f&#39;{repr(name)}:\n{parse_name(name)}\n&#39;)</span>
+<span class="sd">  &#39;{Hendrickson}, A.&#39;:</span>
+<span class="sd">  Author(last=&#39;{Hendrickson}&#39;, first=&#39;A.&#39;, von=&#39;&#39;, jr=&#39;&#39;)</span>
+<span class="sd">  </span>
+<span class="sd">  &#39;Eric Jones&#39;:</span>
+<span class="sd">  Author(last=&#39;Jones&#39;, first=&#39;Eric&#39;, von=&#39;&#39;, jr=&#39;&#39;)</span>
+<span class="sd">  </span>
+<span class="sd">  &#39;{AAS Journals Team}&#39;:</span>
+<span class="sd">  Author(last=&#39;{AAS Journals Team}&#39;, first=&#39;&#39;, von=&#39;&#39;, jr=&#39;&#39;)</span>
+<span class="sd">  </span>
+<span class="sd">  &quot;St{\\&#39;{e}}fan van der Walt&quot;:</span>
+<span class="sd">  Author(last=&#39;Walt&#39;, first=&quot;St{\\&#39;{e}}fan&quot;, von=&#39;van der&#39;, jr=&#39;&#39;)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">if</span> <span class="n">nested</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="n">nested</span> <span class="o">=</span> <span class="n">nest</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+  <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cond_split</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;~&quot;</span><span class="p">,</span> <span class="n">nested</span><span class="o">=</span><span class="n">nested</span><span class="p">))</span>
+  <span class="n">fields</span><span class="p">,</span> <span class="n">nests</span> <span class="o">=</span> <span class="n">cond_split</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="n">nested</span><span class="o">=</span><span class="n">nested</span><span class="p">,</span> <span class="n">ret_nests</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+      <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Invalid BibTeX format for author &#39;</span><span class="si">{name}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+
+  <span class="c1"># &#39;First von Last&#39; format:</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+      <span class="n">jr</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+      <span class="n">words</span> <span class="o">=</span> <span class="p">[</span><span class="n">word</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">cond_split</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">nested</span><span class="o">=</span><span class="n">nests</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+               <span class="k">if</span> <span class="n">word</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">]</span>
+      <span class="n">lowers</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">islower</span><span class="p">()</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">words</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+      <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">lowers</span><span class="p">):</span>
+          <span class="n">ifirst</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">lowers</span><span class="p">))</span>
+          <span class="n">ilast</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">lowers</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
+      <span class="k">else</span><span class="p">:</span>
+          <span class="n">ifirst</span> <span class="o">=</span> <span class="n">ilast</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+      <span class="c1"># Join words, then collapse blanks:</span>
+      <span class="n">first</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">ifirst</span><span class="p">])</span>
+      <span class="n">first</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">first</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+      <span class="n">von</span>   <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="n">ifirst</span><span class="p">:</span><span class="n">ilast</span><span class="p">])</span>
+      <span class="n">von</span>   <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">von</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+      <span class="n">last</span>  <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="n">ilast</span><span class="p">:])</span>
+      <span class="n">last</span>  <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">last</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+
+  <span class="k">else</span><span class="p">:</span>
+      <span class="n">vonlast</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+      <span class="k">if</span> <span class="n">vonlast</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+          <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Invalid BibTeX format for author &#39;</span><span class="si">{name}</span><span class="s2">&#39;, it &quot;</span>
+                           <span class="s2">&quot;does not have a last name.&quot;</span><span class="p">)</span>
+
+      <span class="c1"># &#39;von Last, First&#39; format:</span>
+      <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+          <span class="n">jr</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+          <span class="n">first</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+
+      <span class="c1"># &#39;von Last, Jr, First&#39; format:</span>
+      <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+          <span class="n">jr</span>    <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+          <span class="n">first</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+
+      <span class="n">words</span> <span class="o">=</span> <span class="p">[</span><span class="n">word</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">cond_split</span><span class="p">(</span><span class="n">vonlast</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">nested</span><span class="o">=</span><span class="n">nests</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+               <span class="k">if</span> <span class="n">word</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">]</span>
+      <span class="n">lowers</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">islower</span><span class="p">()</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">words</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+
+      <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">lowers</span><span class="p">):</span>
+          <span class="n">ilast</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">lowers</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
+          <span class="n">von</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">words</span><span class="p">[:</span><span class="n">ilast</span><span class="p">])</span>
+      <span class="k">else</span><span class="p">:</span>
+          <span class="n">von</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+          <span class="n">ilast</span> <span class="o">=</span> <span class="mi">0</span>
+      <span class="n">last</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="n">ilast</span><span class="p">:])</span>
+      <span class="n">last</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">last</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+  <span class="k">return</span> <span class="n">Author</span><span class="p">(</span><span class="n">last</span><span class="o">=</span><span class="n">last</span><span class="p">,</span> <span class="n">first</span><span class="o">=</span><span class="n">first</span><span class="p">,</span> <span class="n">von</span><span class="o">=</span><span class="n">von</span><span class="p">,</span> <span class="n">jr</span><span class="o">=</span><span class="n">jr</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="repr_author"><a class="viewcode-back" href="../../../api.html#bibmanager.utils.repr_author">[docs]</a><span class="k">def</span> <span class="nf">repr_author</span><span class="p">(</span><span class="n">Author</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Get string representation an Author namedtuple in the format:</span>
+<span class="sd">  von Last, jr., First.</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  Author: An Author() namedtuple</span>
+<span class="sd">     An author name.</span>
+
+<span class="sd">  Examples</span>
+<span class="sd">  --------</span>
+<span class="sd">  &gt;&gt;&gt; from bibmanager.utils import repr_author, parse_name</span>
+<span class="sd">  &gt;&gt;&gt; names = [&#39;Last&#39;, &#39;First Last&#39;, &#39;First von Last&#39;, &#39;von Last, First&#39;,</span>
+<span class="sd">  &gt;&gt;&gt;          &#39;von Last, sr., First&#39;]</span>
+<span class="sd">  &gt;&gt;&gt; for name in names:</span>
+<span class="sd">  &gt;&gt;&gt;     print(f&quot;{name!r:22}: {repr_author(parse_name(name))}&quot;)</span>
+<span class="sd">  &#39;Last&#39;                : Last</span>
+<span class="sd">  &#39;First Last&#39;          : Last, First</span>
+<span class="sd">  &#39;First von Last&#39;      : von Last, First</span>
+<span class="sd">  &#39;von Last, First&#39;     : von Last, First</span>
+<span class="sd">  &#39;von Last, sr., First&#39;: von Last, sr., First</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">name</span> <span class="o">=</span> <span class="n">Author</span><span class="o">.</span><span class="n">last</span>
+  <span class="k">if</span> <span class="n">Author</span><span class="o">.</span><span class="n">von</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+      <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">Author</span><span class="o">.</span><span class="n">von</span><span class="p">,</span> <span class="n">name</span><span class="p">])</span>
+  <span class="k">if</span> <span class="n">Author</span><span class="o">.</span><span class="n">jr</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+      <span class="n">name</span> <span class="o">+=</span> <span class="n">f</span><span class="s2">&quot;, </span><span class="si">{Author.jr}</span><span class="s2">&quot;</span>
+  <span class="k">if</span> <span class="n">Author</span><span class="o">.</span><span class="n">first</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+      <span class="n">name</span> <span class="o">+=</span> <span class="n">f</span><span class="s2">&quot;, </span><span class="si">{Author.first}</span><span class="s2">&quot;</span>
+  <span class="k">return</span> <span class="n">name</span></div>
+
+
+<span class="c1">#@functools.lru_cache(maxsize=1024, typed=False)</span>
+<div class="viewcode-block" id="purify"><a class="viewcode-back" href="../../../api.html#bibmanager.utils.purify">[docs]</a><span class="k">def</span> <span class="nf">purify</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">german</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+  <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Replace accented characters closely following these rules:</span>
+<span class="sd">  https://tex.stackexchange.com/questions/57743/</span>
+<span class="sd">  For a more complete list of special characters, see Table 2.2 of</span>
+<span class="sd">  &#39;The Not so Short Introduction to LaTeX2e&#39; by Oetiker et al. (2008).</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  name: String</span>
+<span class="sd">     Name to be &#39;purified&#39;.</span>
+<span class="sd">  german: Bool</span>
+<span class="sd">     Replace umlaut with german style (append &#39;e&#39; after).</span>
+
+<span class="sd">  Returns</span>
+<span class="sd">  -------</span>
+<span class="sd">  Lower-cased name without accent characters.</span>
+
+<span class="sd">  Examples</span>
+<span class="sd">  --------</span>
+<span class="sd">  &gt;&gt;&gt; from bibmanager.utils import purify</span>
+<span class="sd">  &gt;&gt;&gt; names = [&quot;St{\\&#39;{e}}fan&quot;,</span>
+<span class="sd">               &quot;{{\\v S}ime{\\v c}kov{\\&#39;a}}&quot;,</span>
+<span class="sd">               &quot;{AAS Journals Team}&quot;,</span>
+<span class="sd">               &quot;Kov{\\&#39;a}{\\v r}{\\&#39;i}k&quot;,</span>
+<span class="sd">               &quot;Jarom{\\&#39;i}r Kov{\\&#39;a\\v r\\&#39;i}k&quot;,</span>
+<span class="sd">               &quot;{\\.I}volgin&quot;,</span>
+<span class="sd">               &quot;Gon{\\c c}alez Nu{\~n}ez&quot;,</span>
+<span class="sd">               &quot;Knausg{\\aa}rd Sm{\\o}rrebr{\\o}d&quot;,</span>
+<span class="sd">               &#39;Schr{\\&quot;o}dinger Be{\\ss}er&#39;]</span>
+
+<span class="sd">  &gt;&gt;&gt; for name in names:</span>
+<span class="sd">  &gt;&gt;&gt;     print(f&quot;{name!r:35}: {purify(name)}&quot;)</span>
+<span class="sd">  &quot;St{\\&#39;{e}}fan&quot;                     : stefan</span>
+<span class="sd">  &quot;{{\\v S}ime{\\v c}kov{\\&#39;a}}&quot;      : simeckova</span>
+<span class="sd">  &#39;{AAS Journals Team}&#39;               : aas journals team</span>
+<span class="sd">  &quot;Kov{\\&#39;a}{\\v r}{\\&#39;i}k&quot;           : kovarik</span>
+<span class="sd">  &quot;Jarom{\\&#39;i}r Kov{\\&#39;a\\v r\\&#39;i}k&quot;  : jaromir kovarik</span>
+<span class="sd">  &#39;{\\.I}volgin&#39;                      : ivolgin</span>
+<span class="sd">  &#39;Gon{\\c c}alez Nu{\\~n}ez&#39;         : goncalez nunez</span>
+<span class="sd">  &#39;Knausg{\\aa}rd Sm{\\o}rrebr{\\o}d&#39; : knausgaard smorrebrod</span>
+<span class="sd">  &#39;Schr{\\&quot;o}dinger Be{\\ss}er&#39;       : schrodinger besser</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="c1"># German umlaut replace:</span>
+  <span class="k">if</span> <span class="n">german</span><span class="p">:</span>
+      <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="s2">&quot;u&quot;</span><span class="p">]:</span>
+          <span class="n">name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">fr</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&quot;</span><span class="si">{pattern}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">pattern</span><span class="o">+</span><span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+  <span class="c1"># Remove special:</span>
+  <span class="n">name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">(</span><span class="se">\&quot;</span><span class="s2">|\^|`|\.|&#39;|~)&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+  <span class="c1"># Remove special + white space:</span>
+  <span class="n">name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">(c |u |H |v |d |b |t )&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>  <span class="n">name</span><span class="p">)</span>
+  <span class="c1"># Remove special + braces:</span>
+  <span class="n">name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">(c{|u{|H{|v{|d{|b{|t{)&quot;</span><span class="p">,</span> <span class="s2">&quot;{&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+  <span class="c1"># Replace pattern:</span>
+  <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="s2">&quot;O&quot;</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="s2">&quot;j&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot;aa&quot;</span><span class="p">,</span> <span class="s2">&quot;AA&quot;</span><span class="p">,</span> <span class="s2">&quot;AE&quot;</span><span class="p">,</span> <span class="s2">&quot;oe&quot;</span><span class="p">,</span> <span class="s2">&quot;OE&quot;</span><span class="p">,</span> <span class="s2">&quot;ss&quot;</span><span class="p">]:</span>
+      <span class="n">name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">fr</span><span class="s2">&quot;</span><span class="se">\\</span><span class="si">{pattern}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+  <span class="c1"># Remove braces, clean up, and return:</span>
+  <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;({|})&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="initials"><a class="viewcode-back" href="../../../api.html#bibmanager.utils.initials">[docs]</a><span class="k">def</span> <span class="nf">initials</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+  <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Get initials from a name.</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  name: String</span>
+<span class="sd">     A name.</span>
+
+<span class="sd">  Returns</span>
+<span class="sd">  -------</span>
+<span class="sd">  initials: String</span>
+<span class="sd">     Name initials (lower cased).</span>
+
+<span class="sd">  Examples</span>
+<span class="sd">  --------</span>
+<span class="sd">  &gt;&gt;&gt; from bibmanager.utils import initials</span>
+<span class="sd">  &gt;&gt;&gt; names = [&quot;&quot;, &quot;D.&quot;, &quot;D. W.&quot;, &quot;G.O.&quot;, &#39;{\\&quot;O}. H.&#39;, &quot;J. Y.-K.&quot;,</span>
+<span class="sd">  &gt;&gt;&gt;          &quot;Phil&quot;, &quot;Phill Henry Scott&quot;]</span>
+<span class="sd">  &gt;&gt;&gt; for name in names:</span>
+<span class="sd">  &gt;&gt;&gt;     print(f&quot;{name!r:20}: {initials(name)!r}&quot;)</span>
+<span class="sd">  &#39;&#39;                  : &#39;&#39;</span>
+<span class="sd">  &#39;D.&#39;                : &#39;d&#39;</span>
+<span class="sd">  &#39;D. W.&#39;             : &#39;dw&#39;</span>
+<span class="sd">  &#39;G.O.&#39;              : &#39;g&#39;</span>
+<span class="sd">  &#39;{\\&quot;O}. H.&#39;        : &#39;oh&#39;</span>
+<span class="sd">  &#39;J. Y.-K.&#39;          : &#39;jyk&#39;</span>
+<span class="sd">  &#39;Phil&#39;              : &#39;p&#39;</span>
+<span class="sd">  &#39;Phill Henry Scott&#39; : &#39;phs&#39;</span>
+<span class="sd">  &gt;&gt;&gt; # &#39;G.O.&#39; is a typo by the user, should have had a blank in between.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">name</span> <span class="o">=</span> <span class="n">purify</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+  <span class="n">split_names</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+  <span class="c1"># Somehow string[0:1] does not break when string = &quot;&quot;, unlike string[0].</span>
+  <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">split_names</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="get_authors"><a class="viewcode-back" href="../../../api.html#bibmanager.utils.get_authors">[docs]</a><span class="k">def</span> <span class="nf">get_authors</span><span class="p">(</span><span class="n">authors</span><span class="p">,</span> <span class="n">short</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Get string representation for the author list.</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  authors: List of Author() nametuple</span>
+<span class="sd">  short: Bool</span>
+<span class="sd">     If True, use &#39;short&#39; format displaying at most the first two</span>
+<span class="sd">     authors followed by &#39;et al.&#39; if corresponds.</span>
+<span class="sd">     If False, display the full list of authors.</span>
+
+<span class="sd">  Examples</span>
+<span class="sd">  --------</span>
+<span class="sd">  &gt;&gt;&gt; from bibmanager.utils import get_authors, parse_name</span>
+<span class="sd">  &gt;&gt;&gt; author_lists = [</span>
+<span class="sd">  &gt;&gt;&gt;     [parse_name(&#39;{Hunter}, J. D.&#39;)],</span>
+<span class="sd">  &gt;&gt;&gt;     [parse_name(&#39;{AAS Journals Team}&#39;), parse_name(&#39;{Hendrickson}, A.&#39;)],</span>
+<span class="sd">  &gt;&gt;&gt;     [parse_name(&#39;Eric Jones&#39;), parse_name(&#39;Travis Oliphant&#39;),</span>
+<span class="sd">  &gt;&gt;&gt;      parse_name(&#39;Pearu Peterson&#39;), parse_name(&#39;others&#39;)]</span>
+<span class="sd">  &gt;&gt;&gt;    ]</span>
+<span class="sd">  &gt;&gt;&gt; # Short format:</span>
+<span class="sd">  &gt;&gt;&gt; for i,authors in enumerate(author_lists):</span>
+<span class="sd">  &gt;&gt;&gt;     print(f&quot;{i+1} author(s): {get_authors(authors)}&quot;)</span>
+<span class="sd">  1 author(s): {Hunter}, J. D.</span>
+<span class="sd">  2 author(s): {AAS Journals Team} and {Hendrickson}, A.</span>
+<span class="sd">  3 author(s): Jones, Eric; et al.</span>
+<span class="sd">  &gt;&gt;&gt; # Long format:</span>
+<span class="sd">  &gt;&gt;&gt; for i,authors in enumerate(author_lists):</span>
+<span class="sd">  &gt;&gt;&gt;     print(f&quot;{i+1} author(s): {get_authors(authors, short=False)}&quot;)</span>
+<span class="sd">  1 author(s): {Hunter}, J. D.</span>
+<span class="sd">  2 author(s): {AAS Journals Team} and {Hendrickson}, A.</span>
+<span class="sd">  3 author(s): Jones, Eric; Oliphant, Travis; Peterson, Pearu; and others</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">authors</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">:</span>
+      <span class="k">return</span> <span class="s2">&quot; and &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">repr_author</span><span class="p">(</span><span class="n">author</span><span class="p">)</span> <span class="k">for</span> <span class="n">author</span> <span class="ow">in</span> <span class="n">authors</span><span class="p">])</span>
+
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">short</span><span class="p">:</span>
+      <span class="n">author_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">repr_author</span><span class="p">(</span><span class="n">author</span><span class="p">)</span> <span class="k">for</span> <span class="n">author</span> <span class="ow">in</span> <span class="n">authors</span><span class="p">]</span>
+      <span class="n">authors</span> <span class="o">=</span> <span class="s2">&quot;; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">author_list</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+      <span class="k">return</span> <span class="n">authors</span> <span class="o">+</span> <span class="s2">&quot;; and &quot;</span> <span class="o">+</span> <span class="n">author_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+  <span class="k">else</span><span class="p">:</span>
+      <span class="k">return</span> <span class="n">repr_author</span><span class="p">(</span><span class="n">authors</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;; et al.&quot;</span></div>
+
+
+<div class="viewcode-block" id="next_char"><a class="viewcode-back" href="../../../api.html#bibmanager.utils.next_char">[docs]</a><span class="k">def</span> <span class="nf">next_char</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+  <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Get index of next non-blank character in string text.</span>
+<span class="sd">  Return zero if all characters are blanks.</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  text: String</span>
+<span class="sd">     A string, duh!.</span>
+
+<span class="sd">  Examples</span>
+<span class="sd">  --------</span>
+<span class="sd">  &gt;&gt;&gt; from bibmanager.utils import next_char</span>
+<span class="sd">  &gt;&gt;&gt; texts = [&quot;Hello&quot;, &quot;  Hello&quot;, &quot;  Hello &quot;, &quot;&quot;, &quot;\n Hello&quot;, &quot;  &quot;]</span>
+<span class="sd">  &gt;&gt;&gt; for text in texts:</span>
+<span class="sd">  &gt;&gt;&gt;     print(f&quot;{text!r:11}: {next_char(text)}&quot;)</span>
+<span class="sd">  &#39;Hello&#39;    : 0</span>
+<span class="sd">  &#39;  Hello&#39;  : 2</span>
+<span class="sd">  &#39;  Hello &#39; : 2</span>
+<span class="sd">  &#39;&#39;         : 0</span>
+<span class="sd">  &#39;\n Hello&#39; : 2</span>
+<span class="sd">  &#39;  &#39;       : 0</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">nchars</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+  <span class="c1"># Empty string:</span>
+  <span class="k">if</span> <span class="n">nchars</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="k">return</span> <span class="mi">0</span>
+  <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="k">while</span> <span class="n">text</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">isspace</span><span class="p">():</span>
+      <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+      <span class="c1"># Reach end of string, all characters blanks:</span>
+      <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">nchars</span><span class="p">:</span>
+          <span class="k">return</span> <span class="mi">0</span>
+  <span class="k">return</span> <span class="n">i</span></div>
+
+
+<div class="viewcode-block" id="last_char"><a class="viewcode-back" href="../../../api.html#bibmanager.utils.last_char">[docs]</a><span class="k">def</span> <span class="nf">last_char</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+  <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Get index of last non-blank character in string text.</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  text: String</span>
+<span class="sd">     A string, duh!.</span>
+
+<span class="sd">  Examples</span>
+<span class="sd">  --------</span>
+<span class="sd">  &gt;&gt;&gt; from bibmanager.utils import last_char</span>
+<span class="sd">  &gt;&gt;&gt; texts = [&quot;Hello&quot;, &quot;  Hello&quot;, &quot;  Hello  &quot;, &quot;&quot;, &quot;\n Hello&quot;, &quot;  &quot;]</span>
+<span class="sd">  &gt;&gt;&gt; for text in texts:</span>
+<span class="sd">  &gt;&gt;&gt;     print(f&quot;{text!r:12}: {last_char(text)}&quot;)</span>
+<span class="sd">  &#39;Hello&#39;     : 5</span>
+<span class="sd">  &#39;  Hello&#39;   : 7</span>
+<span class="sd">  &#39;  Hello  &#39; : 7</span>
+<span class="sd">  &#39;&#39;          : 0</span>
+<span class="sd">  &#39;\n Hello&#39;  : 7</span>
+<span class="sd">  &#39;  &#39;        : 0</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">i</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="k">return</span> <span class="mi">0</span>
+  <span class="k">while</span> <span class="n">text</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">isspace</span><span class="p">()</span> <span class="ow">and</span> <span class="n">i</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+      <span class="n">i</span> <span class="o">-=</span> <span class="mi">1</span>
+  <span class="k">return</span> <span class="n">i</span></div>
+
+
+<div class="viewcode-block" id="get_fields"><a class="viewcode-back" href="../../../api.html#bibmanager.utils.get_fields">[docs]</a><span class="k">def</span> <span class="nf">get_fields</span><span class="p">(</span><span class="n">entry</span><span class="p">):</span>
+  <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Generator to parse entries of a bibbliographic entry.</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  entry: String</span>
+<span class="sd">     A bibliographic entry text.</span>
+
+<span class="sd">  Yields</span>
+<span class="sd">  ------</span>
+<span class="sd">  The first yield is the entry&#39;s key.  All following yields are</span>
+<span class="sd">  three-element tuples containing a field name, field value, and</span>
+<span class="sd">  nested level of the field value.</span>
+
+<span class="sd">  Notes</span>
+<span class="sd">  -----</span>
+<span class="sd">  Global quotations or braces on a value are removed before yielding.</span>
+
+<span class="sd">  Example</span>
+<span class="sd">  -------</span>
+<span class="sd">  &gt;&gt;&gt; from bibmanager.utils import get_fields</span>
+<span class="sd">  &gt;&gt;&gt; entry = &#39;&#39;&#39;</span>
+<span class="sd">  @Article{Hunter2007ieeeMatplotlib,</span>
+<span class="sd">    Author    = {{Hunter}, J. D.},</span>
+<span class="sd">    Title     = {Matplotlib: A 2D graphics environment},</span>
+<span class="sd">    Journal   = {Computing In Science \&amp; Engineering},</span>
+<span class="sd">    Volume    = {9},</span>
+<span class="sd">    Number    = {3},</span>
+<span class="sd">    Pages     = {90--95},</span>
+<span class="sd">    publisher = {IEEE COMPUTER SOC},</span>
+<span class="sd">    doi       = {10.1109/MCSE.2007.55},</span>
+<span class="sd">    year      = 2007</span>
+<span class="sd">  }&#39;&#39;&#39;</span>
+<span class="sd">  &gt;&gt;&gt; fields = get_fields(entry)</span>
+<span class="sd">  &gt;&gt;&gt; # Get the entry&#39;s key:</span>
+<span class="sd">  &gt;&gt;&gt; print(next(fields))</span>
+<span class="sd">  Hunter2007ieeeMatplotlib</span>
+
+<span class="sd">  &gt;&gt;&gt; # Now get the fields, values, and nested level:</span>
+<span class="sd">  &gt;&gt;&gt; for key, value, nested in fields:</span>
+<span class="sd">  &gt;&gt;&gt;   print(f&quot;{key:9}: {value}\n{&#39;&#39;:11}{&#39;&#39;.join([str(v) for v in nested])}&quot;)</span>
+<span class="sd">  author   : {Hunter}, J. D.</span>
+<span class="sd">             233333332222222</span>
+<span class="sd">  title    : Matplotlib: A 2D graphics environment</span>
+<span class="sd">             2222222222222222222222222222222222222</span>
+<span class="sd">  journal  : Computing In Science \&amp; Engineering</span>
+<span class="sd">             22222222222222222222222222222222222</span>
+<span class="sd">  volume   : 9</span>
+<span class="sd">             2</span>
+<span class="sd">  number   : 3</span>
+<span class="sd">             2</span>
+<span class="sd">  pages    : 90--95</span>
+<span class="sd">             222222</span>
+<span class="sd">  publisher: IEEE COMPUTER SOC</span>
+<span class="sd">             22222222222222222</span>
+<span class="sd">  doi      : 10.1109/MCSE.2007.55</span>
+<span class="sd">             22222222222222222222</span>
+<span class="sd">  year     : 2007</span>
+<span class="sd">             1111</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="c1"># First yield is the key:</span>
+  <span class="n">nested</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">nest</span><span class="p">(</span><span class="n">entry</span><span class="p">))</span>
+  <span class="n">start</span> <span class="o">=</span> <span class="n">nested</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+  <span class="n">loc</span>   <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+  <span class="k">yield</span> <span class="n">entry</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">loc</span><span class="p">]</span>
+  <span class="n">loc</span> <span class="o">+=</span> <span class="mi">1</span>
+
+  <span class="c1"># Next equal sign delimits key:</span>
+  <span class="k">while</span> <span class="n">entry</span><span class="p">[</span><span class="n">loc</span><span class="p">:]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="n">eq</span>  <span class="o">=</span> <span class="n">entry</span><span class="p">[</span><span class="n">loc</span><span class="p">:]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)</span>
+      <span class="n">key</span> <span class="o">=</span> <span class="n">entry</span><span class="p">[</span><span class="n">loc</span><span class="p">:</span><span class="n">loc</span><span class="o">+</span><span class="n">eq</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+      <span class="c1"># next non-blank character:</span>
+      <span class="n">start</span> <span class="o">=</span> <span class="n">loc</span> <span class="o">+</span> <span class="n">eq</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">next_char</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="n">loc</span><span class="o">+</span><span class="n">eq</span><span class="o">+</span><span class="mi">1</span><span class="p">:])</span>
+
+      <span class="k">if</span> <span class="n">entry</span><span class="p">[</span><span class="n">start</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;{&quot;</span><span class="p">:</span>
+          <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">nested</span><span class="p">[</span><span class="n">start</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+          <span class="n">start</span> <span class="o">+=</span> <span class="mi">1</span>
+      <span class="k">elif</span> <span class="n">entry</span><span class="p">[</span><span class="n">start</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;&quot;&#39;</span><span class="p">:</span>
+          <span class="n">start</span> <span class="o">+=</span> <span class="mi">1</span>
+          <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">cond_next</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="n">start</span><span class="p">:],</span> <span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="n">nested</span><span class="p">[</span><span class="n">start</span><span class="p">:],</span> <span class="n">nlev</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+      <span class="k">else</span><span class="p">:</span>
+          <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">cond_next</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="n">start</span><span class="p">:],</span> <span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="n">nested</span><span class="p">[</span><span class="n">start</span><span class="p">:],</span> <span class="n">nlev</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+      <span class="n">start</span> <span class="o">+=</span> <span class="n">next_char</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">])</span>
+      <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">last_char</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">])</span>
+      <span class="n">loc</span> <span class="o">=</span> <span class="n">end</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="n">end</span><span class="p">:]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">entry</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
+      <span class="k">yield</span> <span class="n">key</span><span class="p">,</span> <span class="n">entry</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">],</span> <span class="n">nested</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="req_input"><a class="viewcode-back" href="../../../api.html#bibmanager.utils.req_input">[docs]</a><span class="k">def</span> <span class="nf">req_input</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">options</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Query for an aswer to prompt message until the user provides a</span>
+<span class="sd">  valid input (i.e., answer is in options).</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  prompt: String</span>
+<span class="sd">     Prompt text for input()&#39;s argument.</span>
+<span class="sd">  options: List</span>
+<span class="sd">     List of options to accept.  Elements in list are casted into strings.</span>
+
+<span class="sd">  Returns</span>
+<span class="sd">  -------</span>
+<span class="sd">  answer: String</span>
+<span class="sd">     The user&#39;s input.</span>
+
+<span class="sd">  Examples</span>
+<span class="sd">  --------</span>
+<span class="sd">  &gt;&gt;&gt; from bibmanager.utils import req_input</span>
+<span class="sd">  &gt;&gt;&gt; req_input(&#39;Enter number between 0 and 9: &#39;, options=np.arange(10))</span>
+<span class="sd">  &gt;&gt;&gt; # Enter the number 10:</span>
+<span class="sd">  Enter number between 0 and 9: 10</span>
+<span class="sd">  &gt;&gt;&gt; # Now enter the number 5:</span>
+<span class="sd">  Not a valid input.  Try again: 5</span>
+<span class="sd">  &#39;5&#39;</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="c1"># Cast options as str:</span>
+  <span class="n">options</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">option</span><span class="p">)</span> <span class="k">for</span> <span class="n">option</span> <span class="ow">in</span> <span class="n">options</span><span class="p">]</span>
+
+  <span class="n">answer</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+  <span class="k">while</span> <span class="n">answer</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">options</span><span class="p">:</span>
+      <span class="n">answer</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Not a valid input.  Try again: &quot;</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">answer</span></div>
+
+
+<div class="viewcode-block" id="AutoSuggestCompleter"><a class="viewcode-back" href="../../../api.html#bibmanager.utils.AutoSuggestCompleter">[docs]</a><span class="k">class</span> <span class="nc">AutoSuggestCompleter</span><span class="p">(</span><span class="n">AutoSuggest</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Give suggestions based on the words in WordCompleter.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">get_suggestion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">document</span><span class="p">):</span>
+        <span class="n">completer</span> <span class="o">=</span> <span class="n">buffer</span><span class="o">.</span><span class="n">completer</span>
+        <span class="c1"># Consider only the last line for the suggestion.</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># Consider only last word:</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;(\W+)&#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># Only create a suggestion when this is not an empty line.</span>
+        <span class="k">if</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+            <span class="c1"># Find first matching line in history.</span>
+            <span class="k">for</span> <span class="n">string</span> <span class="ow">in</span> <span class="n">completer</span><span class="o">.</span><span class="n">get_completer</span><span class="p">()</span><span class="o">.</span><span class="n">words</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()):</span>
+                    <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+                        <span class="k">return</span> <span class="n">Suggestion</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">):])</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018-2019, Patricio Cubillos
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../../../',
+              VERSION:'1.1.3',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

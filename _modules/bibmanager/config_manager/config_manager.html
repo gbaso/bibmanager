@@ -1,0 +1,428 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>bibmanager.config_manager.config_manager &mdash; bibmanager 1.1.3 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> bibmanager
+          
+
+          
+            
+            <img src="../../../_static/logo_bibmanager.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                version 1.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getstarted.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../bibtex.html">BibTeX Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../latex.html">LaTeX Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ads.html">ADS Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq.html">FAQs and Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">bibmanager</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>bibmanager.config_manager.config_manager</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for bibmanager.config_manager.config_manager</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2018-2019 Patricio Cubillos and contributors.</span>
+<span class="c1"># bibmanager is open-source software under the MIT license (see LICENSE).</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;help&#39;</span><span class="p">,</span> <span class="s1">&#39;display&#39;</span><span class="p">,</span> <span class="s1">&#39;get&#39;</span><span class="p">,</span> <span class="s1">&#39;set&#39;</span><span class="p">,</span> <span class="s1">&#39;update_keys&#39;</span><span class="p">]</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">configparser</span>
+<span class="kn">import</span> <span class="nn">textwrap</span>
+<span class="kn">from</span> <span class="nn">pygments.styles</span> <span class="k">import</span> <span class="n">STYLE_MAP</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">utils</span> <span class="k">as</span> <span class="n">u</span>
+
+
+<span class="n">styles</span> <span class="o">=</span> <span class="n">textwrap</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">style</span> <span class="k">for</span> <span class="n">style</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">STYLE_MAP</span><span class="p">)),</span>
+                       <span class="n">width</span><span class="o">=</span><span class="mi">79</span><span class="p">,</span> <span class="n">initial_indent</span><span class="o">=</span><span class="s2">&quot;  &quot;</span><span class="p">,</span> <span class="n">subsequent_indent</span><span class="o">=</span><span class="s2">&quot;  &quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="help"><a class="viewcode-back" href="../../../api.html#bibmanager.config_manager.help">[docs]</a><span class="k">def</span> <span class="nf">help</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Display help information.</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  key: String</span>
+<span class="sd">     A bibmanager config parameter.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;style&#39;</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">The &#39;</span><span class="si">{key}</span><span class="s2">&#39; parameter sets the color-syntax style of displayed &quot;</span>
+             <span class="s2">&quot;BibTeX entries.</span><span class="se">\n</span><span class="s2">The default style is &#39;autumn&#39;.  &quot;</span>
+            <span class="n">f</span><span class="s2">&quot;Available options are:</span><span class="se">\n</span><span class="si">{styles}</span><span class="se">\n</span><span class="s2">&quot;</span>
+             <span class="s2">&quot;See http://pygments.org/demo/6780986/ for a demo of the style &quot;</span>
+             <span class="s2">&quot;options.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+            <span class="n">f</span><span class="s2">&quot;The current style is &#39;{get(key)}&#39;.&quot;</span><span class="p">)</span>
+
+  <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;text_editor&#39;</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">The &#39;</span><span class="si">{key}</span><span class="s2">&#39; parameter sets the text editor to use when editing &quot;</span>
+             <span class="s2">&quot;the</span><span class="se">\n</span><span class="s2">bibmanager manually (i.e., a call to: bibm edit).  By &quot;</span>
+             <span class="s2">&quot;default, bibmanager</span><span class="se">\n</span><span class="s2">uses the OS-default text editor.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+             <span class="s2">&quot;Typical text editors are: emacs, vim, gedit.</span><span class="se">\n</span><span class="s2">&quot;</span>
+             <span class="s2">&quot;To set the OS-default editor, set text_editor to &#39;default&#39;.</span><span class="se">\n</span><span class="s2">&quot;</span>
+             <span class="s2">&quot;Note that aliases defined in the .bash are not accessible.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+            <span class="n">f</span><span class="s2">&quot;The current text editor is &#39;{get(key)}&#39;.&quot;</span><span class="p">)</span>
+
+  <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;paper&#39;</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">The &#39;</span><span class="si">{key}</span><span class="s2">&#39; parameter sets the default paper format for latex &quot;</span>
+             <span class="s2">&quot;compilation outputs</span><span class="se">\n</span><span class="s2">(not for pdflatex, which is automatic).  &quot;</span>
+             <span class="s2">&quot;Typical options are &#39;letter&#39;</span><span class="se">\n</span><span class="s2">(e.g., for ApJ articles) or &#39;A4&#39; &quot;</span>
+            <span class="n">f</span><span class="s2">&quot;(e.g., for A&amp;A).</span><span class="se">\n\n</span><span class="s2">The current paper format is: &#39;{get(key)}&#39;.&quot;</span><span class="p">)</span>
+
+  <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;ads_token&#39;</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">The &#39;</span><span class="si">{key}</span><span class="s2">&#39; parameter sets the ADS token required for ADS &quot;</span>
+             <span class="s2">&quot;requests.</span><span class="se">\n</span><span class="s2">To obtain a token, follow the steps described here:</span><span class="se">\n</span><span class="s2">&quot;</span>
+             <span class="s2">&quot;  https://github.com/adsabs/adsabs-dev-api#access</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+            <span class="n">f</span><span class="s2">&quot;The current ADS token is &#39;{get(key)}&#39;&quot;</span><span class="p">)</span>
+
+  <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;ads_display&#39;</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">The &#39;</span><span class="si">{key}</span><span class="s2">&#39; parameter sets the number of entries to show at &quot;</span>
+             <span class="s2">&quot;a time,</span><span class="se">\n</span><span class="s2">for an ADS search querry.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+            <span class="n">f</span><span class="s2">&quot;The current number of entries to display is {get(key)}.&quot;</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+      <span class="c1"># Call get() to trigger exception:</span>
+      <span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="display"><a class="viewcode-back" href="../../../api.html#bibmanager.config_manager.display">[docs]</a><span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Display the value(s) of the bibmanager config file on the prompt.</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  key: String</span>
+<span class="sd">     bibmanager config parameter to display.  Leave as None to display the</span>
+<span class="sd">     values from all parameters.</span>
+
+<span class="sd">  Examples</span>
+<span class="sd">  --------</span>
+<span class="sd">  &gt;&gt;&gt; import bibmanager.config_manager as cm</span>
+<span class="sd">  &gt;&gt;&gt; # Show all parameters and values:</span>
+<span class="sd">  &gt;&gt;&gt; cm.display()</span>
+<span class="sd">  bibmanager configuration file:</span>
+<span class="sd">  PARAMETER    VALUE</span>
+<span class="sd">  -----------  -----</span>
+<span class="sd">  style        autumn</span>
+<span class="sd">  text_editor  default</span>
+<span class="sd">  paper        letter</span>
+<span class="sd">  ads_token    None</span>
+<span class="sd">  ads_display  20</span>
+
+<span class="sd">  &gt;&gt;&gt; # Show an specific parameter:</span>
+<span class="sd">  &gt;&gt;&gt; cm.display(&#39;text_editor&#39;)</span>
+<span class="sd">  text_editor: default</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{key}</span><span class="s2">: {get(key)}&quot;</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+      <span class="n">config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+      <span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">HOME</span><span class="o">+</span><span class="s1">&#39;config&#39;</span><span class="p">)</span>
+      <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">bibmanager configuration file:&quot;</span>
+            <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">PARAMETER    VALUE&quot;</span>
+            <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">-----------  -----&quot;</span><span class="p">)</span>
+      <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;BIBMANAGER&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+          <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{key:11}</span><span class="s2">  </span><span class="si">{value}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get"><a class="viewcode-back" href="../../../api.html#bibmanager.config_manager.get">[docs]</a><span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Get the value of a parameter in the bibmanager config file.</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  key: String</span>
+<span class="sd">     The requested parameter name.</span>
+
+<span class="sd">  Returns</span>
+<span class="sd">  -------</span>
+<span class="sd">  value: String</span>
+<span class="sd">     Value of the requested parameter.</span>
+
+<span class="sd">  Examples</span>
+<span class="sd">  --------</span>
+<span class="sd">  &gt;&gt;&gt; import bibmanager.config_manager as cm</span>
+<span class="sd">  &gt;&gt;&gt; cm.get(&#39;paper&#39;)</span>
+<span class="sd">  &#39;letter&#39;</span>
+<span class="sd">  &gt;&gt;&gt; cm.get(&#39;style&#39;)</span>
+<span class="sd">  &#39;autumn&#39;</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+  <span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">HOME</span><span class="o">+</span><span class="s1">&#39;config&#39;</span><span class="p">)</span>
+
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">config</span><span class="o">.</span><span class="n">has_option</span><span class="p">(</span><span class="s1">&#39;BIBMANAGER&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+      <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;&#39;</span><span class="si">{key}</span><span class="s2">&#39; is not a valid bibmanager config parameter.</span><span class="se">\n</span><span class="s2">&quot;</span>
+          <span class="n">f</span><span class="s2">&quot;The available parameters are:</span><span class="se">\n</span><span class="s2">  {config.options(&#39;BIBMANAGER&#39;)}&quot;</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;BIBMANAGER&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="set"><a class="viewcode-back" href="../../../api.html#bibmanager.config_manager.set">[docs]</a><span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Set the value of a bibmanager config parameter.</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  key: String</span>
+<span class="sd">     bibmanager config parameter to set.</span>
+<span class="sd">  value: String</span>
+<span class="sd">     Value to set for input parameter.</span>
+
+<span class="sd">  Examples</span>
+<span class="sd">  --------</span>
+<span class="sd">  &gt;&gt;&gt; import bibmanager.config_manager as cm</span>
+<span class="sd">  &gt;&gt;&gt; # Update text editor:</span>
+<span class="sd">  &gt;&gt;&gt; cm.set(&#39;text_editor&#39;, &#39;vim&#39;)</span>
+<span class="sd">  text_editor updated to: vim.</span>
+
+<span class="sd">  &gt;&gt;&gt; # Invalid bibmanager parameter:</span>
+<span class="sd">  &gt;&gt;&gt; cm.set(&#39;styles&#39;, &#39;arduino&#39;)</span>
+<span class="sd">  ValueError: &#39;styles&#39; is not a valid bibmanager config parameter. The available</span>
+<span class="sd">  parameters are:  [&#39;style&#39;, &#39;text_editor&#39;, &#39;paper&#39;, &#39;ads_token&#39;, &#39;ads_display&#39;]</span>
+
+<span class="sd">  &gt;&gt;&gt; # Attempt to set an invalid style:</span>
+<span class="sd">  &gt;&gt;&gt; cm.set(&#39;style&#39;, &#39;fake_style&#39;)</span>
+<span class="sd">  ValueError: &#39;fake_style&#39; is not a valid style option.  Available options are:</span>
+<span class="sd">    default, emacs, friendly, colorful, autumn, murphy, manni, monokai, perldoc,</span>
+<span class="sd">    pastie, borland, trac, native, fruity, bw, vim, vs, tango, rrt, xcode, igor,</span>
+<span class="sd">    paraiso-light, paraiso-dark, lovelace, algol, algol_nu, arduino,</span>
+<span class="sd">    rainbow_dash, abap</span>
+
+<span class="sd">  &gt;&gt;&gt; # Attempt to set an invalid command for text_editor:</span>
+<span class="sd">  &gt;&gt;&gt; cm.set(&#39;text_editor&#39;, &#39;my_own_editor&#39;)</span>
+<span class="sd">  ValueError: &#39;my_own_editor&#39; is not a valid text editor.</span>
+
+<span class="sd">  &gt;&gt;&gt; # Beware, one can still set a valid command that doesn&#39;t edit text:</span>
+<span class="sd">  &gt;&gt;&gt; cm.set(&#39;text_editor&#39;, &#39;less&#39;)</span>
+<span class="sd">  text_editor updated to: less.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+  <span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">HOME</span><span class="o">+</span><span class="s1">&#39;config&#39;</span><span class="p">)</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">config</span><span class="o">.</span><span class="n">has_option</span><span class="p">(</span><span class="s1">&#39;BIBMANAGER&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+      <span class="c1"># Use gt on invalid key to raise an error:</span>
+      <span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+  <span class="c1"># Check for exceptions:</span>
+  <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;style&#39;</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">STYLE_MAP</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+      <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;&#39;</span><span class="si">{value}</span><span class="s2">&#39; is not a valid style option.  &quot;</span>
+                       <span class="n">f</span><span class="s2">&quot;Available options are:</span><span class="se">\n</span><span class="si">{styles}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+  <span class="c1"># The code identifies invalid commands, but cannot assure that a</span>
+  <span class="c1"># command actually applies to a text file.</span>
+  <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;text_editor&#39;</span> <span class="ow">and</span> <span class="n">value</span><span class="o">!=</span><span class="s1">&#39;default&#39;</span> <span class="ow">and</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;&#39;</span><span class="si">{value}</span><span class="s2">&#39; is not a valid text editor.&quot;</span><span class="p">)</span>
+
+  <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;ads_display&#39;</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">value</span><span class="o">.</span><span class="n">isnumeric</span><span class="p">()</span> <span class="ow">or</span> <span class="n">value</span><span class="o">==</span><span class="s1">&#39;0&#39;</span><span class="p">):</span>
+      <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;The </span><span class="si">{key}</span><span class="s2"> value must be a positive integer.&quot;</span><span class="p">)</span>
+
+  <span class="c1"># Set value if there were no exceptions raised:</span>
+  <span class="n">config</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;BIBMANAGER&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">HOME</span><span class="o">+</span><span class="s1">&#39;config&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">configfile</span><span class="p">:</span>
+      <span class="n">config</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">configfile</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{key}</span><span class="s1"> updated to: </span><span class="si">{value}</span><span class="s1">.&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="update_keys"><a class="viewcode-back" href="../../../api.html#bibmanager.config_manager.update_keys">[docs]</a><span class="k">def</span> <span class="nf">update_keys</span><span class="p">():</span>
+  <span class="sd">&quot;&quot;&quot;Update config in HOME with keys from ROOT, without overwriting values.&quot;&quot;&quot;</span>
+  <span class="n">config_root</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+  <span class="n">config_root</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">ROOT</span><span class="o">+</span><span class="s1">&#39;config&#39;</span><span class="p">)</span>
+  <span class="c1"># Wont complain if HOME+&#39;config&#39; does not exist (keep ROOT values):</span>
+  <span class="n">config_root</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">HOME</span><span class="o">+</span><span class="s1">&#39;config&#39;</span><span class="p">)</span>
+  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">HOME</span><span class="o">+</span><span class="s1">&#39;config&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">configfile</span><span class="p">:</span>
+      <span class="n">config_root</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">configfile</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018-2019, Patricio Cubillos
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../../../',
+              VERSION:'1.1.3',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,617 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>bibmanager.ads_manager.ads_manager &mdash; bibmanager 1.1.3 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> bibmanager
+          
+
+          
+            
+            <img src="../../../_static/logo_bibmanager.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                version 1.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getstarted.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../bibtex.html">BibTeX Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../latex.html">LaTeX Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ads.html">ADS Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq.html">FAQs and Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">bibmanager</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>bibmanager.ads_manager.ads_manager</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for bibmanager.ads_manager.ads_manager</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2018-2019 Patricio Cubillos and contributors.</span>
+<span class="c1"># bibmanager is open-source software under the MIT license (see LICENSE).</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;manager&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;search&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;display&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;add_bibtex&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;update&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;key_update&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">urllib</span>
+<span class="kn">import</span> <span class="nn">textwrap</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+
+<span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">bib_manager</span>    <span class="k">as</span> <span class="n">bm</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">config_manager</span> <span class="k">as</span> <span class="n">cm</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">utils</span> <span class="k">as</span> <span class="n">u</span>
+
+
+<div class="viewcode-block" id="manager"><a class="viewcode-back" href="../../../api.html#bibmanager.ads_manager.manager">[docs]</a><span class="k">def</span> <span class="nf">manager</span><span class="p">(</span><span class="n">querry</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  A manager, it doesn&#39;t really do anything, it just delegates.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">rows</span>  <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ads_display&#39;</span><span class="p">))</span>
+  <span class="k">if</span> <span class="n">querry</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">BM_CACHE</span><span class="p">):</span>
+      <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;There are no more entries for this querry.&quot;</span><span class="p">)</span>
+      <span class="k">return</span>
+
+  <span class="k">if</span> <span class="n">querry</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">BM_CACHE</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handle</span><span class="p">:</span>
+          <span class="n">results</span><span class="p">,</span> <span class="n">querry</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">nmatch</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
+      <span class="n">last</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+      <span class="k">if</span> <span class="n">last</span> <span class="o">&lt;</span> <span class="n">nmatch</span> <span class="ow">and</span> <span class="n">index</span> <span class="o">+</span> <span class="n">rows</span> <span class="o">&gt;</span> <span class="n">last</span><span class="p">:</span>
+          <span class="n">new_results</span><span class="p">,</span> <span class="n">nmatch</span> <span class="o">=</span> <span class="n">search</span><span class="p">(</span><span class="n">querry</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">last</span><span class="p">)</span>
+          <span class="n">results</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">index</span><span class="o">-</span><span class="n">start</span><span class="p">:]</span> <span class="o">+</span> <span class="n">new_results</span>
+          <span class="n">start</span> <span class="o">=</span> <span class="n">index</span>
+          <span class="n">last</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+      <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
+      <span class="n">index</span> <span class="o">=</span> <span class="n">start</span>
+      <span class="n">results</span><span class="p">,</span> <span class="n">nmatch</span> <span class="o">=</span> <span class="n">search</span><span class="p">(</span><span class="n">querry</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">)</span>
+
+  <span class="n">display</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">nmatch</span><span class="p">)</span>
+  <span class="n">index</span> <span class="o">+=</span> <span class="n">rows</span>
+  <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="n">nmatch</span><span class="p">:</span>
+      <span class="k">with</span> <span class="n">u</span><span class="o">.</span><span class="n">ignored</span><span class="p">(</span><span class="ne">OSError</span><span class="p">):</span>
+          <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">BM_CACHE</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+      <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">BM_CACHE</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handle</span><span class="p">:</span>
+          <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">([</span><span class="n">results</span><span class="p">,</span> <span class="n">querry</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">nmatch</span><span class="p">],</span> <span class="n">handle</span><span class="p">,</span>
+                      <span class="n">protocol</span><span class="o">=</span><span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="search"><a class="viewcode-back" href="../../../api.html#bibmanager.ads_manager.search">[docs]</a><span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="n">querry</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">cache_rows</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="s1">&#39;pubdate+desc&#39;</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Make a querry from ADS.</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  querry: String</span>
+<span class="sd">     A querry string like an entry in the new ADS interface:</span>
+<span class="sd">     https://ui.adsabs.harvard.edu/</span>
+<span class="sd">  start: Integer</span>
+<span class="sd">     Starting index of entry to return.</span>
+<span class="sd">  cache_rows: Integer</span>
+<span class="sd">     Maximum number of entries to return.</span>
+<span class="sd">  sort: String</span>
+<span class="sd">     Sorting field and direction to use.</span>
+
+<span class="sd">  Returns</span>
+<span class="sd">  -------</span>
+<span class="sd">  results: List of dicts</span>
+<span class="sd">     Querry outputs between indices start and start+rows.</span>
+<span class="sd">  nmatch: Integer</span>
+<span class="sd">     Total number of entries matched by the querry.</span>
+
+<span class="sd">  Resources</span>
+<span class="sd">  ---------</span>
+<span class="sd">  A comprehensive description of the querry format:</span>
+<span class="sd">  - http://adsabs.github.io/help/search/</span>
+<span class="sd">  Description of the querry parameters:</span>
+<span class="sd">  - https://github.com/adsabs/adsabs-dev-api/blob/master/Search_API.ipynb</span>
+
+<span class="sd">  Examples</span>
+<span class="sd">  --------</span>
+<span class="sd">  &gt;&gt;&gt; import bibmanager.ads_manager as am</span>
+<span class="sd">  &gt;&gt;&gt; # Search entries by author (note the need for double quotes,</span>
+<span class="sd">  &gt;&gt;&gt; # otherwise, the search might produce bogus results):</span>
+<span class="sd">  &gt;&gt;&gt; querry = &#39;author:&quot;cubillos, p&quot;&#39;</span>
+<span class="sd">  &gt;&gt;&gt; results, nmatch = am.search(querry)</span>
+<span class="sd">  &gt;&gt;&gt; # Search entries by first author:</span>
+<span class="sd">  &gt;&gt;&gt; querry = &#39;author:&quot;^cubillos, p&quot;&#39;</span>
+<span class="sd">  &gt;&gt;&gt; # Combine search by first author and year:</span>
+<span class="sd">  &gt;&gt;&gt; querry = &#39;author:&quot;^cubillos, p&quot; year:2017&#39;</span>
+<span class="sd">  &gt;&gt;&gt; # Restrict seach to article-type entries:</span>
+<span class="sd">  &gt;&gt;&gt; querry = &#39;author:&quot;^cubillos, p&quot; property:article&#39;</span>
+<span class="sd">  &gt;&gt;&gt; # Restrict seach to peer-reviewed articles:</span>
+<span class="sd">  &gt;&gt;&gt; querry = &#39;author:&quot;^cubillos, p&quot; property:refereed&#39;</span>
+
+<span class="sd">  &gt;&gt;&gt; # Attempt with invalid token:</span>
+<span class="sd">  &gt;&gt;&gt; results, nmatch = am.search(querry)</span>
+<span class="sd">  ValueError: Invalid ADS request: Unauthorized, check you have a valid ADS token.</span>
+<span class="sd">  &gt;&gt;&gt; # Attempt with invalid querry (&#39;properties&#39; instead of &#39;property&#39;):</span>
+<span class="sd">  &gt;&gt;&gt; results, nmatch = am.search(&#39;author:&quot;^cubillos, p&quot; properties:refereed&#39;)</span>
+<span class="sd">  ValueError: Invalid ADS request:</span>
+<span class="sd">  org.apache.solr.search.SyntaxError: org.apache.solr.common.SolrException: undefined field properties</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">token</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ads_token&#39;</span><span class="p">)</span>
+  <span class="n">querry</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">querry</span><span class="p">)</span>
+
+  <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://api.adsabs.harvard.edu/v1/search/query?&#39;</span>
+                  <span class="n">f</span><span class="s1">&#39;q=</span><span class="si">{querry}</span><span class="s1">&amp;start=</span><span class="si">{start}</span><span class="s1">&amp;rows=</span><span class="si">{cache_rows}</span><span class="s1">&#39;</span>
+                   <span class="n">f</span><span class="s1">&#39;&amp;sort=</span><span class="si">{sort}</span><span class="s1">&amp;fl=title,author,year,bibcode,pub&#39;</span><span class="p">,</span>
+                   <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="n">f</span><span class="s1">&#39;Bearer </span><span class="si">{token}</span><span class="s1">&#39;</span><span class="p">})</span>
+  <span class="n">resp</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+  <span class="k">if</span> <span class="s1">&#39;error&#39;</span> <span class="ow">in</span> <span class="n">resp</span><span class="p">:</span>
+      <span class="k">if</span> <span class="n">resp</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Unauthorized&#39;</span><span class="p">:</span>
+          <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Invalid ADS request: </span><span class="si">{resp[&#39;error&#39;]}</span><span class="s2">, &quot;</span>
+                            <span class="s2">&quot;check you have a valid ADS token.&quot;</span><span class="p">)</span>
+      <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Invalid ADS request:</span><span class="se">\n</span><span class="si">{resp[&#39;error&#39;][&#39;msg&#39;]}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+  <span class="n">nmatch</span>  <span class="o">=</span> <span class="n">resp</span><span class="p">[</span><span class="s1">&#39;response&#39;</span><span class="p">][</span><span class="s1">&#39;numFound&#39;</span><span class="p">]</span>
+  <span class="n">results</span> <span class="o">=</span> <span class="n">resp</span><span class="p">[</span><span class="s1">&#39;response&#39;</span><span class="p">][</span><span class="s1">&#39;docs&#39;</span><span class="p">]</span>
+
+  <span class="k">return</span> <span class="n">results</span><span class="p">,</span> <span class="n">nmatch</span></div>
+
+
+<div class="viewcode-block" id="display"><a class="viewcode-back" href="../../../api.html#bibmanager.ads_manager.display">[docs]</a><span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">nmatch</span><span class="p">,</span> <span class="n">short</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Show on the prompt a list of entries from an ADS search.</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  results: List of dicts</span>
+<span class="sd">     Subset of entries returned by a querry.</span>
+<span class="sd">  start: Integer</span>
+<span class="sd">     Index assigned to first entry in results.</span>
+<span class="sd">  index: Integer</span>
+<span class="sd">     First index to display.</span>
+<span class="sd">  rows: Integer</span>
+<span class="sd">     Number of entries to display.</span>
+<span class="sd">  nmatch: Integer</span>
+<span class="sd">     Total number of entries corresponding to querry (not necessarily</span>
+<span class="sd">     the number of entries in results).</span>
+<span class="sd">  short: Bool</span>
+<span class="sd">     Format for author list. If True, truncate with &#39;et al&#39; after</span>
+<span class="sd">     the second author.</span>
+
+<span class="sd">  Examples</span>
+<span class="sd">  --------</span>
+<span class="sd">  &gt;&gt;&gt; import bibmanager.ads_manager as am</span>
+<span class="sd">  &gt;&gt;&gt; start = index = 0</span>
+<span class="sd">  &gt;&gt;&gt; querry = &#39;author:&quot;^cubillos, p&quot; property:refereed&#39;</span>
+<span class="sd">  &gt;&gt;&gt; results, nmatch = am.search(querry, start=start)</span>
+<span class="sd">  &gt;&gt;&gt; display(results, start, index, rows, nmatch)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="n">index</span><span class="o">-</span><span class="n">start</span><span class="p">:</span><span class="n">index</span><span class="o">-</span><span class="n">start</span><span class="o">+</span><span class="n">rows</span><span class="p">]:</span>
+      <span class="n">title</span> <span class="o">=</span> <span class="n">textwrap</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Title: </span><span class="si">{result[&#39;title&#39;][0]}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">78</span><span class="p">,</span>
+                            <span class="n">subsequent_indent</span><span class="o">=</span><span class="s1">&#39;       &#39;</span><span class="p">)</span>
+      <span class="n">author_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">parse_name</span><span class="p">(</span><span class="n">author</span><span class="p">)</span> <span class="k">for</span> <span class="n">author</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;author&#39;</span><span class="p">]]</span>
+      <span class="n">authors</span> <span class="o">=</span> <span class="n">textwrap</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Authors: {u.get_authors(author_list, short)}&quot;</span><span class="p">,</span>
+                              <span class="n">width</span><span class="o">=</span><span class="mi">78</span><span class="p">,</span> <span class="n">subsequent_indent</span><span class="o">=</span><span class="s1">&#39;    &#39;</span><span class="p">)</span>
+      <span class="n">adsurl</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;adsurl:  https://ui.adsabs.harvard.edu/abs/&quot;</span> <span class="o">+</span>
+               <span class="n">f</span><span class="s2">&quot;</span><span class="si">{result[&#39;bibcode&#39;]}</span><span class="s2">&quot;</span><span class="p">)</span>
+      <span class="n">bibcode</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{u.BOLD}</span><span class="s2">bibcode</span><span class="si">{u.END}</span><span class="s2">: </span><span class="si">{result[&#39;bibcode&#39;]}</span><span class="s2">&quot;</span>
+      <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{title}</span><span class="se">\n</span><span class="si">{authors}</span><span class="se">\n</span><span class="si">{adsurl}{bibcode}</span><span class="s2">&quot;</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">index</span> <span class="o">+</span> <span class="n">rows</span> <span class="o">&lt;</span> <span class="n">nmatch</span><span class="p">:</span>
+      <span class="n">more</span> <span class="o">=</span> <span class="s2">&quot;  To show the next set, execute:</span><span class="se">\n</span><span class="s2">bibm ads-search -n&quot;</span>
+  <span class="k">else</span><span class="p">:</span>
+      <span class="n">more</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+  <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Showing entries {index+1}--{min(index+rows, nmatch)} out of &quot;</span>
+        <span class="n">f</span><span class="s2">&quot;</span><span class="si">{nmatch}</span><span class="s2"> matches.</span><span class="si">{more}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="add_bibtex"><a class="viewcode-back" href="../../../api.html#bibmanager.ads_manager.add_bibtex">[docs]</a><span class="k">def</span> <span class="nf">add_bibtex</span><span class="p">(</span><span class="n">input_bibcodes</span><span class="p">,</span> <span class="n">input_keys</span><span class="p">,</span> <span class="n">eprints</span><span class="o">=</span><span class="p">[],</span> <span class="n">dois</span><span class="o">=</span><span class="p">[],</span>
+               <span class="n">update_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Add bibtex entries from a list of ADS bibcodes, with specified keys.</span>
+<span class="sd">  New entries will replace old ones without asking if they are</span>
+<span class="sd">  duplicates.</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  input_bibcodes: List of strings</span>
+<span class="sd">      A list of ADS bibcodes.</span>
+<span class="sd">  imput_keys: List of strings</span>
+<span class="sd">      BibTeX keys to assign to each bibcode.</span>
+<span class="sd">  eprints: List of strings</span>
+<span class="sd">      List of ArXiv IDs corresponding to the input bibcodes.</span>
+<span class="sd">  dois: List of strings</span>
+<span class="sd">      List of DOIs corresponding to the input bibcodes.</span>
+<span class="sd">  update_keys: Bool</span>
+<span class="sd">      If True, attempt to update keys of entries that were updated</span>
+<span class="sd">      from arxiv to published versions.</span>
+<span class="sd">  base: List of Bib() objects</span>
+<span class="sd">      If None, merge new entries into the bibmanager database.</span>
+<span class="sd">      If not None, merge new entries into base.</span>
+
+<span class="sd">  Returns</span>
+<span class="sd">  -------</span>
+<span class="sd">  bibs: List of Bib() objects</span>
+<span class="sd">      Updated list of BibTeX entries.</span>
+
+<span class="sd">  Examples</span>
+<span class="sd">  --------</span>
+<span class="sd">  &gt;&gt;&gt; import bibmanager.ads_manager as am</span>
+<span class="sd">  &gt;&gt;&gt; # A successful add call:</span>
+<span class="sd">  &gt;&gt;&gt; bibcodes = [&#39;1925PhDT.........1P&#39;]</span>
+<span class="sd">  &gt;&gt;&gt; keys = [&#39;Payne1925phdStellarAtmospheres&#39;]</span>
+<span class="sd">  &gt;&gt;&gt; am.add_bibtex(bibcodes, keys)</span>
+<span class="sd">  &gt;&gt;&gt; # A failing add call:</span>
+<span class="sd">  &gt;&gt;&gt; bibcodes = [&#39;1925PhDT....X....1P&#39;]</span>
+<span class="sd">  &gt;&gt;&gt; am.add_bibtex(bibcodes, keys)</span>
+<span class="sd">  Error: There were no entries found for the input bibcodes.</span>
+
+<span class="sd">  &gt;&gt;&gt; # A successful add call with multiple entries:</span>
+<span class="sd">  &gt;&gt;&gt; bibcodes = [&#39;1925PhDT.........1P&#39;, &#39;2018MNRAS.481.5286F&#39;]</span>
+<span class="sd">  &gt;&gt;&gt; keys = [&#39;Payne1925phdStellarAtmospheres&#39;, &#39;FolsomEtal2018mnrasHD219134&#39;]</span>
+<span class="sd">  &gt;&gt;&gt; am.add_bibtex(bibcodes, keys)</span>
+<span class="sd">  &gt;&gt;&gt; # A partially failing call will still add those that succeed:</span>
+<span class="sd">  &gt;&gt;&gt; bibcodes = [&#39;1925PhDT.....X...1P&#39;, &#39;2018MNRAS.481.5286F&#39;]</span>
+<span class="sd">  &gt;&gt;&gt; am.add_bibtex(bibcodes, keys)</span>
+<span class="sd">  Warning: bibcode &#39;1925PhDT.....X...1P&#39; not found.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">token</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ads_token&#39;</span><span class="p">)</span>
+  <span class="c1"># Keep the originals untouched (copies will be modified):</span>
+  <span class="n">bibcodes</span><span class="p">,</span> <span class="n">keys</span> <span class="o">=</span> <span class="n">input_bibcodes</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">input_keys</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+  <span class="c1"># Make request:</span>
+  <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;https://api.adsabs.harvard.edu/v1/export/bibtex&quot;</span><span class="p">,</span>
+                    <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="n">f</span><span class="s1">&#39;Bearer </span><span class="si">{token}</span><span class="s1">&#39;</span><span class="p">,</span>
+                             <span class="s2">&quot;Content-type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">},</span>
+                    <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s2">&quot;bibcode&quot;</span><span class="p">:</span><span class="n">bibcodes</span><span class="p">}))</span>
+  <span class="n">resp</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+  <span class="c1"># No valid outputs:</span>
+  <span class="k">if</span> <span class="s1">&#39;error&#39;</span> <span class="ow">in</span> <span class="n">resp</span><span class="p">:</span>
+      <span class="k">if</span> <span class="n">resp</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Unauthorized&#39;</span><span class="p">:</span>
+          <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Error: Unauthorized access to ADS.  Check that the ADS &#39;</span>
+                <span class="s1">&#39;token is valid.&#39;</span><span class="p">)</span>
+      <span class="k">elif</span> <span class="n">resp</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;no result from solr&#39;</span><span class="p">:</span>
+          <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Error: There were no entries found for the input bibcodes.&quot;</span><span class="p">)</span>
+      <span class="k">else</span><span class="p">:</span>
+          <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Error: ADS request returned an error message:&quot;</span>
+               <span class="n">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{resp[&#39;error&#39;]}</span><span class="s2">&quot;</span><span class="p">)</span>
+      <span class="k">return</span>
+
+  <span class="c1"># Keep counts of things:</span>
+  <span class="n">nfound</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">resp</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+  <span class="n">nreqs</span>  <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bibcodes</span><span class="p">)</span>
+
+  <span class="c1"># Split output into separate BibTeX entries (keep as strings):</span>
+  <span class="n">results</span> <span class="o">=</span> <span class="n">resp</span><span class="p">[</span><span class="s2">&quot;export&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+  <span class="n">new_keys</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="n">new_bibs</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="n">founds</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">bibcodes</span><span class="p">]</span>
+  <span class="n">arxiv_updates</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="c1"># Match results to bibcodes,keys:</span>
+  <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
+      <span class="n">ibib</span> <span class="o">=</span> <span class="kc">None</span>
+      <span class="n">new</span> <span class="o">=</span> <span class="n">bm</span><span class="o">.</span><span class="n">Bib</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+      <span class="n">rkey</span>   <span class="o">=</span> <span class="n">new</span><span class="o">.</span><span class="n">key</span>
+      <span class="n">doi</span>    <span class="o">=</span> <span class="n">new</span><span class="o">.</span><span class="n">doi</span>
+      <span class="n">eprint</span> <span class="o">=</span> <span class="n">new</span><span class="o">.</span><span class="n">eprint</span>
+      <span class="c1"># Output bibcode is input bibcode:</span>
+      <span class="k">if</span> <span class="n">rkey</span> <span class="ow">in</span> <span class="n">bibcodes</span><span class="p">:</span>
+          <span class="n">ibib</span> <span class="o">=</span> <span class="n">bibcodes</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">rkey</span><span class="p">)</span>
+          <span class="n">new_key</span> <span class="o">=</span> <span class="n">keys</span><span class="p">[</span><span class="n">ibib</span><span class="p">]</span>
+      <span class="c1"># Else, check for bibcode updates in remaining bibcodes:</span>
+      <span class="k">elif</span> <span class="n">eprint</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">eprint</span> <span class="ow">in</span> <span class="n">eprints</span><span class="p">:</span>
+          <span class="n">ibib</span> <span class="o">=</span> <span class="n">eprints</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">eprint</span><span class="p">)</span>
+      <span class="k">elif</span> <span class="n">doi</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">doi</span> <span class="ow">in</span> <span class="n">dois</span><span class="p">:</span>
+          <span class="n">ibib</span> <span class="o">=</span> <span class="n">dois</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">doi</span><span class="p">)</span>
+
+      <span class="k">if</span> <span class="n">ibib</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+          <span class="n">new_key</span> <span class="o">=</span> <span class="n">keys</span><span class="p">[</span><span class="n">ibib</span><span class="p">]</span>
+          <span class="n">updated_key</span> <span class="o">=</span> <span class="n">key_update</span><span class="p">(</span><span class="n">new_key</span><span class="p">,</span> <span class="n">rkey</span><span class="p">,</span> <span class="n">bibcodes</span><span class="p">[</span><span class="n">ibib</span><span class="p">])</span>
+          <span class="k">if</span> <span class="n">update_keys</span> <span class="ow">and</span> <span class="n">updated_key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">!=</span> <span class="n">new_key</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+              <span class="n">new_key</span> <span class="o">=</span> <span class="n">updated_key</span>
+              <span class="n">new_keys</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">keys</span><span class="p">[</span><span class="n">ibib</span><span class="p">],</span> <span class="n">new_key</span><span class="p">])</span>
+          <span class="k">if</span> <span class="s1">&#39;arXiv&#39;</span> <span class="ow">in</span> <span class="n">bibcodes</span><span class="p">[</span><span class="n">ibib</span><span class="p">]</span> <span class="ow">and</span> <span class="s1">&#39;arXiv&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">new</span><span class="o">.</span><span class="n">bibcode</span><span class="p">:</span>
+              <span class="n">arxiv_updates</span> <span class="o">+=</span> <span class="mi">1</span>
+
+          <span class="n">new</span><span class="o">.</span><span class="n">update_key</span><span class="p">(</span><span class="n">new_key</span><span class="p">)</span>
+          <span class="n">new_bibs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+          <span class="n">founds</span><span class="p">[</span><span class="n">ibib</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+          <span class="n">results</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+  <span class="c1"># Warnings:</span>
+  <span class="k">if</span> <span class="n">nfound</span> <span class="o">&lt;</span> <span class="n">nreqs</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="n">warning</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">BANNER</span> <span class="o">+</span> <span class="s2">&quot;Warning:</span><span class="se">\n</span><span class="s2">&quot;</span>
+      <span class="c1"># bibcodes not found</span>
+      <span class="n">missing</span> <span class="o">=</span> <span class="p">[</span><span class="n">bibcode</span> <span class="k">for</span> <span class="n">bibcode</span><span class="p">,</span><span class="n">found</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bibcodes</span><span class="p">,</span> <span class="n">founds</span><span class="p">)</span>
+                 <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">]</span>
+      <span class="k">if</span> <span class="n">nfound</span> <span class="o">&lt;</span> <span class="n">nreqs</span><span class="p">:</span>
+          <span class="n">warning</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">There were bibcodes unmatched or not found in ADS:</span><span class="se">\n</span><span class="s1"> - &#39;</span>
+          <span class="n">warning</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> - &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+      <span class="c1"># bibcodes not matched:</span>
+      <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+          <span class="n">warning</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">These ADS results did not match input bibcodes:</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+          <span class="n">warning</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">results</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+      <span class="n">warning</span> <span class="o">+=</span> <span class="n">u</span><span class="o">.</span><span class="n">BANNER</span>
+      <span class="nb">print</span><span class="p">(</span><span class="n">warning</span><span class="p">)</span>
+
+  <span class="c1"># Add to bibmanager database or base:</span>
+  <span class="n">updated</span> <span class="o">=</span> <span class="n">bm</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">new</span><span class="o">=</span><span class="n">new_bibs</span><span class="p">,</span> <span class="n">take</span><span class="o">=</span><span class="s1">&#39;new&#39;</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;(Not counting updated references)&#39;</span><span class="p">)</span>
+
+  <span class="c1"># Report arXiv updates:</span>
+  <span class="k">if</span> <span class="n">arxiv_updates</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">There were </span><span class="si">{arxiv_updates}</span><span class="s2"> entries updated from ArXiv to &quot;</span>
+             <span class="s2">&quot;their peer-reviewed version.&quot;</span><span class="p">)</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_keys</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="n">new_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="s2">&quot;  </span><span class="si">{old}</span><span class="s2"> -&gt; </span><span class="si">{new}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">old</span><span class="p">,</span><span class="n">new</span> <span class="ow">in</span> <span class="n">new_keys</span>
+                  <span class="k">if</span> <span class="n">old</span> <span class="o">!=</span> <span class="n">new</span><span class="p">]</span>
+      <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_keys</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+          <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;These entries changed their key:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">new_keys</span><span class="p">))</span>
+  <span class="k">return</span> <span class="n">updated</span></div>
+
+
+<div class="viewcode-block" id="update"><a class="viewcode-back" href="../../../api.html#bibmanager.ads_manager.update">[docs]</a><span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="n">update_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Do an ADS querry by bibcode for all entries that have an ADS bibcode.</span>
+<span class="sd">  Replacing old entries with the new ones.  The main use of</span>
+<span class="sd">  this function is to update arxiv version of articles.</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  update_keys: Bool</span>
+<span class="sd">      If True, attempt to update keys of entries that were updated</span>
+<span class="sd">      from arxiv to published versions.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">if</span> <span class="n">base</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="n">bibs</span> <span class="o">=</span> <span class="n">bm</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+  <span class="k">else</span><span class="p">:</span>
+      <span class="n">bibs</span> <span class="o">=</span> <span class="n">base</span>
+
+  <span class="n">keys</span>     <span class="o">=</span> <span class="p">[</span><span class="n">bib</span><span class="o">.</span><span class="n">key</span>     <span class="k">for</span> <span class="n">bib</span> <span class="ow">in</span> <span class="n">bibs</span> <span class="k">if</span> <span class="n">bib</span><span class="o">.</span><span class="n">bibcode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+  <span class="n">bibcodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">bib</span><span class="o">.</span><span class="n">bibcode</span> <span class="k">for</span> <span class="n">bib</span> <span class="ow">in</span> <span class="n">bibs</span> <span class="k">if</span> <span class="n">bib</span><span class="o">.</span><span class="n">bibcode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+  <span class="n">eprints</span>  <span class="o">=</span> <span class="p">[</span><span class="n">bib</span><span class="o">.</span><span class="n">eprint</span>  <span class="k">for</span> <span class="n">bib</span> <span class="ow">in</span> <span class="n">bibs</span> <span class="k">if</span> <span class="n">bib</span><span class="o">.</span><span class="n">bibcode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+  <span class="n">dois</span>     <span class="o">=</span> <span class="p">[</span><span class="n">bib</span><span class="o">.</span><span class="n">doi</span>     <span class="k">for</span> <span class="n">bib</span> <span class="ow">in</span> <span class="n">bibs</span> <span class="k">if</span> <span class="n">bib</span><span class="o">.</span><span class="n">bibcode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+  <span class="c1"># Querry-replace:</span>
+  <span class="n">bibs</span> <span class="o">=</span> <span class="n">add_bibtex</span><span class="p">(</span><span class="n">bibcodes</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">eprints</span><span class="p">,</span> <span class="n">dois</span><span class="p">,</span> <span class="n">update_keys</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">bibs</span></div>
+
+
+<div class="viewcode-block" id="key_update"><a class="viewcode-back" href="../../../api.html#bibmanager.ads_manager.key_update">[docs]</a><span class="k">def</span> <span class="nf">key_update</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">bibcode</span><span class="p">,</span> <span class="n">alternate_bibcode</span><span class="p">):</span>
+  <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Update key with year and journal of arxiv version of a key.</span>
+
+<span class="sd">  This function will search and update the year in a key,</span>
+<span class="sd">  and the journal if the key contains the word &#39;arxiv&#39; (case</span>
+<span class="sd">  insensitive).</span>
+
+<span class="sd">  The function extracts the info from the old and new bibcodes.</span>
+<span class="sd">  ADS bibcode format: http://adsabs.github.io/help/actions/bibcode</span>
+
+<span class="sd">  Examples</span>
+<span class="sd">  --------</span>
+<span class="sd">  &gt;&gt;&gt; import bibmanager.ads_manager as am</span>
+<span class="sd">  &gt;&gt;&gt; key = &#39;BeaulieuEtal2010arxivGJ436b&#39;</span>
+<span class="sd">  &gt;&gt;&gt; bibcode           = &#39;2011ApJ...731...16B&#39;</span>
+<span class="sd">  &gt;&gt;&gt; alternate_bibcode = &#39;2010arXiv1007.0324B&#39;</span>
+<span class="sd">  &gt;&gt;&gt; new_key = am.key_update(key, bibcode, alternate_bibcode)</span>
+<span class="sd">  &gt;&gt;&gt; print(f&#39;{key}\n{new_key}&#39;)</span>
+<span class="sd">  BeaulieuEtal2010arxivGJ436b</span>
+<span class="sd">  BeaulieuEtal2011apjGJ436b</span>
+
+<span class="sd">  &gt;&gt;&gt; key = &#39;CubillosEtal2018arXivRetrievals&#39;</span>
+<span class="sd">  &gt;&gt;&gt; bibcode           = &#39;2019A&amp;A...550A.100B&#39;</span>
+<span class="sd">  &gt;&gt;&gt; alternate_bibcode = &#39;2018arXiv123401234B&#39;</span>
+<span class="sd">  &gt;&gt;&gt; new_key = am.key_update(key, bibcode, alternate_bibcode)</span>
+<span class="sd">  &gt;&gt;&gt; print(f&#39;{key}\n{new_key}&#39;)</span>
+<span class="sd">  CubillosEtal2018arXivRetrievals</span>
+<span class="sd">  CubillosEtal2019aaRetrievals</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">old_year</span> <span class="o">=</span> <span class="n">alternate_bibcode</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+  <span class="n">year</span> <span class="o">=</span> <span class="n">bibcode</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+  <span class="c1"># Update year:</span>
+  <span class="k">if</span> <span class="n">old_year</span> <span class="o">!=</span> <span class="n">year</span> <span class="ow">and</span> <span class="n">old_year</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
+      <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">old_year</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+  <span class="c1"># Update journal:</span>
+  <span class="n">journal</span> <span class="o">=</span> <span class="n">bibcode</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">9</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&amp;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+  <span class="c1"># Search for the word &#39;arxiv&#39; in key:</span>
+  <span class="n">ijournal</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;arxiv&#39;</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">ijournal</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">key</span><span class="p">[:</span><span class="n">ijournal</span><span class="p">],</span> <span class="n">journal</span><span class="p">,</span> <span class="n">key</span><span class="p">[</span><span class="n">ijournal</span><span class="o">+</span><span class="mi">5</span><span class="p">:]])</span>
+
+  <span class="k">return</span> <span class="n">key</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018-2019, Patricio Cubillos
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../../../',
+              VERSION:'1.1.3',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
