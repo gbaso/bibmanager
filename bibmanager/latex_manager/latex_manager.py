@@ -16,6 +16,7 @@ import re
 import subprocess
 import numpy as np
 
+from .. import ads_manager    as am
 from .. import bib_manager    as bm
 from .. import config_manager as cm
 from .. import utils as u
@@ -242,7 +243,17 @@ def build_bib(texfile, bibfile=None):
     found = np.in1d(tex_keys, db_keys, assume_unique=True)
     missing = tex_keys[np.where(np.invert(found))]
     if not np.all(found):
-        print("References not found:\n{:s}".format('\n'.join(missing)))
+        print("Loogink for references on ADS as bibcodes")
+        am.add_bibtex(missing.tolist(), missing.tolist())
+
+        bibs = bm.load()
+        db_keys = [bib.key for bib in bibs]
+
+        found = np.in1d(tex_keys, db_keys, assume_unique=True)
+        missing = tex_keys[np.where(np.invert(found))]
+
+        if not np.all(found):
+            print("References not found:\n{:s}".format('\n'.join(missing)))
 
     bibs = [bibs[db_keys.index(key)] for key in tex_keys[found]]
     bm.export(bibs, bibfile=bibfile)
