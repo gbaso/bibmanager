@@ -35,10 +35,10 @@ in a given CPU.
 | **bibfile**
 |          Path to an existing BibTeX file.
 |
-| **-d, --database**
+| **-d, -\\-database**
 |          Reset only the bibmanager database.
 |
-| **-c, --config**
+| **-c, -\\-config**
 |          Reset only the bibmanager config parameters.
 |
 | **-h, -\\-help**
@@ -267,8 +267,8 @@ BibTeX key, or ADS bibcode. The matching results are displayed on screen
 according to the specified verbosity.
 Search syntax is similar to ADS searches (including tab completion).
 
-Multiple author, title keyword, and year querries act with AND logic;
-whereas multiple-key querries and multiple-bibcode querries act with OR
+Multiple author, title keyword, and year queries act with AND logic;
+whereas multiple-key queries and multiple-bibcode queries act with OR
 logic (see examples below).
 
 | There are four levels of verbosity (see examples below):
@@ -299,7 +299,7 @@ logic (see examples below).
 
 **Examples**
 
-.. note::  These example outputs assume that you merged the sample bibfile
+.. note::  These examples below assume that you merged the sample bibfile
   already, i.e.: ``bibm merge ~/.bibmanager/examples/sample.bib``
 
 Searches follow the ADS search syntax.  Pressing *tab* displays the
@@ -368,7 +368,7 @@ Combine search fields:
 
 .. code-block:: shell
 
-  # Seach by author, year, and title words/phrases (using AND logic):
+  # Search by author, year, and title words/phrases (using AND logic):
   bibm search
   (Press 'tab' for autocomplete)
   author:"oliphant, t" year:2006 title:"numpy"
@@ -547,6 +547,42 @@ Use the ``-v`` command to increase verbosity:
          adsurl = {https://ui.adsabs.harvard.edu/abs/1957RvMP...29..547B},
         adsnote = {Provided by the SAO/NASA Astrophysics Data System}
   }
+
+--------------------------------------------------------------------
+
+
+browse
+------
+
+Browse through the bibmanager database.
+
+**Usage**
+
+.. code-block:: shell
+
+  bibm browse [-h]
+
+**Description**
+
+| Display the entire bibmanager database into a full-screen application that lets you:
+|  - Navigate through or search for specific entries
+|  - Visualize the entries' full BibTeX content
+|  - Select entries for printing to screen or to file
+|  - Open the entries' PDF files
+|  - Open the entries in ADS through the web browser
+| *(New since version 1.3)*
+
+**Options**
+
+| **-h, -\\-help**
+|       Show this help message and exit.
+
+**Examples**
+
+.. code-block:: shell
+
+  bibm browse
+
 
 --------------------------------------------------------------------
 

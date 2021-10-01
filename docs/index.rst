@@ -8,7 +8,7 @@ bibmanager
 
 **The Next Standard in BibTeX Management**
 
-|Build Status|  |docs| |PyPI|   |License|  |DOI|
+|Build Status|  |docs|  |PyPI|  |conda|  |License|  |DOI|
 
 -------------------------------------------------------------------
 
@@ -29,6 +29,7 @@ Features
 * Automate duplicate detection and updates from arXiv to peer-reviewed
 * Clean up (remove duplicates, ADS update) any external bibfile (since version 1.1.2)
 * Keep a database of the entries' PDFs and fetch PDFs from ADS (since version 1.2)
+* Browse interactively through the database (since version 1.3)
 
 ``bibmanager`` also simplifies many other BibTeX-related tasks:
 
@@ -40,16 +41,23 @@ Features
 
 * entry adding via your default text editor
 * Query entries in the ``bibmanager`` database by author, year, or title keywords
-* Generate .bib or .bbl build from your .tex files
+* Generate .bib files built from your .tex files
 * Compile LaTeX projects with the ``latex`` or ``pdflatex`` directives
-* Perform querries into ADS and add entries by bibcode
+* Perform queries into ADS and add entries by bibcode
 * Fetch PDF files from ADS (via their bibcode, new since version 1.2)
 
 Check out this video tutorial to get started with ``bibmanager``:
 
 .. raw:: html
 
+    <iframe width="720" height="405" src="https://www.youtube.com/embed/qewdBx0M8VE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+And this one covering some other features:
+
+.. raw:: html
+
     <iframe width="720" height="405" src="https://www.youtube.com/embed/WVmhdwVNXOE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 
 .. _team:
 
@@ -63,7 +71,7 @@ These people have directly contributed to make the software better:
 
 - `K.-Michael Aye <https://github.com/michaelaye>`_
 - `Ellert van der Velden <https://github.com/1313e>`_
-
+- `Aaron David Schneider <https://github.com/AaronDavidSchneider>`_
 
 Documentation
 =============
@@ -138,8 +146,11 @@ Please send any feedback or inquiries to:
     :alt: Documentation Status
 
 .. |PyPI| image:: https://img.shields.io/pypi/v/bibmanager.svg
-    :target:      https://pypi.org/project/bibmanager/
+    :target: https://pypi.org/project/bibmanager/
     :alt: Latest Version
+
+.. |conda| image:: https://img.shields.io/conda/vn/conda-forge/bibmanager.svg
+    :target: https://anaconda.org/conda-forge/bibmanager
 
 .. |License| image:: https://img.shields.io/github/license/pcubillos/bibmanager.svg?color=blue
     :target: https://pcubillos.github.io/bibmanager/license.html

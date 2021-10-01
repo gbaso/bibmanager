@@ -7,16 +7,16 @@ Getting Started
 
 ``bibmanager`` places all of the user's bibtex entries in a centralized database, which is beneficial because it allows ``bibmanager`` to automate duplicates detection, arxiv-to-peer review updates, and generate bibfiles with only the entries required for a specific LaTeX file.
 
-There are three main categories for the ``bibmanager`` tools:
+There are four main categories for the ``bibmanager`` tools:
 
-* :ref:`bibtex` tools help to create, edit, and query from a
+* :ref:`bibtex` tools help to create, edit, browse, and query from a
   ``bibmanager`` database, containing all BibTeX entries that a user may need.
 
 * :ref:`latex` tools  help to generate (automatically) a bib file
   for specific LaTeX files, and compile LaTeX files without worring for
   maintaining/updating its bib file.
 
-* :ref:`ads` tools help to makes querries into ADS, add entries
+* :ref:`ads` tools help to makes queries into ADS, add entries
   from ADS, and cross-check the ``bibmanager`` database against ADS, to
   update arXiv-to-peer reviewed entries.
 
@@ -24,7 +24,7 @@ There are three main categories for the ``bibmanager`` tools:
   to the BibTex entries: Fetch from ADS, set manually, and open in a
   PDF viewer.
 
-Once installed (see below), take a look at the ``bibmanager`` main menu, executing from the command-line:
+Once installed (see below), take a look at the ``bibmanager`` main menu by executing the following command:
 
 .. code-block:: shell
 
@@ -40,7 +40,8 @@ System Requirements
 
 * numpy (version 1.15.1+)
 * requests (version 2.19.1+)
-* prompt_toolkit (version 2.0.7+)
+* packaging (version 17.1+)
+* prompt_toolkit (version 3.0.5+)
 * pygments (version 2.2.0+)
 
 .. * sphinx (version 1.7.9+)
@@ -52,18 +53,23 @@ System Requirements
 Install
 -------
 
-To install ``bibmanager`` just run the following command from the terminal:
+To install ``bibmanager`` run the following command from the terminal:
 
 .. code-block:: shell
 
     pip install bibmanager
 
-Alternatively, (e.g., for developers), clone the repository to your local machine with the following terminal commands:
+Or if you prefer conda:
 
 .. code-block:: shell
 
-  # Clone the repository to your working directory:
-  git clone https://github.com/pcubillos/bibmanager/
+    conda install -c conda-forge bibmanager
+
+Alternatively (e.g., for developers), clone the repository to your local machine with the following terminal commands:
+
+.. code-block:: shell
+
+  git clone https://github.com/pcubillos/bibmanager
   cd bibmanager
   python setup.py develop
 

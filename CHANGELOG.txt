@@ -1952,3 +1952,466 @@ to allow for compatibility between Python 3.6/3.7 and later versions
 
 Bumped bibmanager version to 1.2.4.
 Fixes #63
+
+
+*****  Sat Aug 15 14:53:10 2020 +0200  *****
+
+Fixed bug in bm.loadfile() when entry is in a single line.
+
+*****
+
+Fixed indentation error in tests.
+
+*****
+
+Cosmetics.
+
+*****
+
+Bumped bibmanager version to 1.2.5.
+Fixes #66
+
+
+*****  Sun Aug 16 13:16:21 2020 +0200  *****
+
+Enabled fetch and open optional arguments for ads-add command.
+Solves first part of issue #65.
+
+*****
+
+Bumped bibmanager version to 1.2.6.
+
+
+*****  Sat Sep  5 20:51:09 CEST 2020  *****
+
+Added --add --fetch --open options to ads_search command-line arg
+Documentations is TBD.
+
+*****
+
+Modified pm.set_pdf() and pm.fetch() functions to return the
+output PDF file path/name if successfully dowloaded or the entry has
+a non None pdf value.
+Updated docs and tests accordingly.
+
+*****
+
+Added pdf_file argument to pm.open() function that sets the output
+PDF file path/name (even if not in the database).
+
+*****
+
+Enabled fetching PDF files from ADS for entries that are not in the
+database.
+
+*****
+
+Redirect ads-add's fetch/open to cli_fetch().
+
+
+*****  Sun Sep 6 13:29:18 CEST 2020  *****
+
+Documented add, fetch, and open arguments for ads-search and ads-add.
+
+*****
+
+Changed fetch's open command from -open to -o, --open for consistency
+with the rest of the options in the ads-add and ads-search commands.
+Updated docs and tests.
+
+*****
+
+Cleaned up ADS and PDF docs.
+
+*****
+
+Bumped bibmanager version to 1.2.7.
+
+
+*****  Sat Oct 24 21:17:54 CEST 2020  *****
+
+Added stdout argument to in subprocess call to open PDF
+to redirect any screen output into nothingness.
+
+*****
+
+Added initial implementation of the bibmanager database browser
+which is enabled through the 'bibm browse' command.
+The code is in the new browser.py file.
+The browser provides an interactive full-screen visualization
+of the entries in the database.
+
+*****
+
+Updated requirements (prompt_toolkit > 3.0).
+
+*****
+
+Updated docs to describe the new browse command.
+
+
+*****  Mon Oct 26 22:10:37 CET 2020  *****
+
+Enabled PDF fetching in browser when requested entry doesn't have one
+
+
+*****  Tue Oct 27 21:06:02 CET 2020  *****
+
+Updated pm.open() to redirect the stdout to DEVNULL to avoid blocking
+async routines.
+
+*****
+
+Updated browser search toolbar with a completer with the BibTex keys.
+Also, set ignore case to False.
+
+*****
+
+Tweaked MessageDialog class in browser.py to wrap text.
+
+*****
+
+Bumped bibmanager version to 1.3.0rc1.
+(pre-release).
+
+
+*****  Wed Oct 28 20:29:28 CET 2020  *****
+
+Added replace argument to pm.fetch() function to enforce replace
+without asking when the user wants.
+
+
+*****  Mon Nov 2 08:07:57 CET 2020  *****
+
+Modified the browser's BibTeX lexer style to use the user's style.
+
+*****
+
+Enforce replace=True when requesting to fetch PDFs from the browser
+to avoid IO dialogs that let the application hanging.
+It is still possible to hang if someone removes the pdf meta info
+from a file without removing the PDF file, and attempts to fetch.
+
+*****
+
+Bumped bibmanager version to 1.3.0.
+
+*****
+
+Added infograph.
+
+*****
+
+Updated README.
+
+*****
+
+Updated pypi readme.
+
+
+*****  Thu Dec 31 21:48:43 CET 2020  *****
+
+Moved find_closing_bracket() from browser.py to utils.py.
+Updated docstring and added tests.
+
+
+*****  Sat Jan 2 13:21:39 CET 2021  *****
+
+Re-wrote bm.loadfile() to comply with the bibtex/bst file formatting
+when reading a file/piece of text.
+See section 8 of the Tame the BeaST document:
+http://mirror.easyname.at/ctan/info/bibtex/tamethebeast/ttb_en.pdf
+Updated example and tests.
+
+*****
+
+Renamed bm.loadfile() to read_file().
+Along with the last two commits, this fixes #79
+
+*****
+
+Refactored Bib.__init__() to default title to None, get value from
+booktitle (if there is no title field).
+Skipped no-title test (to be removed).
+
+*****
+
+Refactored Bib.__init__() to check that year field has a correct value.
+Added test.
+
+*****
+
+Updated invalid-month error in Bib.__init__() to output the key of the
+offending entry.
+Updated tests.
+
+*****
+
+Added mock_open() fixture to patch subprocess.run call in pm.open().
+(I would need to be careful of this fixture if I ever need to use
+subprocess.run in another part of the code).
+Added mocks to tests where I need to open a PDF to avoid raising
+'can't open PDF' sort of issues.
+
+*****
+
+Tweaked entry in tests/conftest.py to prevent minor format warning.
+
+
+*****  So 10. Jan 13:45:02 CET 2021  *****
+
+Added removal of files created during testing in test_cli.py
+
+*****
+
+Modified u.cond_split() to ignore lettercase as BibTeX does.
+Added respective tests.
+
+*****
+
+Added in bm.Bib() constructor an exception to avoid crashing when
+the value of the month field is an empty string.
+Added test.
+
+*****
+
+Added get_opening argument to u.find_closing_bracket() function
+to also return the position of the opening bracket when requested.
+Updated and added u.find_closing_bracket() tests.
+
+*****
+
+Tweaked bm.read_file() to ignore @comment entries like BibTeX does.
+Added respective tests.
+
+
+*****  Di 12. Jan 16:56:08 CET 2021  *****
+
+Refactored u.AlwaysPassValidator() class to improve workflow.
+No change in behavior.
+
+*****
+
+Modified u.AlwaysPassValidator() class to display the year of entry
+in the bottom toolbar.
+
+*****
+
+Updated tests for prompt_toolkit >= 3.0.10.
+Added version requirement for tests.
+
+*****
+
+Allowed entries to not have a title.
+Added respective test for bm.search().
+When an entry has no title, display 'NO_TITLE' in browser and search
+bottom toolbars.
+Added test to prevent identifying None titles as duplicates.
+
+
+*****  Mi 13. Jan 15:29:55 CET 2021  *****
+
+Removed title-not-found-error test (no longer needed).
+
+*****
+
+Stored number of entries in the examples/sample.bib file into
+a variable.  To simplify further edits during testing.
+
+*****
+
+Allowed entries to not have a year.
+Added entry with no year into examples/sample.bib for testing.
+Added tests for Bib1 equal or lower than Bib2 when an entry has
+no year.
+
+
+*****  Do 14. Jan 18:29:27 CET 2021  *****
+
+Allowed entries to not have an author.
+Added entry with no author into examples/sample.bib for testing.
+Added tests for Bib1 equal or lower than Bib2 when entries have
+no author.
+
+*****
+
+Modified u.get_authors() to return an empty string when the input
+is None.
+Added respective tests.
+
+*****
+
+Added Exception to pm.guess_name() when entry does not have author
+nor year (cannot guess an appropriate filename).
+Added respective test.
+
+
+*****  Fr 15. Jan 17:09:50 CET 2021  *****
+
+Refactored year parsing in Bib.__init__() to allow years 0--999.
+
+*****
+
+Implemented u.warnings_format() to set a custom warnings format.
+Modified Bib.__init__() to throw a warning instead of an exception
+for a bad year format.
+Added respective tests.
+
+*****
+
+Turned invalid-month exception into a warning.
+Updated respective tests.
+
+*****
+
+Added key argument to u.parse_name() to display when raising warnings
+Turned invalid-author format into too-many-commas warning.
+Attemt to correct the entry when that's the case (guessing what
+BibTeX does).
+Added respective tests.
+
+*****
+
+Bumped bibmanager to version 1.3.1
+The next merge should solve #47 #77 #78 #79
+
+
+*****  Sat Jan 16 14:29:17 CET 2021  *****
+
+Added youtube tutorial for version 1.3 into the docs.
+
+*****
+
+PEP8ed setup.py
+
+*****
+
+PEP8ed utils.py
+
+*****
+
+PEP8ed bib_manager.py
+
+*****
+
+PEP8ed config_manager.py
+
+*****
+
+PEP8ed ads_manager.py
+
+*****
+
+PEP8ed latex_manager.py
+
+*****
+
+Updated api.rst
+
+
+*****
+
+Updated copyright year to 2021.
+
+*****
+
+Updated copyright year of license in docs.
+
+*****
+
+Last cosmetic edits in docs.
+
+*****
+
+Bumped bibmanager to version 1.3.2
+
+
+*****  Mi 20. Jan 16:53:38 CET 2021  *****
+
+Refactored VERSION.py to avoid importing the package in setup.py
+
+*****
+
+Bumped bibmanager to version 1.3.3
+
+
+*****  Wed Jan 27 10:56:51 CET 2021  *****
+
+Added in README.md conda badge, install options, and how to cite.
+
+*****
+
+Added conda badge to docs.
+Added Aaron to contributors to docs.
+
+*****
+
+Added conda installing instructions to docs.
+
+*****
+
+Added link to conda setup guideline to docs.
+
+*****
+
+Added badge to setup.py for PyPI description.
+
+*****
+
+Cosmetics.
+
+
+*****  Sun Feb 28 12:37:05 CET 2021  *****
+
+Fixed some extra typos (besides those corrected by astromancer).
+
+*****
+
+Propagated typo corrections into the docs.
+
+*****
+
+Updated link of license badge to point to RTD docs. 
+
+
+*****  Sat Jun 12 19:01:21 CEST 2021  *****
+
+In bm.remove_dubplicates() added additional check for DOI after
+identical ISBN values in case the entries refer to different chapters
+of a same book.
+Added respective tests.
+
+*****
+
+Small tweak to docs (put latest tutorial video first).
+
+*****
+
+Bumped bibmanager to version 1.3.4
+
+*****
+
+Added mock_init to test_duplicate_isbn_same_unknown_doi() tests
+because the code needs the config file initialized to set the screen
+output style.
+
+
+*****  Mo 14. Jun 09:15:32 CEST 2021  *****
+
+Fixed bug from latest isbn check.
+
+*****
+
+Bumped bibmanager to version 1.3.5
+
+
+*****  Fr 18. Jun 17:26:05 CEST 2021  *****
+
+Specified the encoding='utf-8' whenever the code opens a file
+in text mode.
+
+
+*****  Di 22. Jun 10:13:15 CEST 2021  *****
+
+Bumped bibmanager to version 1.3.6
+

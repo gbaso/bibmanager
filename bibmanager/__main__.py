@@ -1,4 +1,4 @@
-# Copyright (c) 2018-2020 Patricio Cubillos.
+# Copyright (c) 2018-2021 Patricio Cubillos.
 # bibmanager is open-source software under the MIT license (see LICENSE).
 
 import os
@@ -30,12 +30,13 @@ BibTeX Database Management:
   edit        Edit the bibmanager database in a text editor.
   add         Add entries into the bibmanager database.
   search      Search entries in the bibmanager database.
+  browse      Browse through the bibmanager database.
   export      Export the bibmanager database into a bib file.
   cleanup     Clean up a bibtex file of duplicates and outdated entries.
   config      Manage the bibmanager configuration parameters.
 
 LaTeX Management:
-----------------
+-----------------
   bibtex      Generate a BibTeX file from a LaTeX file.
   latex       Compile a LaTeX file with the latex command.
   pdflatex    Compile a LaTeX file with the pdflatex command.
@@ -162,8 +163,10 @@ def cli_search(args):
         return
 
     for match in matches:
-        title = textwrap.fill(f"Title: {match.title}, {match.year}",
-                              width=78, subsequent_indent='       ')
+        year = '' if match.year is None else f', {match.year}'
+        title = textwrap.fill(
+            f"Title: {match.title}{year}",
+            width=78, subsequent_indent='       ')
         author_format = 'short' if args.verb < 2 else 'long'
         authors = textwrap.fill(
             f"Authors: {match.get_authors(format=author_format)}",
@@ -177,6 +180,11 @@ def cli_search(args):
             keys = f"\nADS url:   {match.adsurl}{keys}"
             keys = f"\nbibcode:   {match.bibcode}{keys}"
         print(f"\n{title}\n{authors}{keys}")
+
+
+def cli_browse(args):
+    """Command-line interface for database browser."""
+    bm.browse()
 
 
 def cli_export(args):
@@ -198,7 +206,7 @@ def cli_export(args):
 
 def cli_cleanup(args):
     """Command-line interface to clean up a bibfile."""
-    bibs = bm.loadfile(args.bibfile)
+    bibs = bm.read_file(args.bibfile)
     if args.ads:
         try:
             updated = am.update(base=bibs)
@@ -264,6 +272,17 @@ def cli_ads_search(args):
     except ValueError as e:
         print(f"\nError: {str(e)}")
 
+    args.bibcode = None
+    args.key = None
+    if args.add:
+        print("\nAdd entry from ADS:")
+        cli_ads_add(args)
+    elif args.fetch or args.open:
+        print("\nFetch/open entry from ADS:")
+        args.keycode = None
+        args.filename = None
+        cli_fetch(args)
+
 
 def cli_ads_add(args):
     """Command-line interface for ads-add call."""
@@ -296,6 +315,12 @@ def cli_ads_add(args):
         am.add_bibtex(bibcodes, keys)
     except ValueError as e:
         print(f"\nError: {str(e)}")
+
+    if args.fetch or args.open:
+        for bibcode in bibcodes:
+            args.keycode = bibcode
+            args.filename = None
+            cli_fetch(args)
 
 
 def cli_ads_update(args):
@@ -332,6 +357,13 @@ def cli_fetch(args):
         filename = prompt_input[1][0]
 
     bib = bm.find(key=key, bibcode=bibcode)
+    if bibcode is not None and bib is None:
+        print("")
+        filename = pm.fetch(bibcode, filename)
+        if args.open and filename is not None:
+            pm.open(pdf_file=filename)
+        return
+
     if bib is None:
         print('\nError: BibTex entry is not in Bibmanager database.')
         return
@@ -577,8 +609,8 @@ Description
   to the specified verbosity.
   Search syntax is similar to ADS searches (including tab completion).
 
-  Multiple author, title keyword, and year querries act with AND logic;
-  whereas multiple-key querries and multiple-bibcode querries act with OR
+  Multiple author, title keyword, and year queries act with AND logic;
+  whereas multiple-key queries and multiple-bibcode queries act with OR
   logic (see examples below).
 
   There are four levels of verbosity (see examples below):
@@ -606,7 +638,7 @@ Examples
   bibm search
   author:"oliphant, t" author:"jones, e"
 
-  # Seach by author, year, and title words/phrases (using AND logic):
+  # Search by author, year, and title words/phrases (using AND logic):
   bibm search
   author:"oliphant, t" year:2006 title:"numpy"
 
@@ -652,6 +684,26 @@ Examples
     search.add_argument('-v', '--verb', action='count', default=0,
         help='Set output verbosity.')
     search.set_defaults(func=cli_search)
+
+
+    browse_description = f"""
+{u.BOLD}Browse through the bibmanager database.{u.END}
+
+Description
+  Display the entire bibmanager database into a full-screen application
+  that lets you:
+  - Navigate through or search for specific entries
+  - Visualize the entries' full BibTeX content
+  - Select entries for printing to screen or to file
+  - Open the entries' PDF files
+  - Open the entries in ADS through the web browser
+
+Examples
+  bibm browse
+"""
+    browse = sp.add_parser('browse', description=browse_description,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
+    browse.set_defaults(func=cli_browse)
 
 
     export_description = f"""
@@ -804,7 +856,7 @@ Description
 {u.BOLD}Do a query on ADS.{u.END}
 
 Description
-  This command enables ADS querries.  The query syntax is identical to
+  This command enables ADS queries.  The query syntax is identical to
   a query in the new ADS's one-box search engine:
   https://ui.adsabs.harvard.edu.
   Here there is a detailed documentations for ADS searches:
@@ -815,8 +867,15 @@ Description
   (see 'bibm config ads_display').  If a query matched more entries,
   the user can execute 'bibm ads-search -n' to display the next set of
   entries.
-
   Note that per ADS syntax, fields in quotes must use double quotes.
+
+  If you set the -a/--add flag, the code will prompt to add entries to
+  the database right after showing the ADS search results.
+  Similarly, set the -f/--fetch or -o/--open flags to prompt to fetch
+  or open PDF files right after showing the ADS search results.
+  Note that you can combine these to add and fetch/open at the same
+  time (e.g., bibm ads-search -a -o), or you can fetch/open PDFs that
+  are not in the database (e.g., bibm ads-search -o).
 
 Examples
   # Search entries for author (press tab to prompt the autocompleter):
@@ -837,10 +896,10 @@ Examples
   bibm ads-search
   author:("Fortney, J" AND "Showman, A")
 
-  # Seach by author AND year:
+  # Search by author AND year:
   bibm ads-search
   author:"Fortney, J" year:2010
-  # Seach by author AND year range:
+  # Search by author AND year range:
   bibm ads-search
   author:"Fortney, J" year:2010-2019
   # Search by author AND words/phrases in title:
@@ -860,6 +919,12 @@ Examples
         formatter_class=argparse.RawDescriptionHelpFormatter)
     asearch.add_argument('-n', '--next', action='store_true', default=False,
         help="Display next set of entries that matched the previous query.")
+    asearch.add_argument('-a', '--add', action='store_true', default=False,
+        help="Query to add an entry after displaying the search results.")
+    asearch.add_argument('-f', '--fetch', action='store_true', default=False,
+        help="Query to fetch a PDF after displaying the search results.")
+    asearch.add_argument('-o', '--open', action='store_true', default=False,
+        help="Query to fetch/open a PDF after displaying the search results.")
     asearch.set_defaults(func=cli_ads_search)
 
 
@@ -877,6 +942,10 @@ Description
   By default, added entries replace previously existent entries in the
   bibmanager database.
 
+  With the optional arguments -f/--fetch or -o/--open, the code will
+  attempt to fetch and open (respectively) the associated PDF files
+  of the added entries.
+
 Examples
   # Let's search and add the greatest astronomy PhD thesis of all times:
   bibm ads-search
@@ -891,12 +960,16 @@ Examples
   # Add the entry to the bibmanager database:
   bibm ads-add 1925PhDT.........1P Payne1925phdStellarAtmospheres"""
     ads_add = sp.add_parser('ads-add', description=ads_add_description,
-        usage="bibm ads-add [-h] [bibcode key]",
+        usage="bibm ads-add [-h] [-f] [-o] [bibcode key]",
         formatter_class=argparse.RawDescriptionHelpFormatter)
     ads_add.add_argument('bibcode', action='store', nargs='?',
         help='The ADS bibcode of an entry.')
     ads_add.add_argument('key', action='store', nargs='?',
         help='BibTeX key to assign to the entry.')
+    ads_add.add_argument('-f', '--fetch', action='store_true', default=False,
+        help="Fetch the PDF of the added entries.")
+    ads_add.add_argument('-o', '--open', action='store_true', default=False,
+        help="Fetch and open the PDF of the added entries.")
     ads_add.set_defaults(func=cli_ads_add)
 
 
@@ -947,6 +1020,8 @@ Description
   by ADS bibcode (and auto-completion wont be able to predict their
   bibcode IDs).
 
+  Set the -o/--open flag to open the PDF right after fetching.
+
 Examples
   # Fetch setting the BibTex key:
   bibm fetch BurbidgeEtal1957rvmpStellarElementSynthesis
@@ -977,7 +1052,7 @@ Examples
         help='Either a BibTex key or an ADS bibcode identifier.')
     fetch.add_argument('filename', action='store', nargs='?',
         help='Name for fetched PDF file.')
-    fetch.add_argument('-open', action='store_true', default=False,
+    fetch.add_argument('-o', '--open', action='store_true', default=False,
         help="Open the fetched PDF if the request succeeded.")
     fetch.set_defaults(func=cli_fetch)
 

@@ -1,7 +1,5 @@
-# Copyright (c) 2018-2020 Patricio Cubillos.
+# Copyright (c) 2018-2021 Patricio Cubillos.
 # bibmanager is open-source software under the MIT license (see LICENSE).
 
 # bibmanager Version:
-BM_VER =  1  # Major version
-BM_MIN =  2  # Minor version
-BM_REV =  4  # Revision
+__version__ = "1.3.6"

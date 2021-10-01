@@ -1,4 +1,4 @@
-# Copyright (c) 2018-2020 Patricio Cubillos.
+# Copyright (c) 2018-2021 Patricio Cubillos.
 # bibmanager is open-source software under the MIT license (see LICENSE).
 
 import os
@@ -11,6 +11,10 @@ import requests
 import bibmanager
 import bibmanager.bib_manager as bm
 import bibmanager.utils as u
+
+
+# Number of entries in bibmanager/examples/sample.bib:
+nentries = 19
 
 
 @pytest.fixture
@@ -55,6 +59,14 @@ def mock_call(monkeypatch):
     monkeypatch.setattr('subprocess.call', mock_call)
 
 
+# FINDME: Does not test windows:
+@pytest.fixture
+def mock_open(monkeypatch):
+    def mock_open(*arg, **kwargs):
+        return
+    monkeypatch.setattr('subprocess.run', mock_open)
+
+
 @pytest.fixture
 def mock_home(monkeypatch):
     # Re-define bibmanager HOME:
@@ -88,7 +100,7 @@ def entries():
   title  = {{SciPy}: Open source scientific tools for {Python}},
 }'''
 
-    jones_no_title = '''@Misc{JonesEtal2001scipy,
+    jones_no_title = '''@Misc{JonesNoTitleEtal2001scipy,
   author = {Eric Jones and Travis Oliphant and Pearu Peterson},
   year   = {2001},
 }'''
@@ -159,7 +171,7 @@ archivePrefix = "arXiv",
   adsnote = {Provided by the SAO/NASA Astrophysics Data System}
 }"""
 
-    hunter = """@Article{Hunter2007ieeeMatplotlib,
+    hunter = r"""@Article{Hunter2007ieeeMatplotlib,
   Author    = {{Hunter}, J. D.},
   Title     = {Matplotlib: A 2D graphics environment},
   Journal   = {Computing In Science \& Engineering},
@@ -221,20 +233,58 @@ archivePrefix = "arXiv",
   publisher={AIP Publishing}
 }"""
 
+    isbn_doi1 = """
+@INBOOK{2018haex.bookE.116P,
+       author = {{Parmentier}, Vivien and {Crossfield}, Ian J.~M.},
+        title = "{Exoplanet Phase Curves: Observations and Theory}",
+         year = 2018,
+          doi = {10.1007/978-3-319-55333-7\_116},
+         isbn = "978-3-319-55333-7",
+}"""
+
+    isbn_doi2 = """
+@INBOOK{2018haex.bookE.147C,
+       author = {{Cowan}, Nicolas B. and {Fujii}, Yuka},
+        title = "{Mapping Exoplanets}",
+         year = 2018,
+          doi = {10.1007/978-3-319-55333-7\_147},
+         isbn = "978-3-319-55333-7",
+}"""
+
+    isbn_no_doi1 = """
+@INBOOK{2018haex.bookE.116P,
+       author = {{Parmentier}, Vivien and {Crossfield}, Ian J.~M.},
+        title = "{Exoplanet Phase Curves: Observations and Theory}",
+         year = 2018,
+         isbn = "978-3-319-55333-7",
+}"""
+
+    isbn_no_doi2 = """
+@INBOOK{2018haex.bookE.147C,
+       author = {{Cowan}, Nicolas B. and {Fujii}, Yuka},
+        title = "{Mapping Exoplanets}",
+         year = 2018,
+         isbn = "978-3-319-55333-7",
+}"""
+
     data = {
-        'jones_minimal':      jones_minimal,
-        'jones_no_year':      jones_no_year,
-        'jones_no_title':     jones_no_title,
-        'jones_no_author':    jones_no_author,
-        'jones_braces':       jones_braces,
-        'beaulieu_apj':       beaulieu_apj,
-        'beaulieu_arxiv':     beaulieu_arxiv,
+        'jones_minimal': jones_minimal,
+        'jones_no_year': jones_no_year,
+        'jones_no_title': jones_no_title,
+        'jones_no_author': jones_no_author,
+        'jones_braces': jones_braces,
+        'beaulieu_apj': beaulieu_apj,
+        'beaulieu_arxiv': beaulieu_arxiv,
         'beaulieu_arxiv_dup': beaulieu_arxiv_dup,
-        'hunter':             hunter,
-        'oliphant_dup':       oliphant_dup,
-        'no_oliphant':        no_oliphant,
-        'sing':               sing,
-        'stodden':            stodden,
+        'hunter': hunter,
+        'oliphant_dup': oliphant_dup,
+        'no_oliphant': no_oliphant,
+        'sing': sing,
+        'stodden': stodden,
+        'isbn_doi1': isbn_doi1,
+        'isbn_doi2': isbn_doi2,
+        'isbn_no_doi1': isbn_no_doi1,
+        'isbn_no_doi2': isbn_no_doi2,
            }
     return data
 
@@ -601,6 +651,13 @@ def reqs(requests_mock):
     # Successful Journal request:
     requests_mock.register_uri('GET',
         f'{gateway}/1957RvMP...29..547B/PUB_PDF',
+        headers={'Content-Type':'application/pdf'},
+        content=b'PDF content',
+        status_code=200)
+
+    # Successful Journal request (bibcode not in database):
+    requests_mock.register_uri('GET',
+        f'{gateway}/1957RvMP...00..000B/PUB_PDF',
         headers={'Content-Type':'application/pdf'},
         content=b'PDF content',
         status_code=200)

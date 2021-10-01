@@ -131,7 +131,7 @@ bash:
 Resources
 ---------
 
-| Docs for querries in the new ADS:
+| Docs for queries in the new ADS:
 | http://adsabs.github.io/help/search/search-syntax
 
 | The ADS API:
@@ -143,6 +143,9 @@ Resources
 
 | Pygment style BibTeX options:
 | http://pygments.org/demo/6693571/
+
+| Set up conda:
+| https://github.com/conda-forge/staged-recipes
 
 | Testing:
 | https://docs.pytest.org/
